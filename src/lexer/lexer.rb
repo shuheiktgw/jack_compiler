@@ -55,6 +55,15 @@ class Lexer
       Token.new(token_type: Token::RBRACK, literal: @char)
     when 'EOF'
       Token.new(token_type: Token::EOF, literal: '')
+    else
+      if letter?
+        literal = read_identifier
+        type = Token.lookup_ident(literal)
+
+        Token.new(token_type: type, literal: literal)
+      elsif digit?
+      else
+      end
     end
 
     read_char
@@ -82,5 +91,24 @@ class Lexer
     while white_spaces.include? @char
       read_char
     end
+  end
+
+  def read_identifier
+    position = @position
+
+
+    while letter?
+      read_char
+    end
+
+    @input[position:@position]
+  end
+
+  def letter?
+    @char =~ /^[a-zA-z][a-zA-z0-9_]*$/
+  end
+
+  def digit?
+    @char =~ /^[0-9]+$/
   end
 end
