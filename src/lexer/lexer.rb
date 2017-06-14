@@ -101,7 +101,7 @@ class Lexer
       read_char
     end
 
-    @input[position:@position]
+    @input[position..@position]
   end
 
   def letter?
