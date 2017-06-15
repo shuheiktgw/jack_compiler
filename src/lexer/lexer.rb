@@ -62,7 +62,12 @@ class Lexer
 
         Token.new(token_type: type, literal: literal)
       elsif digit?
+        literal = read_number
+        type = Token::INT
+
+        Token.new(token_type: type, literal: literal)
       else
+        Token.new(token_type: Token::ILLEGAL, literal: @char)
       end
     end
 
@@ -104,15 +109,26 @@ class Lexer
     @input[position..@position]
   end
 
+  def read_number
+    position = @position
+
+
+    while digit?
+      read_char
+    end
+
+    @input[position..@position]
+  end
+
   def lookup_ident(literal)
     Token::KEYWORDS[literal.to_sym] || Token::IDENT
   end
 
   def letter?
-    @char =~ /^[a-zA-Z]$/
+    @char =~ /^[a-zA-Z_]$/
   end
 
   def digit?
-    @char =~ /^[0-9]+$/
+    @char =~ /^[0-9]$/
   end
 end

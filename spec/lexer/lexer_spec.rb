@@ -60,6 +60,39 @@ describe Lexer do
         assert_tokens keywords
       end
     end
+
+    context 'when identifiers are given' do
+      let(:identifiers) { {
+        'variable': {token_type: Token::IDENT, literal: 'variable'},
+        'tmp': {token_type: Token::IDENT, literal: 'tmp'},
+      } }
+
+      it 'should return right token' do
+        assert_tokens identifiers
+      end
+    end
+
+    context 'when digits are given' do
+      let(:digits) { {
+        '012345': {token_type: Token::INT, literal: '012345'},
+        '3429579': {token_type: Token::INT, literal: '3429579'},
+      } }
+
+      it 'should return right token' do
+        assert_tokens digits
+      end
+    end
+
+    context 'when illegal symbols are given' do
+      let(:digits) { {
+        '#': {token_type: Token::ILLEGAL, literal: '#'},
+        '@': {token_type: Token::ILLEGAL, literal: '@'},
+      } }
+
+      it 'should return right token' do
+        assert_tokens digits
+      end
+    end
   end
 end
 
