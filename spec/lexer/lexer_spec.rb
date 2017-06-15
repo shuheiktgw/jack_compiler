@@ -31,6 +31,17 @@ describe Lexer do
       end
     end
 
+    context 'when strings are given' do
+      let(:strings) { {
+        '"this is a string"': {token_type: Token::STRING, literal: 'this is a string'},
+        '"I am string!!!!!!"': {token_type: Token::STRING, literal: 'I am string!!!!!!'},
+      } }
+
+      it 'should return a right token' do
+        assert_tokens strings
+      end
+    end
+
     context 'when keywords are given' do
       let(:keywords) { {
         'class': {token_type: Token::CLASS, literal: 'class'},

@@ -5,6 +5,7 @@ class Token
   EOF = 'EOF'
   IDENT = 'IDENT'
   INT = 'INT'
+  STRING = 'STRING'
 
   # Operators
   EQ = '='

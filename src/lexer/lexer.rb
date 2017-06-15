@@ -53,6 +53,8 @@ class Lexer
       Token.new(token_type: Token::LBRACK, literal: @char)
     when ']'
       Token.new(token_type: Token::RBRACK, literal: @char)
+    when '"'
+      Token.new(token_type: Token::STRING, literal: read_string)
     when 'EOF'
       Token.new(token_type: Token::EOF, literal: '')
     else
@@ -62,10 +64,7 @@ class Lexer
 
         Token.new(token_type: type, literal: literal)
       elsif digit?
-        literal = read_number
-        type = Token::INT
-
-        Token.new(token_type: type, literal: literal)
+        Token.new(token_type: Token::INT, literal: read_number)
       else
         Token.new(token_type: Token::ILLEGAL, literal: @char)
       end
@@ -75,7 +74,6 @@ class Lexer
 
     token
   end
-
 
   private
 
@@ -96,6 +94,18 @@ class Lexer
     while white_spaces.include? @char
       read_char
     end
+  end
+
+  def read_string
+    read_char
+
+    position = @position
+
+    while @char != '"'
+      read_char
+    end
+
+    @input[position..@position - 1]
   end
 
   def read_identifier
