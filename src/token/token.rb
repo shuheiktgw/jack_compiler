@@ -76,6 +76,10 @@ class Token
     return: RETURN
   }
 
+  def self.lookup_ident(literal)
+    KEYWORDS[literal.to_sym] || IDENT
+  end
+
   def initialize(token_type:, literal:)
     @token_type = token_type
     @literal = literal
