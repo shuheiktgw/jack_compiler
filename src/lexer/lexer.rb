@@ -58,7 +58,7 @@ class Lexer
     else
       if letter?
         literal = read_identifier
-        type = Token.lookup_ident(literal)
+        type = lookup_ident(literal)
 
         Token.new(token_type: type, literal: literal)
       elsif digit?
@@ -104,8 +104,12 @@ class Lexer
     @input[position..@position]
   end
 
+  def lookup_ident(literal)
+    Token::KEYWORDS[literal.to_sym] || Token::IDENT
+  end
+
   def letter?
-    @char =~ /^[a-zA-z][a-zA-z0-9_]*$/
+    @char =~ /^[a-zA-Z]$/
   end
 
   def digit?

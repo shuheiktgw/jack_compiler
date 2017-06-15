@@ -53,32 +53,28 @@ class Token
   RETURN = 'RETURN'
 
   KEYWORDS = {
-    'class': CLASS,
-    'constructor': CONSTRUCTOR,
-    'function': FUNCTION,
-    'method': METHOD,
-    'field': FIELD,
-    'static': STATIC,
-    'var': VAR,
-    'int': INT_TYPE,
-    'char': CHAR_TYPE,
-    'boolean': BOOLEAN_TYPE,
-    'void': VOID_TYPE,
-    'true': TRUE,
-    'false': FALSE,
-    'null': NULL,
-    'this': THIS,
-    'let': LET,
-    'do': DO,
-    'if': IF,
-    'else': ELSE,
-    'while': WHILE,
-    'return': RETURN
+    class: CLASS,
+    constructor: CONSTRUCTOR,
+    function: FUNCTION,
+    method: METHOD,
+    field: FIELD,
+    static: STATIC,
+    var: VAR,
+    int: INT_TYPE,
+    char: CHAR_TYPE,
+    boolean: BOOLEAN_TYPE,
+    void: VOID_TYPE,
+    true: TRUE,
+    false: FALSE,
+    null: NULL,
+    this: THIS,
+    let: LET,
+    do: DO,
+    if: IF,
+    else: ELSE,
+    while: WHILE,
+    return: RETURN
   }
-
-  def self.lookup_ident(literal)
-    KEYWORDS[literal] || IDENT
-  end
 
   def initialize(token_type:, literal:)
     @token_type = token_type
