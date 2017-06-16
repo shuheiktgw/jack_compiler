@@ -4,7 +4,6 @@ class Subroutine
     @return_type = return_type
     @subroutine_name = subroutine_name
     @parameters = parameters
-    @statements = []
+    @subroutine_body = subroutine_body
   end
-
 end
