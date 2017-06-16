@@ -2,6 +2,7 @@ require_relative '../token/token'
 
 class Lexer
 
+  # FIXME Use buffer instead.
   def initialize(input)
     @input = input # expect to receive return value from File.read('file_path'), which is just a series of strings
     @position = 0
