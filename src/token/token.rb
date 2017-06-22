@@ -1,5 +1,5 @@
 class Token
-  attr_reader :token_type, :literal
+  attr_reader :type, :literal
 
   ILLEGAL = 'ILLEGAL'
   EOF = 'EOF'
@@ -81,8 +81,8 @@ class Token
     KEYWORDS[literal.to_sym] || IDENT
   end
 
-  def initialize(token_type:, literal:)
-    @token_type = token_type
+  def initialize(type:, literal:)
+    @type = type
     @literal = literal
   end
 

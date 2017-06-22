@@ -31,7 +31,7 @@ class Parser
   end
 
   def parse_statement
-    
+
   end
 
 end

@@ -4,26 +4,26 @@ describe Lexer do
   describe '# next_token' do
     context 'when symbols are given' do
       let(:symbols) { {
-        '=': {token_type: Token::EQ, literal: '='},
-        '~': {token_type: Token::NOT, literal: '~'},
-        '+': {token_type: Token::PLUS, literal: '+'},
-        '-': {token_type: Token::MINUS, literal: '-'},
-        '*': {token_type: Token::ASTERISK, literal: '*'},
-        '/': {token_type: Token::SLASH, literal: '/'},
-        '<': {token_type: Token::LT, literal: '<'},
-        '>': {token_type: Token::GT, literal: '>'},
-        '&': {token_type: Token::AND, literal: '&'},
-        '|': {token_type: Token::OR, literal: '|'},
-        '.': {token_type: Token::PERIOD, literal: '.'},
-        ',': {token_type: Token::COMMA, literal: ','},
-        ';': {token_type: Token::SEMICOLON, literal: ';'},
-        '(': {token_type: Token::LPAREN, literal: '('},
-        ')': {token_type: Token::RPAREN, literal: ')'},
-        '{': {token_type: Token::LBRACE, literal: '{'},
-        '}': {token_type: Token::RBRACE, literal: '}'},
-        '[': {token_type: Token::LBRACK, literal: '['},
-        ']': {token_type: Token::RBRACK, literal: ']'},
-        '': {token_type: Token::EOF, literal: ''},
+        '=': {type: Token::EQ, literal: '='},
+        '~': {type: Token::NOT, literal: '~'},
+        '+': {type: Token::PLUS, literal: '+'},
+        '-': {type: Token::MINUS, literal: '-'},
+        '*': {type: Token::ASTERISK, literal: '*'},
+        '/': {type: Token::SLASH, literal: '/'},
+        '<': {type: Token::LT, literal: '<'},
+        '>': {type: Token::GT, literal: '>'},
+        '&': {type: Token::AND, literal: '&'},
+        '|': {type: Token::OR, literal: '|'},
+        '.': {type: Token::PERIOD, literal: '.'},
+        ',': {type: Token::COMMA, literal: ','},
+        ';': {type: Token::SEMICOLON, literal: ';'},
+        '(': {type: Token::LPAREN, literal: '('},
+        ')': {type: Token::RPAREN, literal: ')'},
+        '{': {type: Token::LBRACE, literal: '{'},
+        '}': {type: Token::RBRACE, literal: '}'},
+        '[': {type: Token::LBRACK, literal: '['},
+        ']': {type: Token::RBRACK, literal: ']'},
+        '': {type: Token::EOF, literal: ''},
       } }
 
       it 'should return a right token' do
@@ -33,8 +33,8 @@ describe Lexer do
 
     context 'when strings are given' do
       let(:strings) { {
-        '"this is a string"': {token_type: Token::STRING, literal: 'this is a string'},
-        '"I am string!!!!!!"': {token_type: Token::STRING, literal: 'I am string!!!!!!'},
+        '"this is a string"': {type: Token::STRING, literal: 'this is a string'},
+        '"I am string!!!!!!"': {type: Token::STRING, literal: 'I am string!!!!!!'},
       } }
 
       it 'should return a right token' do
@@ -44,27 +44,27 @@ describe Lexer do
 
     context 'when keywords are given' do
       let(:keywords) { {
-        'class': {token_type: Token::CLASS, literal: 'class'},
-        'constructor': {token_type: Token::CONSTRUCTOR, literal: 'constructor'},
-        'function': {token_type: Token::FUNCTION, literal: 'function'},
-        'method': {token_type: Token::METHOD, literal: 'method'},
-        'field': {token_type: Token::FIELD, literal: 'field'},
-        'static': {token_type: Token::STATIC, literal: 'static'},
-        'var': {token_type: Token::VAR, literal: 'var'},
-        'int': {token_type: Token::INT_TYPE, literal: 'int'},
-        'char': {token_type: Token::CHAR_TYPE, literal: 'char'},
-        'boolean': {token_type: Token::BOOLEAN_TYPE, literal: 'boolean'},
-        'void': {token_type: Token::VOID_TYPE, literal: 'void'},
-        'true': {token_type: Token::TRUE, literal: 'true'},
-        'false': {token_type: Token::FALSE, literal: 'false'},
-        'null': {token_type: Token::NULL, literal: 'null'},
-        'this': {token_type: Token::THIS, literal: 'this'},
-        'let': {token_type: Token::LET, literal: 'let'},
-        'do': {token_type: Token::DO, literal: 'do'},
-        'if': {token_type: Token::IF, literal: 'if'},
-        'else': {token_type: Token::ELSE, literal: 'else'},
-        'while': {token_type: Token::WHILE, literal: 'while'},
-        'return': {token_type: Token::RETURN, literal: 'return'},
+        'class': {type: Token::CLASS, literal: 'class'},
+        'constructor': {type: Token::CONSTRUCTOR, literal: 'constructor'},
+        'function': {type: Token::FUNCTION, literal: 'function'},
+        'method': {type: Token::METHOD, literal: 'method'},
+        'field': {type: Token::FIELD, literal: 'field'},
+        'static': {type: Token::STATIC, literal: 'static'},
+        'var': {type: Token::VAR, literal: 'var'},
+        'int': {type: Token::INT_TYPE, literal: 'int'},
+        'char': {type: Token::CHAR_TYPE, literal: 'char'},
+        'boolean': {type: Token::BOOLEAN_TYPE, literal: 'boolean'},
+        'void': {type: Token::VOID_TYPE, literal: 'void'},
+        'true': {type: Token::TRUE, literal: 'true'},
+        'false': {type: Token::FALSE, literal: 'false'},
+        'null': {type: Token::NULL, literal: 'null'},
+        'this': {type: Token::THIS, literal: 'this'},
+        'let': {type: Token::LET, literal: 'let'},
+        'do': {type: Token::DO, literal: 'do'},
+        'if': {type: Token::IF, literal: 'if'},
+        'else': {type: Token::ELSE, literal: 'else'},
+        'while': {type: Token::WHILE, literal: 'while'},
+        'return': {type: Token::RETURN, literal: 'return'},
       } }
 
       it 'should return right token' do
@@ -74,8 +74,8 @@ describe Lexer do
 
     context 'when identifiers are given' do
       let(:identifiers) { {
-        'variable': {token_type: Token::IDENT, literal: 'variable'},
-        'tmp': {token_type: Token::IDENT, literal: 'tmp'},
+        'variable': {type: Token::IDENT, literal: 'variable'},
+        'tmp': {type: Token::IDENT, literal: 'tmp'},
       } }
 
       it 'should return right token' do
@@ -85,8 +85,8 @@ describe Lexer do
 
     context 'when digits are given' do
       let(:digits) { {
-        '012345': {token_type: Token::INT, literal: '012345'},
-        '3429579': {token_type: Token::INT, literal: '3429579'},
+        '012345': {type: Token::INT, literal: '012345'},
+        '3429579': {type: Token::INT, literal: '3429579'},
       } }
 
       it 'should return right token' do
@@ -96,8 +96,8 @@ describe Lexer do
 
     context 'when illegal symbols are given' do
       let(:digits) { {
-        '#': {token_type: Token::ILLEGAL, literal: '#'},
-        '@': {token_type: Token::ILLEGAL, literal: '@'},
+        '#': {type: Token::ILLEGAL, literal: '#'},
+        '@': {type: Token::ILLEGAL, literal: '@'},
       } }
 
       it 'should return right token' do
@@ -113,7 +113,7 @@ def assert_tokens(expects)
   expects.each do |input, expected|
     token = Lexer.new(input).next_token
 
-    expect(token.token_type).to eq expected[:token_type]
+    expect(token.type).to eq expected[:type]
     expect(token.literal).to eq expected[:literal]
   end
 end

@@ -17,57 +17,57 @@ class Lexer
 
     token = case @char
     when '='
-      Token.new(token_type: Token::EQ, literal: @char)
+      Token.new(type: Token::EQ, literal: @char)
     when '~'
-      Token.new(token_type: Token::NOT, literal: @char)
+      Token.new(type: Token::NOT, literal: @char)
     when '+'
-      Token.new(token_type: Token::PLUS, literal: @char)
+      Token.new(type: Token::PLUS, literal: @char)
     when '-'
-      Token.new(token_type: Token::MINUS, literal: @char)
+      Token.new(type: Token::MINUS, literal: @char)
     when '*'
-      Token.new(token_type: Token::ASTERISK, literal: @char)
+      Token.new(type: Token::ASTERISK, literal: @char)
     when '/'
-      Token.new(token_type: Token::SLASH, literal: @char)
+      Token.new(type: Token::SLASH, literal: @char)
     when '<'
-      Token.new(token_type: Token::LT, literal: @char)
+      Token.new(type: Token::LT, literal: @char)
     when '>'
-      Token.new(token_type: Token::GT, literal: @char)
+      Token.new(type: Token::GT, literal: @char)
     when '&'
-      Token.new(token_type: Token::AND, literal: @char)
+      Token.new(type: Token::AND, literal: @char)
     when '|'
-      Token.new(token_type: Token::OR, literal: @char)
+      Token.new(type: Token::OR, literal: @char)
     when '.'
-      Token.new(token_type: Token::PERIOD, literal: @char)
+      Token.new(type: Token::PERIOD, literal: @char)
     when ','
-      Token.new(token_type: Token::COMMA, literal: @char)
+      Token.new(type: Token::COMMA, literal: @char)
     when ';'
-      Token.new(token_type: Token::SEMICOLON, literal: @char)
+      Token.new(type: Token::SEMICOLON, literal: @char)
     when '('
-      Token.new(token_type: Token::LPAREN, literal: @char)
+      Token.new(type: Token::LPAREN, literal: @char)
     when ')'
-      Token.new(token_type: Token::RPAREN, literal: @char)
+      Token.new(type: Token::RPAREN, literal: @char)
     when '{'
-      Token.new(token_type: Token::LBRACE, literal: @char)
+      Token.new(type: Token::LBRACE, literal: @char)
     when '}'
-      Token.new(token_type: Token::RBRACE, literal: @char)
+      Token.new(type: Token::RBRACE, literal: @char)
     when '['
-      Token.new(token_type: Token::LBRACK, literal: @char)
+      Token.new(type: Token::LBRACK, literal: @char)
     when ']'
-      Token.new(token_type: Token::RBRACK, literal: @char)
+      Token.new(type: Token::RBRACK, literal: @char)
     when '"'
-      Token.new(token_type: Token::STRING, literal: read_string)
+      Token.new(type: Token::STRING, literal: read_string)
     when 'EOF'
-      Token.new(token_type: Token::EOF, literal: '')
+      Token.new(type: Token::EOF, literal: '')
     else
       if letter?
         literal = read_identifier
         type = Token.lookup_ident(literal)
 
-        Token.new(token_type: type, literal: literal)
+        Token.new(type: type, literal: literal)
       elsif digit?
-        Token.new(token_type: Token::INT, literal: read_number)
+        Token.new(type: Token::INT, literal: read_number)
       else
-        Token.new(token_type: Token::ILLEGAL, literal: @char)
+        Token.new(type: Token::ILLEGAL, literal: @char)
       end
     end
 
