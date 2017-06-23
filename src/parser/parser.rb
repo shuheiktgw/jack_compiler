@@ -1,6 +1,7 @@
 require_relative '../token/token'
 require_relative '../ast/expression/term/identifier'
 require_relative '../ast/expression/term/integer_literal'
+require_relative '../ast/expression/term/string_literal'
 
 class Parser
   def initialize(lexer)
@@ -63,6 +64,8 @@ class Parser
       parse_identifier
     when Token::INT
       parse_int
+    when Token::STRING
+      parse_string
     end
   end
 
@@ -81,6 +84,10 @@ class Parser
       @errors << message
       nil
     end
+  end
+
+  def parse_string
+    StringLiteral(token: @current_token, value: @current_token.literal)
   end
 
   # ====================
