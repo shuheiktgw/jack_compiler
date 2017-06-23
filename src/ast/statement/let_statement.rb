@@ -10,13 +10,13 @@ class LetStatement
 
   def to_h
     {
-      LET_XML => {
-        keyword: 'let',
-        identifier: @identifier.literal,
-        symbol: '=',
-        expression: @expression.to_h,
-        symbol: ';',
-      }
+      LET_XML => [
+        {keyword: 'let'},
+        @identifier.to_h,
+        {symbol: '='},
+        @expression.to_h,
+        symbol: ';'
+      ]
     }
   end
 end

@@ -1,6 +1,4 @@
 class Identifier
-  IDENT_XML = 'identifier'.freeze
-
   def initialize(token:, value:)
     @token = token
     @value = value
@@ -8,7 +6,9 @@ class Identifier
 
   def to_h
     {
-      IDENT_XML => value
+      term: {
+        identifier: value
+      }
     }
   end
 end

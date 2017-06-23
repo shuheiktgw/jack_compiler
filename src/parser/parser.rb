@@ -1,5 +1,6 @@
 require_relative '../token/token'
-require_relative '../ast/'
+require_relative '../ast/expression/term/identifier'
+require_relative '../ast/expression/term/integer_literal'
 
 class Parser
   def initialize(lexer)
@@ -34,14 +35,52 @@ class Parser
     case @current_token.type
     when Token::LET
       parse_let_statement
-
     end
 
   end
 
   def parse_let_statement
-    stmt =
+    token = @current_token
 
+    return nil unless next_token? Token::IDENT
+
+    identifier = parse_identifier
+
+    return nil unless next_token? Token::EQ
+
+    next_token
+    # Now @current_token is pointing at the first token of the expression
+    expression = parse_expression
+
+    return nil unless next_token? Token::SEMICOLON
+
+    LetStatement.new(token: token, identifier: identifier, expression: expression)
+  end
+
+  def parse_prefix
+    case @current_token.type
+    when Token::IDENT
+      parse_identifier
+    when Token::INT
+      parse_int
+    end
+  end
+
+  def parse_identifier
+    Identifier.new(token: @current_token, value: @current_token.literal)
+  end
+
+  def parse_int
+    token = @current_token
+
+    begin
+      value = Integer(@current_token.literal)
+      IntegerLiteral(token: token, value: value)
+    rescue ArgumentError
+      message = "could not parse #{@current_token.literal} as integer."
+      @errors << message
+      nil
+    end
   end
 
   # ====================
