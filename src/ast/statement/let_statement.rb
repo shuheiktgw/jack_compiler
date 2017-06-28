@@ -1,6 +1,6 @@
 class LetStatement
 
-  LET_XML = 'letStatement'.freeze
+  attr_reader :token, :identifier, :expression
 
   def initialize(token:, identifier:, expression:)
     @token = token
@@ -10,7 +10,7 @@ class LetStatement
 
   def to_h
     {
-      LET_XML => [
+      letStatement: [
         {keyword: 'let'},
         @identifier.to_h,
         {symbol: '='},

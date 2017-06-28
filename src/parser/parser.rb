@@ -27,8 +27,6 @@ class Parser
     statements
   end
 
-  private
-
   # ====================
   # Parsers
   # ====================
@@ -38,6 +36,8 @@ class Parser
     when Token::LET
       parse_let_statement
     end
+
+
 
   end
 
@@ -107,6 +107,8 @@ class Parser
   def parse_string
     StringLiteral(token: @current_token, value: @current_token.literal)
   end
+
+  private
 
   # ====================
   # Helper Methods
