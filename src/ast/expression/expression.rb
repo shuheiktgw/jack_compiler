@@ -1,7 +1,5 @@
 class Expression
 
-  EXPRESSION_XML = 'expression'.freeze
-
   # https://github.com/savonrb/gyoku
   def initialize(terms)
     @terms = terms
@@ -11,7 +9,7 @@ class Expression
     ts = @terms.map{|t| t.to_h}
 
     {
-      EXPRESSION_XML => ts
+      expression: ts
     }
   end
 end

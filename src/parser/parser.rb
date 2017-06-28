@@ -43,30 +43,38 @@ class Parser
   def parse_let_statement
     token = @current_token
 
-    return nil unless next_token? Token::IDENT
+    return nil unless expect_next Token::IDENT
 
     identifier = parse_identifier
 
-    return nil unless next_token? Token::EQ
+    return nil unless expect_next Token::EQ
 
     next_token
     # Now @current_token is pointing at the first token of the expression
     expression = parse_expression
 
-    return nil unless next_token? Token::SEMICOLON
+    return nil unless expect_next Token::SEMICOLON
 
     LetStatement.new(token: token, identifier: identifier, expression: expression)
   end
 
   def parse_prefix
-    case @current_token.type
-    when Token::IDENT
-      parse_identifier
-    when Token::INT
-      parse_int
-    when Token::STRING
-      parse_string
+    left_expression = PREFIX_PARSER.call
+
+    return unless left_expression
+
+    while !next_token? Token::SEMICOLON
+      infix = INFIX_PARSER.call
+
+      return left_expression unless infix
+
+      next_token
+
     end
+  end
+
+  def parse_infix
+
   end
 
   def parse_identifier
@@ -94,6 +102,34 @@ class Parser
   # Helper Methods
   # ====================
 
+  PREFIX_PARSER = lambda do
+    case @current_token.type
+    when Token::IDENT
+      parse_identifier
+    when Token::INT
+      parse_int
+    when Token::STRING
+      parse_string
+    else
+      no_prefix_parse_error @current_token.type
+      nil
+    end
+  end
+
+  INFIX_PARSER = lambda do
+    case @current_token.type
+    when Token::IDENT
+      parse_identifier
+    when Token::INT
+      parse_int
+    when Token::STRING
+      parse_string
+    else
+      no_prefix_parse_error @current_token.type
+      nil
+    end
+  end
+
   def next_token
     @current_token = @next_token
     @next_token = @lexer.next_token
@@ -115,6 +151,11 @@ class Parser
 
   def next_token_error(token_type)
     message = "expected next token to be #{token_type}, got #{@current_token.type} instead."
+    @errors << message
+  end
+
+  def no_prefix_parse_error(token_type)
+    message = "no prefix parse function for #{token_type} found."
     @errors << message
   end
 end
