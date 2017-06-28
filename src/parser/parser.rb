@@ -2,6 +2,7 @@ require_relative '../token/token'
 require_relative '../ast/expression/term/identifier'
 require_relative '../ast/expression/term/integer_literal'
 require_relative '../ast/expression/term/string_literal'
+require_relative '../ast/expression/infix_expression'
 
 class Parser
   def initialize(lexer)
@@ -58,23 +59,32 @@ class Parser
     LetStatement.new(token: token, identifier: identifier, expression: expression)
   end
 
-  def parse_prefix
+  def parse_expression
     left_expression = PREFIX_PARSER.call
 
     return unless left_expression
 
-    while !next_token? Token::SEMICOLON
+    until next_token? Token::SEMICOLON
+      next_token
       infix = INFIX_PARSER.call
 
       return left_expression unless infix
 
-      next_token
-
+      left_expression = infix
     end
+
+    left_expression
   end
 
-  def parse_infix
+  def parse_infix(left_expression)
+    token = @current_token
+    operator = @current_token.literal
+    left = left_expression
 
+    next_token
+
+    right = parse_expression
+    InfixExpression(token: token, left: operator, operator: left, right: right)
   end
 
   def parse_identifier
@@ -116,16 +126,10 @@ class Parser
     end
   end
 
-  INFIX_PARSER = lambda do
-    case @current_token.type
-    when Token::IDENT
-      parse_identifier
-    when Token::INT
-      parse_int
-    when Token::STRING
-      parse_string
+  INFIX_PARSER = lambda do |left_expression|
+    if [Token::PLUS, Token::MINUS, Token::ASTERISK, Token::SLASH, Token::AND, Token::OR, Token::GT, Token::LT].include? @current_token.type
+      parse_infix left_expression
     else
-      no_prefix_parse_error @current_token.type
       nil
     end
   end
