@@ -11,7 +11,7 @@ describe Parser do
       subject(:first_result) { results.first }
 
       context 'expression is string constant' do
-        let(:expression) { '"This is a string sentence!!!;"' }
+        let(:expression) { '"This is a string sentence!!!";' }
 
         it 'should return StringLiteral' do
           expect(first_result.token).to eq Token::LET

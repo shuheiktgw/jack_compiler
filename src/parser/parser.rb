@@ -16,11 +16,10 @@ class Parser
   end
 
   def parse_program
-    binding.pry
 
     statements = []
 
-    while @current_token != Token::EOF
+    while @current_token.type != Token::EOF
       stmt = parse_statement
       statements << stmt if stmt
 
@@ -63,13 +62,15 @@ class Parser
   end
 
   def parse_expression
-    expression = PREFIX_PARSER.call
+    binding.pry
+
+    expression = handle_prefix
 
     return unless expression
 
     until next_token? Token::SEMICOLON
       next_token
-      infix = INFIX_PARSER.call
+      infix = handle_infix expression
 
       return expression unless infix
 
@@ -81,13 +82,13 @@ class Parser
 
   def parse_infix(left_expression)
     token = @current_token
-    operator = @current_token.literal
     left = left_expression
+    operator = @current_token.literal
 
     next_token
 
     right = parse_expression
-    InfixExpression(token: token, left: operator, operator: left, right: right)
+    InfixExpression.new(token: token, left: left, operator: operator, right: right)
   end
 
   def parse_identifier
@@ -99,7 +100,7 @@ class Parser
 
     begin
       value = Integer(@current_token.literal)
-      IntegerLiteral(token: token, value: value)
+      IntegerLiteral.new(token: token, value: value)
     rescue ArgumentError
       message = "could not parse #{@current_token.literal} as integer."
       @errors << message
@@ -108,7 +109,7 @@ class Parser
   end
 
   def parse_string
-    StringLiteral(token: @current_token, value: @current_token.literal)
+    StringLiteral.new(token: @current_token, value: @current_token.literal)
   end
 
   private
@@ -117,7 +118,7 @@ class Parser
   # Helper Methods
   # ====================
 
-  PREFIX_PARSER = lambda do
+  def handle_prefix
     case @current_token.type
     when Token::IDENT
       parse_identifier
@@ -131,7 +132,7 @@ class Parser
     end
   end
 
-  INFIX_PARSER = lambda do |left_expression|
+  def handle_infix(left_expression)
     if [Token::PLUS, Token::MINUS, Token::ASTERISK, Token::SLASH, Token::AND, Token::OR, Token::GT, Token::LT].include? @current_token.type
       parse_infix left_expression
     else
