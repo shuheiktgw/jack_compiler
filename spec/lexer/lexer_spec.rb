@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'pry-byebug'
 
 describe Lexer do
   describe '# next_token' do
@@ -104,6 +105,78 @@ describe Lexer do
         assert_tokens digits
       end
     end
+
+    context 'when multiple words are given' do
+      context 'let statement' do
+        context 'string expression' do
+          let(:let_statements) do
+            {'let str = "string constant!!";': [
+              {type: Token::LET, literal: 'let'},
+              {type: Token::IDENT, literal: 'str'},
+              {type: Token::EQ, literal: '='},
+              {type: Token::STRING, literal: 'string constant!!'},
+              {type: Token::SEMICOLON, literal: ';'},
+              {type: Token::EOF, literal: ''}
+            ]}
+          end
+
+          it { assert_multiple_tokens let_statements }
+        end
+
+        context 'integer expression' do
+          let(:let_statements) do
+            {'let integeeer = 12345;': [
+              {type: Token::LET, literal: 'let'},
+              {type: Token::IDENT, literal: 'integeeer'},
+              {type: Token::EQ, literal: '='},
+              {type: Token::INT, literal: '12345'},
+              {type: Token::SEMICOLON, literal: ';'},
+              {type: Token::EOF, literal: ''}
+            ]}
+          end
+
+          it { assert_multiple_tokens let_statements }
+        end
+
+        context 'integer calculation expression' do
+          let(:let_statements) do
+            {'let integeeer = 12345 + 36475;': [
+              {type: Token::LET, literal: 'let'},
+              {type: Token::IDENT, literal: 'integeeer'},
+              {type: Token::EQ, literal: '='},
+              {type: Token::INT, literal: '12345'},
+              {type: Token::PLUS, literal: '+'},
+              {type: Token::INT, literal: '36475'},
+              {type: Token::SEMICOLON, literal: ';'},
+              {type: Token::EOF, literal: ''}
+            ]}
+          end
+
+          it { assert_multiple_tokens let_statements }
+        end
+
+        context 'do expression' do
+          let(:let_statements) do
+            {'let result = do someMethod(1238, someIntVar);': [
+              {type: Token::LET, literal: 'let'},
+              {type: Token::IDENT, literal: 'result'},
+              {type: Token::EQ, literal: '='},
+              {type: Token::DO, literal: 'do'},
+              {type: Token::IDENT, literal: 'someMethod'},
+              {type: Token::LPAREN, literal: '('},
+              {type: Token::INT, literal: '1238'},
+              {type: Token::COMMA, literal: ','},
+              {type: Token::IDENT, literal: 'someIntVar'},
+              {type: Token::RPAREN, literal: ')'},
+              {type: Token::SEMICOLON, literal: ';'},
+              {type: Token::EOF, literal: ''}
+            ]}
+          end
+
+          it { assert_multiple_tokens let_statements }
+        end
+      end
+    end
   end
 end
 
@@ -115,5 +188,23 @@ def assert_tokens(expects)
 
     expect(token.type).to eq expected[:type]
     expect(token.literal).to eq expected[:literal]
+  end
+end
+
+# {'let a = "string constant"': [
+#   {type: Token::LET, literal: 'let'},
+#   {type: Token::IDENT, literal: 'a'},
+#   {type: Token::EQ, literal: '='},
+#   {type: Token::STRING, literal: 'string constant'}
+# ]}
+def assert_multiple_tokens(expects)
+  expects.each do |input, tokens|
+    l = Lexer.new(input)
+
+    tokens.each do |expected|
+      token = l.next_token
+      expect(token.type).to eq expected[:type]
+      expect(token.literal).to eq expected[:literal]
+    end
   end
 end

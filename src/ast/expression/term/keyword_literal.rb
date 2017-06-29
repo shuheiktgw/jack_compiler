@@ -1,2 +1,2 @@
-class KeywordLiteral
+class KeywordLiteral < AstBase
 end

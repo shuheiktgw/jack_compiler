@@ -1,4 +1,5 @@
 require_relative '../token/token'
+require 'pry-byebug'
 
 class Lexer
 
@@ -106,7 +107,7 @@ class Lexer
       read_char
     end
 
-    @input[position..@position - 1]
+    @input[position...@position]
   end
 
   def read_identifier
@@ -123,7 +124,6 @@ class Lexer
   def read_number
     position = @position
 
-
     while digit?
       read_char
     end
@@ -132,10 +132,14 @@ class Lexer
   end
 
   def letter?
-    @char =~ /^[a-zA-Z_]$/
+    peer_char =~ /^[a-zA-Z_]$/
   end
 
   def digit?
-    @char =~ /^[0-9]$/
+    peer_char =~ /^[0-9]$/
+  end
+
+  def peer_char
+    @input[@read_position]
   end
 end

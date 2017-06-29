@@ -1,3 +1,4 @@
+require 'pry-byebug'
 require_relative '../token/token'
 require_relative '../ast/expression/term/identifier'
 require_relative '../ast/expression/term/integer_literal'
@@ -15,6 +16,8 @@ class Parser
   end
 
   def parse_program
+    binding.pry
+
     statements = []
 
     while @current_token != Token::EOF
@@ -60,20 +63,20 @@ class Parser
   end
 
   def parse_expression
-    left_expression = PREFIX_PARSER.call
+    expression = PREFIX_PARSER.call
 
-    return unless left_expression
+    return unless expression
 
     until next_token? Token::SEMICOLON
       next_token
       infix = INFIX_PARSER.call
 
-      return left_expression unless infix
+      return expression unless infix
 
-      left_expression = infix
+      expression = infix
     end
 
-    left_expression
+    expression
   end
 
   def parse_infix(left_expression)

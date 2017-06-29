@@ -1,4 +1,4 @@
-class StringLiteral
+class StringLiteral < AstBase
   def initialize(token:, value:)
     @token = token
     @value = value
