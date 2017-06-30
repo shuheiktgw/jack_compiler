@@ -59,11 +59,24 @@ describe Parser do
         end
       end
 
-      context 'expression is Null constant' do
+      context 'expression is null constant' do
         let(:expressions) { 'null;' }
 
         it 'should return BooleanLiteral with true' do
           expression = BooleanLiteral.new(token: Token.new(type: Token::NULL, literal: 'null'), value: nil)
+          expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+          expect(first_result).to eq expected
+        end
+      end
+
+      context 'expression is integer calculation' do
+        let(:expressions) { '111 + 222;' }
+
+        it do
+          left = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '111'), value: 111)
+          right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '222'), value: 222)
+          expression = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: '+'), left: left, operator: '+', right: right)
           expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
           expect(first_result).to eq expected
