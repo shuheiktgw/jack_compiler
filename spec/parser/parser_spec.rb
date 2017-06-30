@@ -71,15 +71,48 @@ describe Parser do
       end
 
       context 'expression is integer calculation' do
-        let(:expressions) { '111 + 222;' }
+        context 'two terms' do
+          let(:left) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '111'), value: 111) }
+          let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '222'), value: 222) }
+          let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right) }
+          let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
+          let(:expressions) { '111' + op + '222' + ';' }
 
-        it do
-          left = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '111'), value: 111)
-          right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '222'), value: 222)
-          expression = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: '+'), left: left, operator: '+', right: right)
-          expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+          context 'plus' do
+            let(:op) {'+'}
+            let(:op_type) {Token::PLUS}
 
-          expect(first_result).to eq expected
+            it do
+              expect(first_result).to eq expected
+            end
+          end
+
+          context 'minus' do
+            let(:op) {'-'}
+            let(:op_type) {Token::MINUS}
+
+            it do
+              expect(first_result).to eq expected
+            end
+          end
+
+          context 'multiple' do
+            let(:op) {'*'}
+            let(:op_type) {Token::ASTERISK}
+
+            it do
+              expect(first_result).to eq expected
+            end
+          end
+
+          context 'slash' do
+            let(:op) {'/'}
+            let(:op_type) {Token::SLASH}
+
+            it do
+              expect(first_result).to eq expected
+            end
+          end
         end
       end
     end
