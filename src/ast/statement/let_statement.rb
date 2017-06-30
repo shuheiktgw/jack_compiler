@@ -1,4 +1,4 @@
-class LetStatement
+class LetStatement < AstBase
 
   attr_reader :token, :identifier, :expression
 

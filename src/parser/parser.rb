@@ -62,13 +62,16 @@ class Parser
   end
 
   def parse_expression
-    binding.pry
-
     expression = handle_prefix
 
     return unless expression
 
     until next_token? Token::SEMICOLON
+      if next_token? Token::EOF
+        unexpected_eof_error
+        return
+      end
+
       next_token
       infix = handle_infix expression
 
@@ -112,6 +115,21 @@ class Parser
     StringLiteral.new(token: @current_token, value: @current_token.literal)
   end
 
+  def parse_boolean
+    literal = @current_token.literal
+
+    if literal == 'true'
+      BooleanLiteral.new(token: @current_token, value: true)
+    elsif literal == 'false'
+      BooleanLiteral.new(token: @current_token, value: false)
+    else
+      message = "could not parse #{@current_token.literal} as boolean."
+      @errors << message
+
+      nil
+    end
+  end
+
   private
 
   # ====================
@@ -126,6 +144,8 @@ class Parser
       parse_int
     when Token::STRING
       parse_string
+    when Token::TRUE, Token::FALSE
+      parse_boolean
     else
       no_prefix_parse_error @current_token.type
       nil
@@ -167,5 +187,9 @@ class Parser
   def no_prefix_parse_error(token_type)
     message = "no prefix parse function for #{token_type} found."
     @errors << message
+  end
+
+  def unexpected_eof_error
+    @errors << 'unexpected EOF has gotten.'
   end
 end

@@ -1,4 +1,4 @@
-class Expression
+class Expression < AstBase
 
   # https://github.com/savonrb/gyoku
   def initialize(terms)

@@ -1,4 +1,4 @@
-class Statement
+class Statement < AstBase
   def initialize
 
   end

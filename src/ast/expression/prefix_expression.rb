@@ -1,4 +1,4 @@
-class PrefixExpression
+class PrefixExpression < AstBase
 
   def initialize(token:, operator:, right:)
     @token = token

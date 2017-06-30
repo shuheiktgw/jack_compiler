@@ -7,16 +7,42 @@ describe Parser do
     subject(:results) { Parser.new(lexer).parse_program }
 
     context 'let statement' do
-      let(:input) { 'let variable = ' + expression }
+      let(:input) { 'let variable = ' + expressions }
+      let(:token) { Token.new(type: Token::LET, literal: 'let') }
+      let(:identifier) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'variable'), value: 'variable') }
+
       subject(:first_result) { results.first }
 
       context 'expression is string constant' do
-        let(:expression) { '"This is a string sentence!!!";' }
+        let(:expressions) { '"This is a string sentence!!!";' }
 
         it 'should return StringLiteral' do
-          expect(first_result.token).to eq Token::LET
-          expect(first_result.identifier).to eq Identifier.new(token: Token::STRING, value: 'variable')
-          expect(first_result.expression).to eq StringLiteral.new(token: Token::STRING, value: 'This is a string sentence!!!')
+          expression = StringLiteral.new(token: Token.new(type: Token::STRING, literal: 'This is a string sentence!!!'), value: 'This is a string sentence!!!')
+          expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+          expect(first_result).to eq expected
+        end
+      end
+
+      context 'expression is integer constant' do
+        let(:expressions) { '432718;' }
+
+        it 'should return IntegerLiteral' do
+          expression = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '432718'), value: 432718)
+          expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+          expect(first_result).to eq expected
+        end
+      end
+
+      context 'expression is integer constant' do
+        let(:expressions) { '432718;' }
+
+        it 'should return IntegerLiteral' do
+          expression = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '432718'), value: 432718)
+          expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+          expect(first_result).to eq expected
         end
       end
     end

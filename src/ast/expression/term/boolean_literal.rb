@@ -1,4 +1,4 @@
-class IntegerLiteral < AstBase
+class BooleanLiteral < AstBase
   def initialize(token:, value:)
     @token = token
     @value = value
@@ -7,7 +7,7 @@ class IntegerLiteral < AstBase
   def to_h
     {
       term: {
-        integerConstant: @value
+        keyword: @value.to_s
       }
     }
   end

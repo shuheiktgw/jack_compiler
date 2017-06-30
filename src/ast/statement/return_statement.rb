@@ -1,4 +1,4 @@
-class ReturnStatement
+class ReturnStatement < AstBase
 
   RETURN_XML = 'returnStatement'.freeze
 

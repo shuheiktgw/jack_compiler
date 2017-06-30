@@ -1,4 +1,4 @@
-class Program
+class Program < AstBase
 
   def initialize()
 

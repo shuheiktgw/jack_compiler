@@ -1,4 +1,8 @@
+require_relative '../helper/equalable'
+
 class Token
+  include Equalable
+
   attr_reader :type, :literal
 
   ILLEGAL = 'ILLEGAL'
@@ -86,4 +90,7 @@ class Token
     @literal = literal
   end
 
+  def ==(other)
+    self.instance_variables.map {|iv| self.instance_variable_get(iv) == other.instance_variable_get(iv)}.all?
+  end
 end

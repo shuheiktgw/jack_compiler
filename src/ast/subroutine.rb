@@ -1,4 +1,4 @@
-class Subroutine
+class Subroutine < AstBase
   def initialize()
     @subroutine_type = subroutine_type
     @return_type = return_type

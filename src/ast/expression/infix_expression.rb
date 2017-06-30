@@ -1,4 +1,4 @@
-class InfixExpression
+class InfixExpression < AstBase
   def initialize(token:, left:, operator:, right:)
     @token = token
     @left = left
