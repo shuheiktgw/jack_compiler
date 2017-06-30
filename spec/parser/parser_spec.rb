@@ -58,6 +58,17 @@ describe Parser do
           end
         end
       end
+
+      context 'expression is Null constant' do
+        let(:expressions) { 'null;' }
+
+        it 'should return BooleanLiteral with true' do
+          expression = BooleanLiteral.new(token: Token.new(type: Token::NULL, literal: 'null'), value: nil)
+          expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+          expect(first_result).to eq expected
+        end
+      end
     end
   end
 end

@@ -146,6 +146,8 @@ class Parser
       parse_string
     when Token::TRUE, Token::FALSE
       parse_boolean
+    when Token::NULL
+      NullLiteral.new
     else
       no_prefix_parse_error @current_token.type
       nil
