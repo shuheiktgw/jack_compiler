@@ -1,15 +1,13 @@
 class ReturnStatement < AstBase
 
-  RETURN_XML = 'returnStatement'.freeze
-
-  def initialize(token:, expression:)
+  def initialize(token:, return_value:)
     @token = token
-    @return_value = expression
+    @return_value = return_value
   end
 
   def to_h
     {
-      RETURN_XML => @return_value.to_h
+      returnStatement: @return_value.to_h
     }
   end
 end

@@ -37,6 +37,8 @@ class Parser
     case @current_token.type
     when Token::LET
       parse_let_statement
+    when Token::RETURN
+      parse_return_statement
     end
 
 
@@ -59,6 +61,18 @@ class Parser
     return nil unless expect_next Token::SEMICOLON
 
     LetStatement.new(token: token, identifier: identifier, expression: expression)
+  end
+
+  def parse_return_statement
+    token = @current_token
+
+    next_token
+
+    return_value = parse_expression
+
+    next_token if next_token? Token::SEMICOLON
+
+    ReturnStatement.new(token: token, return_value: return_value)
   end
 
   def parse_expression

@@ -161,5 +161,69 @@ describe Parser do
         end
       end
     end
+
+    context 'return statement' do
+      let(:input) { 'return ' + expressions }
+      let(:token) { Token.new(type: Token::RETURN, literal: 'return') }
+
+      subject(:first_result) { results.first }
+
+      context 'expression is string constant' do
+        let(:expressions) { '"This is a string sentence!!!";' }
+
+        it 'should return StringLiteral' do
+          expression = StringLiteral.new(token: Token.new(type: Token::STRING, literal: 'This is a string sentence!!!'), value: 'This is a string sentence!!!')
+          expected = ReturnStatement.new(token: token, return_value: expression)
+
+          expect(first_result).to eq expected
+        end
+      end
+
+      context 'expression is integer constant' do
+        let(:expressions) { '432718;' }
+
+        it 'should return IntegerLiteral' do
+          expression = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '432718'), value: 432718)
+          expected = ReturnStatement.new(token: token, return_value: expression)
+
+          expect(first_result).to eq expected
+        end
+      end
+
+      context 'expression is boolean constant' do
+        context 'when true' do
+          let(:expressions) { 'true;' }
+
+          it 'should return BooleanLiteral with true' do
+            expression = BooleanLiteral.new(token: Token.new(type: Token::TRUE, literal: 'true'), value: true)
+            expected = ReturnStatement.new(token: token, return_value: expression)
+
+            expect(first_result).to eq expected
+          end
+        end
+
+        context 'when false' do
+          let(:expressions) { 'false;' }
+
+          it 'should return BooleanLiteral with true' do
+            expression = BooleanLiteral.new(token: Token.new(type: Token::FALSE, literal: 'false'), value: false)
+            expected = ReturnStatement.new(token: token, return_value: expression)
+
+            expect(first_result).to eq expected
+          end
+        end
+      end
+
+      context 'expression is null constant' do
+        let(:expressions) { 'null;' }
+
+        it 'should return BooleanLiteral with true' do
+          expression = BooleanLiteral.new(token: Token.new(type: Token::NULL, literal: 'null'), value: nil)
+          expected = ReturnStatement.new(token: token, return_value: expression)
+
+          expect(first_result).to eq expected
+        end
+      end
+    end
   end
 end
