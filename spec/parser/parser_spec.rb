@@ -71,12 +71,57 @@ describe Parser do
       end
 
       context 'expression is integer calculation' do
+        let(:left) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '111'), value: 111) }
+        let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '222'), value: 222) }
+
         context 'two terms' do
-          let(:left) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '111'), value: 111) }
-          let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '222'), value: 222) }
           let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right) }
           let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
           let(:expressions) { '111' + op + '222' + ';' }
+
+          context 'plus' do
+            let(:op) {'+'}
+            let(:op_type) {Token::PLUS}
+
+            it do
+              expect(first_result).to eq expected
+            end
+          end
+
+          context 'minus' do
+            let(:op) {'-'}
+            let(:op_type) {Token::MINUS}
+
+            it do
+              expect(first_result).to eq expected
+            end
+          end
+
+          context 'multiple' do
+            let(:op) {'*'}
+            let(:op_type) {Token::ASTERISK}
+
+            it do
+              expect(first_result).to eq expected
+            end
+          end
+
+          context 'slash' do
+            let(:op) {'/'}
+            let(:op_type) {Token::SLASH}
+
+            it do
+              expect(first_result).to eq expected
+            end
+          end
+        end
+
+        context 'three terms' do
+          let(:middle) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '333'), value: 333) }
+          let(:right_expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: middle, operator: op, right: right ) }
+          let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right_expression ) }
+          let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
+          let(:expressions) { '111' + op + '333' + op + '222' + ';' }
 
           context 'plus' do
             let(:op) {'+'}
