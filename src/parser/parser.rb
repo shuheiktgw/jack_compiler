@@ -48,17 +48,17 @@ class Parser
   def parse_let_statement
     token = @current_token
 
-    return nil unless expect_next Token::IDENT
+    return unless expect_next Token::IDENT
 
     identifier = parse_identifier
 
-    return nil unless expect_next Token::EQ
+    return unless expect_next Token::EQ
 
     next_token
     # Now @current_token is pointing at the first token of the expression
     expression = parse_expression
 
-    return nil unless expect_next Token::SEMICOLON
+    return unless expect_next Token::SEMICOLON
 
     LetStatement.new(token: token, identifier: identifier, expression: expression)
   end
@@ -73,6 +73,45 @@ class Parser
     next_token if next_token? Token::SEMICOLON
 
     ReturnStatement.new(token: token, return_value: return_value)
+  end
+
+  def parse_if_statement
+    token = @current_token
+
+    return unless expect_next Token:LPAREN
+
+    next_token
+    condition = parse_expression
+
+    return unless expect_next Token:RPAREN
+    return unless expect_next Token:LBRACE
+
+    consequence = parse_block_statement
+
+    alternative = if next_token? Token::ELSE
+      next_token
+
+      return unless expect_next Token:LBRACE
+      parse_block_statement
+    end
+
+    IfStatement.new(token: token, condition: condition, consequence: consequence, alternative: alternative)
+  end
+
+  def parse_block_statement
+    token = @current_token
+
+    next_token
+    statements = []
+
+    while @current_token != Token::RBRACE
+      stmt = parse_statement
+      statements << stmt if stmt
+
+      next_token
+    end
+
+    BlockStatement.new(token: token, statements: statements)
   end
 
   def parse_expression
