@@ -440,7 +440,6 @@ return test1;
 
           expected_condition = InfixExpression.new(token: Token.new(type: condition_op, literal: '<'), left: condition_left, operator: condition_op, right: condition_right)
 
-          # Let statement in the consequence
           consequence_ident = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'test1'), value: 'test1')
           consequence_return = ReturnStatement.new(token: Token.new(type: Token::RETURN, literal: 'return'), return_value: consequence_ident)
 
@@ -451,6 +450,58 @@ return test1;
           expect(first_result.token).to eq token
           expect(first_result.condition).to eq expected_condition
           expect(first_result.consequence.statements.first).to eq consequence_return
+          expect(first_result.consequence).to eq expected_consequence
+          expect(first_result).to eq expected
+        end
+      end
+
+      context 'multiple line' do
+        let(:input) do
+          '''
+        while(i = 2) {
+let test1 = 1 + 345;
+let test2 = test1 * 1123;
+return test2;
+}
+        '''
+        end
+
+        let(:token) { Token.new(type: Token::WHILE, literal: 'while') }
+        subject(:first_result) { results.first }
+
+        it do
+          condition_left = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'i'), value: 'i')
+          condition_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '2'), value: 2)
+          condition_op = Token::EQ
+
+          expected_condition = InfixExpression.new(token: Token.new(type: condition_op, literal: '='), left: condition_left, operator: condition_op, right: condition_right)
+
+          # First let statement in the consequence
+          consequence_ident1 = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'test1'), value: 'test1')
+          consequence_left1 = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1'), value: 1)
+          consequence_right1 = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '345'), value: 345)
+          consequence_op1 = Token::PLUS
+          consequence_expression1 = InfixExpression.new(token: Token.new(type: consequence_op1, literal: consequence_op1), left: consequence_left1, operator: consequence_op1, right: consequence_right1)
+          consequence_let1 = LetStatement.new(token: Token.new(type: Token::LET, literal: 'let'), identifier: consequence_ident1, expression: consequence_expression1)
+
+          # Second let statement in the consequence
+          consequence_ident2 = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'test2'), value: 'test2')
+          consequence_right2 = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '345'), value: 345)
+          consequence_op2 = Token::ASTERISK
+          consequence_expression2 = InfixExpression.new(token: Token.new(type: consequence_op2, literal: consequence_op2), left: consequence_ident1, operator: consequence_op2, right: consequence_right2)
+          consequence_let2 = LetStatement.new(token: Token.new(type: Token::LET, literal: 'let'), identifier: consequence_ident2, expression: consequence_expression2)
+
+          consequence_return = ReturnStatement.new(token: Token.new(type: Token::RETURN, literal: 'return'), return_value: consequence_ident2)
+
+          expected_consequence = BlockStatement.new(token: Token.new(type: Token::LBRACE, literal: '{'), statements: [consequence_let1, consequence_let2, consequence_return])
+
+          expected = WhileStatement.new(token: token, condition: expected_condition, consequence: expected_consequence)
+
+          expect(first_result.token).to eq token
+          expect(first_result.condition).to eq expected_condition
+          expect(first_result.consequence.statements.first).to eq consequence_let1
+          expect(first_result.consequence.statements.second).to eq consequence_let2
+          expect(first_result.consequence.statements.third).to eq consequence_return
           expect(first_result.consequence).to eq expected_consequence
           expect(first_result).to eq expected
         end
