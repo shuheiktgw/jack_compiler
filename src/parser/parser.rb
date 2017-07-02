@@ -26,6 +26,11 @@ class Parser
       next_token
     end
 
+    if @errors.size > 0
+      messages = @errors.join "\n"
+      raise ParseError, messages
+    end
+
     statements
   end
 
@@ -39,8 +44,9 @@ class Parser
       parse_let_statement
     when Token::RETURN
       parse_return_statement
+    when Token::IF
+      parse_if_statement
     end
-
 
 
   end
@@ -76,22 +82,47 @@ class Parser
   end
 
   def parse_if_statement
+    binding.pry
+
     token = @current_token
 
-    return unless expect_next Token:LPAREN
+    return unless expect_next Token::LPAREN
 
     next_token
     condition = parse_expression
 
-    return unless expect_next Token:RPAREN
-    return unless expect_next Token:LBRACE
+    return unless expect_next Token::RPAREN
+    return unless expect_next Token: LBRACE
 
     consequence = parse_block_statement
 
     alternative = if next_token? Token::ELSE
       next_token
 
-      return unless expect_next Token:LBRACE
+      return unless expect_next Token::LBRACE
+      parse_block_statement
+    end
+
+    IfStatement.new(token: token, condition: condition, consequence: consequence, alternative: alternative)
+  end
+
+  def parse_while_statement
+    token = @current_token
+
+    return unless expect_next Token::LPAREN
+
+    next_token
+    condition = parse_expression
+
+    return unless expect_next Token::RPAREN
+    return unless expect_next Token::LBRACE
+
+    consequence = parse_block_statement
+
+    alternative = if next_token? Token::ELSE
+      next_token
+
+      return unless expect_next Token::LBRACE
       parse_block_statement
     end
 
@@ -247,4 +278,6 @@ class Parser
   def unexpected_eof_error
     @errors << 'unexpected EOF has gotten.'
   end
+
+  class ParseError < StandardError; end
 end

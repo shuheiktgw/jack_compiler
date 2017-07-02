@@ -236,7 +236,7 @@ return test1
 } else {
 let test3 = 3 + 4;
 
-return test3
+return test3;
 }
         '''
       end
@@ -244,11 +244,6 @@ return test3
       subject(:first_result) { results.first }
       
       it do
-        # @token = token
-        # @condition = condition
-        # @consequence = consequence
-        # @alternative = alternative
-
         condition_left = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'a'), value: 'a')
         condition_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '2'), value: 2)
         condition_op = Token::LT
@@ -282,6 +277,8 @@ return test3
         expected_alternative = BlockStatement.new(token: Token::LET, statements: [alternative_let, alternative_return])
 
         expected = IfStatement.new(token: token, condition: expected_condition, consequence: expected_consequence, alternative: expected_alternative)
+
+        expect(first_result).to eq expected
       end
     end
   end

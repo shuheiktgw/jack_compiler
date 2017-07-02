@@ -60,12 +60,12 @@ class Lexer
     when 'EOF'
       Token.new(type: Token::EOF, literal: '')
     else
-      if letter?
+      if letter? @char
         literal = read_identifier
         type = Token.lookup_ident(literal)
 
         Token.new(type: type, literal: literal)
-      elsif digit?
+      elsif digit? @char
         Token.new(type: Token::INT, literal: read_number)
       else
         Token.new(type: Token::ILLEGAL, literal: @char)
@@ -114,7 +114,7 @@ class Lexer
     position = @position
 
 
-    while letter?
+    while letter? peer_char
       read_char
     end
 
@@ -124,19 +124,19 @@ class Lexer
   def read_number
     position = @position
 
-    while digit?
+    while digit? peer_char
       read_char
     end
 
     @input[position..@position]
   end
 
-  def letter?
-    peer_char =~ /^[a-zA-Z_]$/
+  def letter?(ch)
+    ch =~ /^[a-zA-Z_]$/
   end
 
-  def digit?
-    peer_char =~ /^[0-9]$/
+  def digit?(ch)
+    ch =~ /^[0-9]$/
   end
 
   def peer_char

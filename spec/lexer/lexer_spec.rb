@@ -77,6 +77,7 @@ describe Lexer do
       let(:identifiers) { {
         'variable': {type: Token::IDENT, literal: 'variable'},
         'tmp': {type: Token::IDENT, literal: 'tmp'},
+        'v': {type: Token::IDENT, literal: 'v'},
       } }
 
       it 'should return right token' do
