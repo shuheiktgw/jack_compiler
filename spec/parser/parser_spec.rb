@@ -320,7 +320,7 @@ describe Parser do
       end
     end
 
-    context 'statement' do
+    context 'if statement' do
       context 'without else' do
         let(:input) do
           '''
@@ -415,6 +415,43 @@ return test3;
 
           expected = IfStatement.new(token: token, condition: expected_condition, consequence: expected_consequence, alternative: expected_alternative)
 
+          expect(first_result).to eq expected
+        end
+      end
+    end
+
+    context 'while statement' do
+      context 'single line' do
+        let(:input) do
+          '''
+        while(i < 2) {
+return test1;
+}
+        '''
+        end
+
+        let(:token) { Token.new(type: Token::WHILE, literal: 'while') }
+        subject(:first_result) { results.first }
+
+        it do
+          condition_left = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'i'), value: 'i')
+          condition_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '2'), value: 2)
+          condition_op = Token::LT
+
+          expected_condition = InfixExpression.new(token: Token.new(type: condition_op, literal: '<'), left: condition_left, operator: condition_op, right: condition_right)
+
+          # Let statement in the consequence
+          consequence_ident = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'test1'), value: 'test1')
+          consequence_return = ReturnStatement.new(token: Token.new(type: Token::RETURN, literal: 'return'), return_value: consequence_ident)
+
+          expected_consequence = BlockStatement.new(token: Token.new(type: Token::LBRACE, literal: '{'), statements: [consequence_return])
+
+          expected = WhileStatement.new(token: token, condition: expected_condition, consequence: expected_consequence)
+
+          expect(first_result.token).to eq token
+          expect(first_result.condition).to eq expected_condition
+          expect(first_result.consequence.statements.first).to eq consequence_return
+          expect(first_result.consequence).to eq expected_consequence
           expect(first_result).to eq expected
         end
       end
