@@ -46,6 +46,8 @@ class Parser
       parse_return_statement
     when Token::IF
       parse_if_statement
+    when Token::WHILE
+      parse_while_statement
     end
 
 
@@ -117,14 +119,7 @@ class Parser
 
     consequence = parse_block_statement
 
-    alternative = if next_token? Token::ELSE
-      next_token
-
-      return unless expect_next Token::LBRACE
-      parse_block_statement
-    end
-
-    IfStatement.new(token: token, condition: condition, consequence: consequence, alternative: alternative)
+    WhileStatement.new(token: token, condition: condition, consequence: consequence)
   end
 
   def parse_block_statement
