@@ -1,4 +1,7 @@
 class BooleanLiteral < AstBase
+
+  attr_reader :token, :value
+
   def initialize(token:, value:)
     @token = token
     @value = value

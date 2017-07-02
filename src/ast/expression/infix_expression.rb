@@ -1,4 +1,7 @@
 class InfixExpression < AstBase
+
+  attr_reader :token, :left, :operator, :right
+
   def initialize(token:, left:, operator:, right:)
     @token = token
     @left = left

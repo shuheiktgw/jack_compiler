@@ -128,14 +128,12 @@ class Parser
   end
 
   def parse_block_statement
-    binding.pry
-
     token = @current_token
 
     next_token
     statements = []
 
-    while @current_token != Token::RBRACE
+    while @current_token.type != Token::RBRACE
       stmt = parse_statement
       statements << stmt if stmt
 
