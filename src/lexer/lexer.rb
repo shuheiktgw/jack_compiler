@@ -113,8 +113,10 @@ class Lexer
   def read_identifier
     position = @position
 
-
-    while letter? peer_char
+    # first variable name should be a letter
+    read_char if letter? peer_char
+    
+    while (letter? peer_char) || (digit? peer_char)
       read_char
     end
 

@@ -82,8 +82,6 @@ class Parser
   end
 
   def parse_if_statement
-    binding.pry
-
     token = @current_token
 
     return unless expect_next Token::LPAREN
@@ -92,7 +90,7 @@ class Parser
     condition = parse_expression
 
     return unless expect_next Token::RPAREN
-    return unless expect_next Token: LBRACE
+    return unless expect_next Token::LBRACE
 
     consequence = parse_block_statement
 
@@ -130,6 +128,8 @@ class Parser
   end
 
   def parse_block_statement
+    binding.pry
+
     token = @current_token
 
     next_token
@@ -150,7 +150,7 @@ class Parser
 
     return unless expression
 
-    until next_token? Token::SEMICOLON
+    until (next_token? Token::SEMICOLON) || (next_token? Token::RPAREN)
       if next_token? Token::EOF
         unexpected_eof_error
         return

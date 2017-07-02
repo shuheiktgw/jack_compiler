@@ -124,6 +124,21 @@ describe Lexer do
           it { assert_multiple_tokens let_statements }
         end
 
+        context 'variable name with int' do
+          let(:let_statements) do
+            {'let test1 = "string constant!!";': [
+              {type: Token::LET, literal: 'let'},
+              {type: Token::IDENT, literal: 'test1'},
+              {type: Token::EQ, literal: '='},
+              {type: Token::STRING, literal: 'string constant!!'},
+              {type: Token::SEMICOLON, literal: ';'},
+              {type: Token::EOF, literal: ''}
+            ]}
+          end
+
+          it { assert_multiple_tokens let_statements }
+        end
+
         context 'integer expression' do
           let(:let_statements) do
             {'let integeeer = 12345;': [
