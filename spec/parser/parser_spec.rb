@@ -558,7 +558,7 @@ return test2;
             second = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'second'), value: 'second')
             third = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'third'), value: 'third')
 
-            [first, third, second]
+            [first, second, third]
           end
 
           it do
