@@ -486,7 +486,7 @@ return test2;
 
           # Second let statement in the consequence
           consequence_ident2 = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'test2'), value: 'test2')
-          consequence_right2 = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '345'), value: 345)
+          consequence_right2 = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1123'), value: 1123)
           consequence_op2 = Token::ASTERISK
           consequence_expression2 = InfixExpression.new(token: Token.new(type: consequence_op2, literal: consequence_op2), left: consequence_ident1, operator: consequence_op2, right: consequence_right2)
           consequence_let2 = LetStatement.new(token: Token.new(type: Token::LET, literal: 'let'), identifier: consequence_ident2, expression: consequence_expression2)
@@ -499,9 +499,9 @@ return test2;
 
           expect(first_result.token).to eq token
           expect(first_result.condition).to eq expected_condition
-          expect(first_result.consequence.statements.first).to eq consequence_let1
-          expect(first_result.consequence.statements.second).to eq consequence_let2
-          expect(first_result.consequence.statements.third).to eq consequence_return
+          expect(first_result.consequence.statements[0]).to eq consequence_let1
+          expect(first_result.consequence.statements[1]).to eq consequence_let2
+          expect(first_result.consequence.statements[2]).to eq consequence_return
           expect(first_result.consequence).to eq expected_consequence
           expect(first_result).to eq expected
         end

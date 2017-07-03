@@ -232,7 +232,7 @@ class Parser
   end
 
   def handle_infix(left_expression)
-    if [Token::PLUS, Token::MINUS, Token::ASTERISK, Token::SLASH, Token::AND, Token::OR, Token::GT, Token::LT].include? @current_token.type
+    if [Token::PLUS, Token::MINUS, Token::ASTERISK, Token::SLASH, Token::AND, Token::OR, Token::EQ, Token::GT, Token::LT].include? @current_token.type
       parse_infix left_expression
     else
       nil
