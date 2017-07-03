@@ -507,5 +507,67 @@ return test2;
         end
       end
     end
+
+    context 'parse do statements' do
+      context 'simple identifiers' do
+        let(:do_token){ Token.new(type: Token::DO, literal: 'do') }
+        let(:ident){ Token.new(type: Token::IDENT, literal: 'some_thing') }
+        subject(:first_result) { results.first }
+
+        context 'zero parameter' do
+          let(:input) do
+            '''
+            do some_thing()
+          '''
+          end
+
+          let(:args){ [] }
+
+          it do
+            expect(first_result.token).to eq do_token
+            expect(first_result.function).to eq ident
+            expect(first_result.arguments).to eq args
+          end
+        end
+
+        context 'one parameter' do
+          let(:input) do
+            '''
+          do some_thing(first)
+          '''
+          end
+
+          let(:args) { [Identifier.new(token: Token.new(type: Token::IDENT, literal: 'first'), value: 'first')] }
+
+          it do
+            expect(first_result.token).to eq do_token
+            expect(first_result.function).to eq ident
+            expect(first_result.arguments).to eq args
+          end
+        end
+
+        context 'three parameters' do
+          let(:input) do
+            '''
+          do some_thing(first, second, third)
+          '''
+          end
+
+          let(:args) do
+            first = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'first'), value: 'first')
+            second = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'second'), value: 'second')
+            third = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'third'), value: 'third')
+
+            [first, third, second]
+          end
+
+          it do
+            expect(first_result.token).to eq do_token
+            expect(first_result.function).to eq ident
+            expect(first_result.arguments).to eq args
+          end
+        end
+      end
+    end
   end
 end

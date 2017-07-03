@@ -48,6 +48,8 @@ class Parser
       parse_if_statement
     when Token::WHILE
       parse_while_statement
+    when Token::DO
+      parse_do_statement
     end
 
 
@@ -106,6 +108,44 @@ class Parser
     IfStatement.new(token: token, condition: condition, consequence: consequence, alternative: alternative)
   end
 
+  def parse_do_statement
+    token = @current_token
+
+    return unless expect_next Token::IDENT
+
+    function = @current_token
+
+    return unless expect_next Token::LPAREN
+
+    arguments = parse_do_arguments
+
+    DoStatement.new(token: token, function: function, arguments: arguments)
+  end
+
+  def parse_do_arguments
+    binding.pry
+
+    arguments = []
+
+    next_token
+
+    if @current_token.type == Token::RPAREN
+      return arguments
+    end
+
+    arguments << parse_expression
+
+    while next_token? Token::COMMA
+      next_token
+      next_token
+      arguments << parse_expression
+    end
+
+    return unless expect_next Token::RPAREN
+
+    arguments
+  end
+
   def parse_while_statement
     token = @current_token
 
@@ -143,7 +183,7 @@ class Parser
 
     return unless expression
 
-    until (next_token? Token::SEMICOLON) || (next_token? Token::RPAREN)
+    until (next_token? Token::SEMICOLON) || (next_token? Token::RPAREN) || (next_token? Token::COMMA)
       if next_token? Token::EOF
         unexpected_eof_error
         return
