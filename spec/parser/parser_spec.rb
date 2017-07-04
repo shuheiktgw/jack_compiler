@@ -95,6 +95,33 @@ describe Parser do
         end
       end
 
+      context 'expression is prefix with ~' do
+
+        context 'integer' do
+          let(:expressions) { '~432718;' }
+
+          it 'should return PrefixExpression' do
+            right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '432718'), value: 432718)
+            expression = PrefixExpression.new(token: Token.new(type: Token::NOT, literal: '~'), operator: '~', right: right)
+            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+            expect(first_result).to eq expected
+          end
+        end
+
+        context 'identifier' do
+          let(:expressions) { '~someVar;' }
+
+          it 'should return PrefixExpression' do
+            right = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'someVar'), value: 'someVar')
+            expression = PrefixExpression.new(token: Token.new(type: Token::NOT, literal: '~'), operator: '~', right: right)
+            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+            expect(first_result).to eq expected
+          end
+        end
+      end
+
       context 'expression is null constant' do
         let(:expressions) { 'null;' }
 
