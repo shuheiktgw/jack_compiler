@@ -2,10 +2,11 @@ require 'spec_helper'
 
 # Remaining Tasks
 #
-# TODO(ktgw): enable to parse subroutine call with .
+# Done(ktgw): enable to parse subroutine call with .
 # TODO(ktgw): enable to parse unary operations
 # TODO(ktgw): enable to parse [] after variable name
 # TODO(ktgw): enable to parse group expression ()
+# TODO(ktgw): check if being able to parse return statement without expression
 # TODO(ktgw): add test cases when semicolon is missing
 
 describe Parser do
@@ -60,6 +61,33 @@ describe Parser do
 
           it 'should return BooleanLiteral with true' do
             expression = BooleanLiteral.new(token: Token.new(type: Token::FALSE, literal: 'false'), value: false)
+            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+            expect(first_result).to eq expected
+          end
+        end
+      end
+
+      context 'expression is prefix with minus' do
+
+        context 'integer' do
+          let(:expressions) { '-432718;' }
+
+          it 'should return PrefixExpression' do
+            right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '432718'), value: 432718)
+            expression = PrefixExpression.new(token: Token.new(type: Token::MINUS, literal: '-'), operator: '-', right: right)
+            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+            expect(first_result).to eq expected
+          end
+        end
+
+        context 'identifier' do
+          let(:expressions) { '-someVar;' }
+
+          it 'should return PrefixExpression' do
+            right = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'someVar'), value: 'someVar')
+            expression = PrefixExpression.new(token: Token.new(type: Token::MINUS, literal: '-'), operator: '-', right: right)
             expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
             expect(first_result).to eq expected

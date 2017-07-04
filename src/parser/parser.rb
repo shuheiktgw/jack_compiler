@@ -225,6 +225,17 @@ class Parser
     expression
   end
 
+  def parse_prefix
+    token = @current_token
+    operator = @current_token.literal
+
+    next_token
+
+    right = parse_expression
+
+    PrefixExpression.new(token: token, operator: operator, right: right)
+  end
+
   def parse_infix(left_expression)
     token = @current_token
     left = left_expression
@@ -288,6 +299,10 @@ class Parser
       parse_string
     when Token::TRUE, Token::FALSE
       parse_boolean
+    when Token::MINUS
+      parse_prefix
+    when Token::NOT
+      parse_prefix
     when Token::NULL
       NullLiteral.new
     else
