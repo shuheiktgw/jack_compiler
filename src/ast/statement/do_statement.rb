@@ -1,9 +1,10 @@
 class DoStatement < AstBase
 
-  attr_reader :token, :function, :arguments
+  attr_reader :token, :prefix, :function, :arguments
 
-  def initialize(token:, function:, arguments:)
+  def initialize(token:, prefix:, function:, arguments:)
     @token = token
+    @prefix = prefix
     @function = function
     @arguments = arguments
   end

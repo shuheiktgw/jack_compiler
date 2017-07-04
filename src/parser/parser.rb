@@ -111,7 +111,9 @@ class Parser
   def parse_do_statement
     token = @current_token
 
-    return unless expect_next Token::IDENT
+    return unless expect_next Token::IDENT, Token::THIS
+
+    prefix = parse_function_prefix
 
     function = @current_token
 
@@ -119,12 +121,35 @@ class Parser
 
     arguments = parse_do_arguments
 
-    DoStatement.new(token: token, function: function, arguments: arguments)
+    DoStatement.new(token: token, prefix: prefix, function: function, arguments: arguments)
+  end
+
+  def parse_function_prefix
+    extract_prefix = -> () do
+      if next_token? Token::PERIOD
+        prefix = @current_token
+        next_token
+        next_token
+
+        prefix
+      else
+        nil
+      end
+    end
+
+    if @current_token.type == Token::IDENT
+      return extract_prefix.call
+    end
+
+
+    if @current_token.type == Token::THIS
+      return extract_prefix.call
+    end
+
+    nil
   end
 
   def parse_do_arguments
-    binding.pry
-
     arguments = []
 
     next_token
@@ -284,12 +309,12 @@ class Parser
     @next_token = @lexer.next_token
   end
 
-  def expect_next(token_type)
-    if next_token? token_type
+  def expect_next(*token_types)
+    if token_types.map{|tt| next_token? tt}.any?
       next_token
       true
     else
-      next_token_error token_type
+      next_token_error token_types.join ' or '
       false
     end
   end

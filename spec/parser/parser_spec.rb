@@ -1,5 +1,13 @@
 require 'spec_helper'
 
+# Remaining Tasks
+#
+# TODO(ktgw): enable to parse subroutine call with .
+# TODO(ktgw): enable to parse unary operations
+# TODO(ktgw): enable to parse [] after variable name
+# TODO(ktgw): enable to parse group expression ()
+# TODO(ktgw): add test cases when semicolon is missing
+
 describe Parser do
 
   describe '#parse_program' do
@@ -513,114 +521,244 @@ return test2;
       let(:ident){ Token.new(type: Token::IDENT, literal: 'some_thing') }
       subject(:first_result) { results.first }
 
-      context 'simple identifiers' do
-        context 'zero parameter' do
-          let(:input) do
-            '''
+      context 'without prefix' do
+        context 'simple identifiers' do
+          context 'zero parameter' do
+            let(:input) do
+              '''
             do some_thing();
           '''
+            end
+
+            let(:args){ [] }
+
+            it do
+              expect(first_result.token).to eq do_token
+              expect(first_result.prefix).to be_nil
+              expect(first_result.function).to eq ident
+              expect(first_result.arguments).to eq args
+            end
           end
 
-          let(:args){ [] }
-
-          it do
-            expect(first_result.token).to eq do_token
-            expect(first_result.function).to eq ident
-            expect(first_result.arguments).to eq args
-          end
-        end
-
-        context 'one parameter' do
-          let(:input) do
-            '''
+          context 'one parameter' do
+            let(:input) do
+              '''
           do some_thing(first);
           '''
+            end
+
+            let(:args) { [Identifier.new(token: Token.new(type: Token::IDENT, literal: 'first'), value: 'first')] }
+
+            it do
+              expect(first_result.token).to eq do_token
+              expect(first_result.prefix).to be_nil
+              expect(first_result.function).to eq ident
+              expect(first_result.arguments).to eq args
+            end
           end
 
-          let(:args) { [Identifier.new(token: Token.new(type: Token::IDENT, literal: 'first'), value: 'first')] }
+          context 'three parameters' do
+            let(:input) do
+              '''
+          do some_thing(first, second, third);
+          '''
+            end
 
-          it do
-            expect(first_result.token).to eq do_token
-            expect(first_result.function).to eq ident
-            expect(first_result.arguments).to eq args
+            let(:args) do
+              first = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'first'), value: 'first')
+              second = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'second'), value: 'second')
+              third = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'third'), value: 'third')
+
+              [first, second, third]
+            end
+
+            it do
+              expect(first_result.token).to eq do_token
+              expect(first_result.prefix).to be_nil
+              expect(first_result.function).to eq ident
+              expect(first_result.arguments).to eq args
+            end
           end
         end
 
-        context 'three parameters' do
-          let(:input) do
-            '''
-          do some_thing(first, second, third);
+        context 'integer calculation' do
+          context 'one parameter' do
+            let(:input) do
+              '''
+          do some_thing(1 + 22);
           '''
+            end
+
+            let(:args) do
+              left = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1'), value: 1)
+              right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '22'), value: 22)
+              exp = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: '+'), left: left, operator: '+', right: right)
+
+              [exp]
+            end
+
+            it do
+              expect(first_result.token).to eq do_token
+              expect(first_result.prefix).to be_nil
+              expect(first_result.function).to eq ident
+              expect(first_result.arguments).to eq args
+            end
           end
 
-          let(:args) do
-            first = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'first'), value: 'first')
-            second = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'second'), value: 'second')
-            third = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'third'), value: 'third')
+          context 'three parameters' do
+            let(:input) do
+              '''
+          do some_thing(1 + 2, second / 22, third * 555);
+          '''
+            end
 
-            [first, second, third]
-          end
+            let(:args) do
+              first_left = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1'), value: 1)
+              first_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '2'), value: 2)
+              first_exp = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: '+'), left: first_left, operator: '+', right: first_right)
 
-          it do
-            expect(first_result.token).to eq do_token
-            expect(first_result.function).to eq ident
-            expect(first_result.arguments).to eq args
+              second_left = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'second'), value: 'second')
+              second_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '22'), value: 22)
+              second_exp = InfixExpression.new(token: Token.new(type: Token::SLASH, literal: '/'), left: second_left, operator: '/', right: second_right)
+
+              third_left = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'third'), value: 'third')
+              third_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '555'), value: 555)
+              third_exp = InfixExpression.new(token: Token.new(type: Token::ASTERISK, literal: '*'), left: third_left, operator: '*', right: third_right)
+
+              [first_exp, second_exp, third_exp]
+            end
+
+            it do
+              expect(first_result.token).to eq do_token
+              expect(first_result.prefix).to be_nil
+              expect(first_result.function).to eq ident
+              expect(first_result.arguments[0]).to eq args[0]
+              expect(first_result.arguments[1]).to eq args[1]
+              expect(first_result.arguments[2]).to eq args[2]
+            end
           end
         end
       end
 
-      context 'integer calculation' do
-        context 'one parameter' do
-          let(:input) do
-            '''
-          do some_thing(1 + 22);
+      context 'with prefix' do
+        context 'prefix is this' do
+          let(:prefix){ Token.new(type: Token::THIS, literal: 'this') }
+
+          context 'simple identifiers' do
+            context 'zero parameter' do
+              let(:input) do
+                '''
+            do this.some_thing();
           '''
-          end
+              end
 
-          let(:args) do
-            left = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1'), value: 1)
-            right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '22'), value: 22)
-            exp = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: '+'), left: left, operator: '+', right: right)
+              let(:args){ [] }
 
-            [exp]
-          end
+              it do
+                expect(first_result.token).to eq do_token
+                expect(first_result.prefix).to eq prefix
+                expect(first_result.function).to eq ident
+                expect(first_result.arguments).to eq args
+              end
+            end
 
-          it do
-            expect(first_result.token).to eq do_token
-            expect(first_result.function).to eq ident
-            expect(first_result.arguments).to eq args
-          end
-        end
-
-        context 'three parameters' do
-          let(:input) do
-            '''
-          do some_thing(1 + 2, second / 22, third * 555);
+            context 'one parameter' do
+              let(:input) do
+                '''
+          do this.some_thing(first);
           '''
+              end
+
+              let(:args) { [Identifier.new(token: Token.new(type: Token::IDENT, literal: 'first'), value: 'first')] }
+
+              it do
+                expect(first_result.token).to eq do_token
+                expect(first_result.prefix).to eq prefix
+                expect(first_result.function).to eq ident
+                expect(first_result.arguments).to eq args
+              end
+            end
+
+            context 'three parameters' do
+              let(:input) do
+                '''
+          do this.some_thing(first, second, third);
+          '''
+              end
+
+              let(:args) do
+                first = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'first'), value: 'first')
+                second = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'second'), value: 'second')
+                third = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'third'), value: 'third')
+
+                [first, second, third]
+              end
+
+              it do
+                expect(first_result.token).to eq do_token
+                expect(first_result.prefix).to eq prefix
+                expect(first_result.function).to eq ident
+                expect(first_result.arguments).to eq args
+              end
+            end
           end
 
-          let(:args) do
-            first_left = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1'), value: 1)
-            first_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '2'), value: 2)
-            first_exp = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: '+'), left: first_left, operator: '+', right: first_right)
+          context 'integer calculation' do
+            context 'one parameter' do
+              let(:input) do
+                '''
+          do this.some_thing(1 + 22);
+          '''
+              end
 
-            second_left = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'second'), value: 'second')
-            second_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '22'), value: 22)
-            second_exp = InfixExpression.new(token: Token.new(type: Token::SLASH, literal: '/'), left: second_left, operator: '/', right: second_right)
+              let(:args) do
+                left = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1'), value: 1)
+                right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '22'), value: 22)
+                exp = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: '+'), left: left, operator: '+', right: right)
 
-            third_left = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'third'), value: 'third')
-            third_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '555'), value: 555)
-            third_exp = InfixExpression.new(token: Token.new(type: Token::ASTERISK, literal: '*'), left: third_left, operator: '*', right: third_right)
+                [exp]
+              end
 
-            [first_exp, second_exp, third_exp]
-          end
+              it do
+                expect(first_result.token).to eq do_token
+                expect(first_result.function).to eq ident
+                expect(first_result.prefix).to eq prefix
+                expect(first_result.arguments).to eq args
+              end
+            end
 
-          it do
-            expect(first_result.token).to eq do_token
-            expect(first_result.function).to eq ident
-            expect(first_result.arguments[0]).to eq args[0]
-            expect(first_result.arguments[1]).to eq args[1]
-            expect(first_result.arguments[2]).to eq args[2]
+            context 'three parameters' do
+              let(:input) do
+                '''
+          do this.some_thing(1 + 2, second / 22, third * 555);
+          '''
+              end
+
+              let(:args) do
+                first_left = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1'), value: 1)
+                first_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '2'), value: 2)
+                first_exp = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: '+'), left: first_left, operator: '+', right: first_right)
+
+                second_left = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'second'), value: 'second')
+                second_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '22'), value: 22)
+                second_exp = InfixExpression.new(token: Token.new(type: Token::SLASH, literal: '/'), left: second_left, operator: '/', right: second_right)
+
+                third_left = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'third'), value: 'third')
+                third_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '555'), value: 555)
+                third_exp = InfixExpression.new(token: Token.new(type: Token::ASTERISK, literal: '*'), left: third_left, operator: '*', right: third_right)
+
+                [first_exp, second_exp, third_exp]
+              end
+
+              it do
+                expect(first_result.token).to eq do_token
+                expect(first_result.prefix).to eq prefix
+                expect(first_result.function).to eq ident
+                expect(first_result.arguments[0]).to eq args[0]
+                expect(first_result.arguments[1]).to eq args[1]
+                expect(first_result.arguments[2]).to eq args[2]
+              end
+            end
           end
         end
       end
