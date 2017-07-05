@@ -3,7 +3,7 @@ require 'spec_helper'
 # Remaining Tasks
 #
 # Done(ktgw): enable to parse subroutine call with .
-# TODO(ktgw): enable to parse unary operations
+# TODO(ktgw): enable to parse unary operations, add more test cases when more than one term.
 # TODO(ktgw): enable to parse [] after variable name
 # TODO(ktgw): enable to parse group expression ()
 # TODO(ktgw): check if being able to parse return statement without expression
@@ -14,13 +14,12 @@ describe Parser do
   describe '#parse_program' do
     let(:lexer) { Lexer.new(input) }
     subject(:results) { Parser.new(lexer).parse_program }
+    subject(:first_result) { results.first }
 
     context 'let statement' do
       let(:input) { 'let variable = ' + expressions }
       let(:token) { Token.new(type: Token::LET, literal: 'let') }
       let(:identifier) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'variable'), value: 'variable') }
-
-      subject(:first_result) { results.first }
 
       context 'expression is string constant' do
         let(:expressions) { '"This is a string sentence!!!";' }
@@ -135,7 +134,7 @@ describe Parser do
 
       context 'expression is integer calculation' do
 
-        context 'one digits' do
+        context 'two digits' do
           let(:left) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1'), value: 1) }
           let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '2'), value: 2) }
 
@@ -314,6 +313,46 @@ describe Parser do
                 expect(first_result).to eq expected
               end
             end
+          end
+        end
+      end
+
+      context 'multiple prefix expression' do
+        context 'minus' do
+          let(:expressions) {'-1234 + 1273;'}
+
+          it do
+            infix_left = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1234'), value: 1234)
+            infix_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1273'), value: 1273)
+            right = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: Token::PLUS), left: infix_left, operator: Token::PLUS, right: infix_right)
+            expression = PrefixExpression.new(token: Token.new(type: Token::MINUS, literal: '-'), operator: '-', right: right)
+
+            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+            expect(first_result.token).to eq expected.token
+            expect(first_result.identifier).to eq expected.identifier
+            expect(first_result.expression.token).to eq expected.expression.token
+            expect(first_result.expression.operator).to eq expected.expression.operator
+            expect(first_result.expression.right).to eq expected.expression.right
+          end
+        end
+
+        context 'not' do
+          let(:expressions) {'~indent + 1273;'}
+
+          it do
+            infix_left = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'indent'), value: 'indent')
+            infix_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1273'), value: 1273)
+            right = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: Token::PLUS), left: infix_left, operator: Token::PLUS, right: infix_right)
+            expression = PrefixExpression.new(token: Token.new(type: Token::NOT, literal: '~'), operator: '~', right: right)
+
+            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+            expect(first_result.token).to eq expected.token
+            expect(first_result.identifier).to eq expected.identifier
+            expect(first_result.expression.token).to eq expected.expression.token
+            expect(first_result.expression.operator).to eq expected.expression.operator
+            expect(first_result.expression.right).to eq expected.expression.right
           end
         end
       end
