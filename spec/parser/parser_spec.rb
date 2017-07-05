@@ -4,7 +4,7 @@ require 'spec_helper'
 #
 # Done(ktgw): enable to parse subroutine call with .
 # Done(ktgw): enable to parse unary operations, add more test cases when more than one term.
-# TODO(ktgw): enable to parse [] after variable name
+# Done(ktgw): enable to parse [] after variable name
 # TODO(ktgw): enable to parse group expression ()
 # TODO(ktgw): check if being able to parse return statement without expression
 # TODO(ktgw): add test cases when semicolon is missing
@@ -419,6 +419,49 @@ describe Parser do
             expect(first_result.identifier.value).to eq expected.identifier.value
             expect(first_result.identifier.index).to eq expected.identifier.index
             expect(first_result.expression).to eq expected.expression
+          end
+        end
+      end
+
+      context 'group expression' do
+        let(:input){"let variable = #{terms}"}
+        let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
+        let(:identifier) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'variable'), value: 'variable') }
+
+        context 'single term' do
+          let(:expression) { BooleanLiteral.new(token: Token.new(type: Token::FALSE, literal: 'false'), value: false) }
+
+          context 'single paren' do
+            let(:terms) { '(false);' }
+
+            it do
+              expect(first_result.token).to eq expected.token
+              expect(first_result.identifier).to eq expected.identifier
+              expect(first_result.expression.token).to eq expected.expression.token
+              expect(first_result.expression.value).to eq expected.expression.value
+            end
+          end
+
+          context 'two parens' do
+            let(:terms) { '((false));' }
+
+            it do
+              expect(first_result.token).to eq expected.token
+              expect(first_result.identifier).to eq expected.identifier
+              expect(first_result.expression.token).to eq expected.expression.token
+              expect(first_result.expression.value).to eq expected.expression.value
+            end
+          end
+
+          context 'three parens' do
+            let(:terms) { '(((false)));' }
+
+            it do
+              expect(first_result.token).to eq expected.token
+              expect(first_result.identifier).to eq expected.identifier
+              expect(first_result.expression.token).to eq expected.expression.token
+              expect(first_result.expression.value).to eq expected.expression.value
+            end
           end
         end
       end

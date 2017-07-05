@@ -236,6 +236,16 @@ class Parser
     PrefixExpression.new(token: token, operator: operator, right: right)
   end
 
+  def parse_group
+    next_token
+
+    expression = parse_expression
+
+    return unless expect_next Token::RPAREN
+
+    expression
+  end
+
   def parse_infix(left_expression)
     token = @current_token
     left = left_expression
@@ -316,6 +326,8 @@ class Parser
       parse_prefix
     when Token::NOT
       parse_prefix
+    when Token::LPAREN
+      parse_group
     when Token::NULL
       NullLiteral.new
     else
