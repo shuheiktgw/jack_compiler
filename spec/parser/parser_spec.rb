@@ -3,7 +3,7 @@ require 'spec_helper'
 # Remaining Tasks
 #
 # Done(ktgw): enable to parse subroutine call with .
-# TODO(ktgw): enable to parse unary operations, add more test cases when more than one term.
+# Done(ktgw): enable to parse unary operations, add more test cases when more than one term.
 # TODO(ktgw): enable to parse [] after variable name
 # TODO(ktgw): enable to parse group expression ()
 # TODO(ktgw): check if being able to parse return statement without expression
@@ -17,342 +17,380 @@ describe Parser do
     subject(:first_result) { results.first }
 
     context 'let statement' do
-      let(:input) { 'let variable = ' + expressions }
       let(:token) { Token.new(type: Token::LET, literal: 'let') }
-      let(:identifier) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'variable'), value: 'variable') }
 
-      context 'expression is string constant' do
-        let(:expressions) { '"This is a string sentence!!!";' }
+      context 'plain indentifier' do
+        let(:identifier) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'variable'), value: 'variable') }
+        let(:input) { 'let variable = ' + expressions }
 
-        it 'should return StringLiteral' do
-          expression = StringLiteral.new(token: Token.new(type: Token::STRING, literal: 'This is a string sentence!!!'), value: 'This is a string sentence!!!')
-          expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+        context 'expression is string constant' do
+          let(:expressions) { '"This is a string sentence!!!";' }
 
-          expect(first_result).to eq expected
+          it 'should return StringLiteral' do
+            expression = StringLiteral.new(token: Token.new(type: Token::STRING, literal: 'This is a string sentence!!!'), value: 'This is a string sentence!!!')
+            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+            expect(first_result).to eq expected
+          end
         end
-      end
 
-      context 'expression is integer constant' do
-        let(:expressions) { '432718;' }
+        context 'expression is integer constant' do
+          let(:expressions) { '432718;' }
 
-        it 'should return IntegerLiteral' do
-          expression = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '432718'), value: 432718)
-          expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+          it 'should return IntegerLiteral' do
+            expression = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '432718'), value: 432718)
+            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
-          expect(first_result).to eq expected
+            expect(first_result).to eq expected
+          end
         end
-      end
 
-      context 'expression is boolean constant' do
-        context 'when true' do
-          let(:expressions) { 'true;' }
+        context 'expression is boolean constant' do
+          context 'when true' do
+            let(:expressions) { 'true;' }
+
+            it 'should return BooleanLiteral with true' do
+              expression = BooleanLiteral.new(token: Token.new(type: Token::TRUE, literal: 'true'), value: true)
+              expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+              expect(first_result).to eq expected
+            end
+          end
+
+          context 'when false' do
+            let(:expressions) { 'false;' }
+
+            it 'should return BooleanLiteral with true' do
+              expression = BooleanLiteral.new(token: Token.new(type: Token::FALSE, literal: 'false'), value: false)
+              expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+              expect(first_result).to eq expected
+            end
+          end
+        end
+
+        context 'expression is prefix with minus' do
+
+          context 'integer' do
+            let(:expressions) { '-432718;' }
+
+            it 'should return PrefixExpression' do
+              right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '432718'), value: 432718)
+              expression = PrefixExpression.new(token: Token.new(type: Token::MINUS, literal: '-'), operator: '-', right: right)
+              expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+              expect(first_result).to eq expected
+            end
+          end
+
+          context 'identifier' do
+            let(:expressions) { '-someVar;' }
+
+            it 'should return PrefixExpression' do
+              right = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'someVar'), value: 'someVar')
+              expression = PrefixExpression.new(token: Token.new(type: Token::MINUS, literal: '-'), operator: '-', right: right)
+              expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+              expect(first_result).to eq expected
+            end
+          end
+        end
+
+        context 'expression is prefix with ~' do
+
+          context 'integer' do
+            let(:expressions) { '~432718;' }
+
+            it 'should return PrefixExpression' do
+              right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '432718'), value: 432718)
+              expression = PrefixExpression.new(token: Token.new(type: Token::NOT, literal: '~'), operator: '~', right: right)
+              expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+              expect(first_result).to eq expected
+            end
+          end
+
+          context 'identifier' do
+            let(:expressions) { '~someVar;' }
+
+            it 'should return PrefixExpression' do
+              right = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'someVar'), value: 'someVar')
+              expression = PrefixExpression.new(token: Token.new(type: Token::NOT, literal: '~'), operator: '~', right: right)
+              expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+              expect(first_result).to eq expected
+            end
+          end
+        end
+
+        context 'expression is null constant' do
+          let(:expressions) { 'null;' }
 
           it 'should return BooleanLiteral with true' do
-            expression = BooleanLiteral.new(token: Token.new(type: Token::TRUE, literal: 'true'), value: true)
+            expression = BooleanLiteral.new(token: Token.new(type: Token::NULL, literal: 'null'), value: nil)
             expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
             expect(first_result).to eq expected
           end
         end
 
-        context 'when false' do
-          let(:expressions) { 'false;' }
+        context 'expression is integer calculation' do
 
-          it 'should return BooleanLiteral with true' do
-            expression = BooleanLiteral.new(token: Token.new(type: Token::FALSE, literal: 'false'), value: false)
-            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+          context 'two digits' do
+            let(:left) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1'), value: 1) }
+            let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '2'), value: 2) }
 
-            expect(first_result).to eq expected
+            context 'two terms' do
+              let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right) }
+              let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
+              let(:expressions) { '1' + op + '2' + ';' }
+
+              context 'plus' do
+                let(:op) {'+'}
+                let(:op_type) {Token::PLUS}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+
+              context 'minus' do
+                let(:op) {'-'}
+                let(:op_type) {Token::MINUS}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+
+              context 'multiple' do
+                let(:op) {'*'}
+                let(:op_type) {Token::ASTERISK}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+
+              context 'slash' do
+                let(:op) {'/'}
+                let(:op_type) {Token::SLASH}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+            end
+
+            context 'three terms' do
+              let(:middle) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '3'), value: 3) }
+              let(:right_expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: middle, operator: op, right: right ) }
+              let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right_expression ) }
+              let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
+              let(:expressions) { '1' + op + '3' + op + '2' + ';' }
+
+              context 'plus' do
+                let(:op) {'+'}
+                let(:op_type) {Token::PLUS}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+
+              context 'minus' do
+                let(:op) {'-'}
+                let(:op_type) {Token::MINUS}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+
+              context 'multiple' do
+                let(:op) {'*'}
+                let(:op_type) {Token::ASTERISK}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+
+              context 'slash' do
+                let(:op) {'/'}
+                let(:op_type) {Token::SLASH}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+            end
+          end
+
+          context 'three digits' do
+            let(:left) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '111'), value: 111) }
+            let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '222'), value: 222) }
+
+            context 'two terms' do
+              let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right) }
+              let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
+              let(:expressions) { '111' + op + '222' + ';' }
+
+              context 'plus' do
+                let(:op) {'+'}
+                let(:op_type) {Token::PLUS}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+
+              context 'minus' do
+                let(:op) {'-'}
+                let(:op_type) {Token::MINUS}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+
+              context 'multiple' do
+                let(:op) {'*'}
+                let(:op_type) {Token::ASTERISK}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+
+              context 'slash' do
+                let(:op) {'/'}
+                let(:op_type) {Token::SLASH}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+            end
+
+            context 'three terms' do
+              let(:middle) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '333'), value: 333) }
+              let(:right_expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: middle, operator: op, right: right ) }
+              let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right_expression ) }
+              let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
+              let(:expressions) { '111' + op + '333' + op + '222' + ';' }
+
+              context 'plus' do
+                let(:op) {'+'}
+                let(:op_type) {Token::PLUS}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+
+              context 'minus' do
+                let(:op) {'-'}
+                let(:op_type) {Token::MINUS}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+
+              context 'multiple' do
+                let(:op) {'*'}
+                let(:op_type) {Token::ASTERISK}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+
+              context 'slash' do
+                let(:op) {'/'}
+                let(:op_type) {Token::SLASH}
+
+                it do
+                  expect(first_result).to eq expected
+                end
+              end
+            end
+          end
+        end
+
+        context 'multiple prefix expression' do
+          context 'minus' do
+            let(:expressions) {'-1234 + 1273;'}
+
+            it do
+              infix_left = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1234'), value: 1234)
+              infix_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1273'), value: 1273)
+              right = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: Token::PLUS), left: infix_left, operator: Token::PLUS, right: infix_right)
+              expression = PrefixExpression.new(token: Token.new(type: Token::MINUS, literal: '-'), operator: '-', right: right)
+
+              expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+              expect(first_result.token).to eq expected.token
+              expect(first_result.identifier).to eq expected.identifier
+              expect(first_result.expression.token).to eq expected.expression.token
+              expect(first_result.expression.operator).to eq expected.expression.operator
+              expect(first_result.expression.right).to eq expected.expression.right
+            end
+          end
+
+          context 'not' do
+            let(:expressions) {'~indent + 1273;'}
+
+            it do
+              infix_left = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'indent'), value: 'indent')
+              infix_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1273'), value: 1273)
+              right = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: Token::PLUS), left: infix_left, operator: Token::PLUS, right: infix_right)
+              expression = PrefixExpression.new(token: Token.new(type: Token::NOT, literal: '~'), operator: '~', right: right)
+
+              expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+              expect(first_result.token).to eq expected.token
+              expect(first_result.identifier).to eq expected.identifier
+              expect(first_result.expression.token).to eq expected.expression.token
+              expect(first_result.expression.operator).to eq expected.expression.operator
+              expect(first_result.expression.right).to eq expected.expression.right
+            end
           end
         end
       end
 
-      context 'expression is prefix with minus' do
+      context 'with index' do
+        let(:input) { "let variable[#{index}] =  111;" }
+        let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
+        let(:identifier) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'variable'), value: 'variable', index: index_expression) }
+        let(:expression) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '111'), value: 111) }
 
-        context 'integer' do
-          let(:expressions) { '-432718;' }
+        context 'index is simple integer' do
+          let(:index) { '1' }
+          let(:index_expression) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1'), value: 1) }
 
-          it 'should return PrefixExpression' do
-            right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '432718'), value: 432718)
-            expression = PrefixExpression.new(token: Token.new(type: Token::MINUS, literal: '-'), operator: '-', right: right)
-            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
-
-            expect(first_result).to eq expected
+          it do
+            expect(first_result.token).to eq expected.token
+            expect(first_result.identifier.token).to eq expected.identifier.token
+            expect(first_result.identifier.value).to eq expected.identifier.value
+            expect(first_result.identifier.index).to eq expected.identifier.index
+            expect(first_result.expression).to eq expected.expression
           end
         end
 
-        context 'identifier' do
-          let(:expressions) { '-someVar;' }
-
-          it 'should return PrefixExpression' do
-            right = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'someVar'), value: 'someVar')
-            expression = PrefixExpression.new(token: Token.new(type: Token::MINUS, literal: '-'), operator: '-', right: right)
-            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
-
-            expect(first_result).to eq expected
-          end
-        end
-      end
-
-      context 'expression is prefix with ~' do
-
-        context 'integer' do
-          let(:expressions) { '~432718;' }
-
-          it 'should return PrefixExpression' do
-            right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '432718'), value: 432718)
-            expression = PrefixExpression.new(token: Token.new(type: Token::NOT, literal: '~'), operator: '~', right: right)
-            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
-
-            expect(first_result).to eq expected
-          end
-        end
-
-        context 'identifier' do
-          let(:expressions) { '~someVar;' }
-
-          it 'should return PrefixExpression' do
-            right = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'someVar'), value: 'someVar')
-            expression = PrefixExpression.new(token: Token.new(type: Token::NOT, literal: '~'), operator: '~', right: right)
-            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
-
-            expect(first_result).to eq expected
-          end
-        end
-      end
-
-      context 'expression is null constant' do
-        let(:expressions) { 'null;' }
-
-        it 'should return BooleanLiteral with true' do
-          expression = BooleanLiteral.new(token: Token.new(type: Token::NULL, literal: 'null'), value: nil)
-          expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
-
-          expect(first_result).to eq expected
-        end
-      end
-
-      context 'expression is integer calculation' do
-
-        context 'two digits' do
+        context 'index is integer calculation' do
+          let(:index) { '1 + 2' }
+          let(:index_expression) { InfixExpression.new(token: Token.new(type: Token::PLUS, literal: Token::PLUS), left: left, operator: Token::PLUS, right: right) }
           let(:left) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1'), value: 1) }
           let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '2'), value: 2) }
 
-          context 'two terms' do
-            let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right) }
-            let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
-            let(:expressions) { '1' + op + '2' + ';' }
-
-            context 'plus' do
-              let(:op) {'+'}
-              let(:op_type) {Token::PLUS}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-
-            context 'minus' do
-              let(:op) {'-'}
-              let(:op_type) {Token::MINUS}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-
-            context 'multiple' do
-              let(:op) {'*'}
-              let(:op_type) {Token::ASTERISK}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-
-            context 'slash' do
-              let(:op) {'/'}
-              let(:op_type) {Token::SLASH}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-          end
-
-          context 'three terms' do
-            let(:middle) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '3'), value: 3) }
-            let(:right_expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: middle, operator: op, right: right ) }
-            let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right_expression ) }
-            let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
-            let(:expressions) { '1' + op + '3' + op + '2' + ';' }
-
-            context 'plus' do
-              let(:op) {'+'}
-              let(:op_type) {Token::PLUS}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-
-            context 'minus' do
-              let(:op) {'-'}
-              let(:op_type) {Token::MINUS}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-
-            context 'multiple' do
-              let(:op) {'*'}
-              let(:op_type) {Token::ASTERISK}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-
-            context 'slash' do
-              let(:op) {'/'}
-              let(:op_type) {Token::SLASH}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-          end
-        end
-
-        context 'three digits' do
-          let(:left) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '111'), value: 111) }
-          let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '222'), value: 222) }
-
-          context 'two terms' do
-            let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right) }
-            let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
-            let(:expressions) { '111' + op + '222' + ';' }
-
-            context 'plus' do
-              let(:op) {'+'}
-              let(:op_type) {Token::PLUS}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-
-            context 'minus' do
-              let(:op) {'-'}
-              let(:op_type) {Token::MINUS}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-
-            context 'multiple' do
-              let(:op) {'*'}
-              let(:op_type) {Token::ASTERISK}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-
-            context 'slash' do
-              let(:op) {'/'}
-              let(:op_type) {Token::SLASH}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-          end
-
-          context 'three terms' do
-            let(:middle) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '333'), value: 333) }
-            let(:right_expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: middle, operator: op, right: right ) }
-            let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right_expression ) }
-            let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
-            let(:expressions) { '111' + op + '333' + op + '222' + ';' }
-
-            context 'plus' do
-              let(:op) {'+'}
-              let(:op_type) {Token::PLUS}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-
-            context 'minus' do
-              let(:op) {'-'}
-              let(:op_type) {Token::MINUS}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-
-            context 'multiple' do
-              let(:op) {'*'}
-              let(:op_type) {Token::ASTERISK}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-
-            context 'slash' do
-              let(:op) {'/'}
-              let(:op_type) {Token::SLASH}
-
-              it do
-                expect(first_result).to eq expected
-              end
-            end
-          end
-        end
-      end
-
-      context 'multiple prefix expression' do
-        context 'minus' do
-          let(:expressions) {'-1234 + 1273;'}
-
           it do
-            infix_left = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1234'), value: 1234)
-            infix_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1273'), value: 1273)
-            right = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: Token::PLUS), left: infix_left, operator: Token::PLUS, right: infix_right)
-            expression = PrefixExpression.new(token: Token.new(type: Token::MINUS, literal: '-'), operator: '-', right: right)
-
-            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
-
             expect(first_result.token).to eq expected.token
-            expect(first_result.identifier).to eq expected.identifier
-            expect(first_result.expression.token).to eq expected.expression.token
-            expect(first_result.expression.operator).to eq expected.expression.operator
-            expect(first_result.expression.right).to eq expected.expression.right
-          end
-        end
-
-        context 'not' do
-          let(:expressions) {'~indent + 1273;'}
-
-          it do
-            infix_left = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'indent'), value: 'indent')
-            infix_right = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1273'), value: 1273)
-            right = InfixExpression.new(token: Token.new(type: Token::PLUS, literal: Token::PLUS), left: infix_left, operator: Token::PLUS, right: infix_right)
-            expression = PrefixExpression.new(token: Token.new(type: Token::NOT, literal: '~'), operator: '~', right: right)
-
-            expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
-
-            expect(first_result.token).to eq expected.token
-            expect(first_result.identifier).to eq expected.identifier
-            expect(first_result.expression.token).to eq expected.expression.token
-            expect(first_result.expression.operator).to eq expected.expression.operator
-            expect(first_result.expression.right).to eq expected.expression.right
+            expect(first_result.identifier.token).to eq expected.identifier.token
+            expect(first_result.identifier.value).to eq expected.identifier.value
+            expect(first_result.identifier.index).to eq expected.identifier.index
+            expect(first_result.expression).to eq expected.expression
           end
         end
       end

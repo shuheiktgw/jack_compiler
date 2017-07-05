@@ -208,7 +208,7 @@ class Parser
 
     return unless expression
 
-    until (next_token? Token::SEMICOLON) || (next_token? Token::RPAREN) || (next_token? Token::COMMA)
+    until (next_token? Token::SEMICOLON) || (next_token? Token::COMMA) || (next_token? Token::RPAREN) || (next_token? Token::RBRACK)
       if next_token? Token::EOF
         unexpected_eof_error
         return
@@ -248,7 +248,20 @@ class Parser
   end
 
   def parse_identifier
-    Identifier.new(token: @current_token, value: @current_token.literal)
+    token = @current_token
+    value = @current_token.literal
+
+    index = if next_token? Token::LBRACK
+      next_token
+      next_token
+
+      e = parse_expression
+      expect_next Token::RBRACK
+
+      e
+    end
+
+    Identifier.new(token: token, value: value, index: index)
   end
 
   def parse_int
