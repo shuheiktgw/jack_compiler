@@ -379,11 +379,39 @@ describe Parser do
           end
         end
 
+        context 'index is simple identifier' do
+          let(:index) { 'idx' }
+          let(:index_expression) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'idx'), value: 'idx') }
+
+          it do
+            expect(first_result.token).to eq expected.token
+            expect(first_result.identifier.token).to eq expected.identifier.token
+            expect(first_result.identifier.value).to eq expected.identifier.value
+            expect(first_result.identifier.index).to eq expected.identifier.index
+            expect(first_result.expression).to eq expected.expression
+          end
+        end
+
         context 'index is integer calculation' do
           let(:index) { '1 + 2' }
           let(:index_expression) { InfixExpression.new(token: Token.new(type: Token::PLUS, literal: Token::PLUS), left: left, operator: Token::PLUS, right: right) }
           let(:left) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1'), value: 1) }
           let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '2'), value: 2) }
+
+          it do
+            expect(first_result.token).to eq expected.token
+            expect(first_result.identifier.token).to eq expected.identifier.token
+            expect(first_result.identifier.value).to eq expected.identifier.value
+            expect(first_result.identifier.index).to eq expected.identifier.index
+            expect(first_result.expression).to eq expected.expression
+          end
+        end
+
+        context 'index is identifier calculation' do
+          let(:index) { 'idx1 + idx2' }
+          let(:index_expression) { InfixExpression.new(token: Token.new(type: Token::PLUS, literal: Token::PLUS), left: left, operator: Token::PLUS, right: right) }
+          let(:left) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'idx1'), value: 'idx1') }
+          let(:right) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'idx2'), value: 'idx2') }
 
           it do
             expect(first_result.token).to eq expected.token
