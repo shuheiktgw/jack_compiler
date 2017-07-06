@@ -464,6 +464,85 @@ describe Parser do
             end
           end
         end
+
+        context 'two terms' do
+          let(:left) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '111'), value: 111) }
+          let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '222'), value: 222) }
+          let(:expression) { InfixExpression.new(token: Token.new(type: '+', literal: '+'), left: left, operator: '+', right: right) }
+
+          context 'one paren' do
+            context 'first' do
+              let(:terms) { '(111) + 222;' }
+
+              it do
+                expect(first_result.token).to eq expected.token
+                expect(first_result.identifier).to eq expected.identifier
+                expect(first_result.expression.token).to eq expected.expression.token
+                expect(first_result.expression.left).to eq expected.expression.left
+                expect(first_result.expression.operator).to eq expected.expression.operator
+                expect(first_result.expression.right).to eq expected.expression.right
+              end
+            end
+
+            context 'last' do
+              let(:terms) { '111 + (222);' }
+
+              it do
+                expect(first_result.token).to eq expected.token
+                expect(first_result.identifier).to eq expected.identifier
+                expect(first_result.expression.token).to eq expected.expression.token
+                expect(first_result.expression.left).to eq expected.expression.left
+                expect(first_result.expression.operator).to eq expected.expression.operator
+                expect(first_result.expression.right).to eq expected.expression.right
+              end
+            end
+          end
+
+          context 'two parens' do
+            context 'first' do
+              let(:terms) { '((111) + 222);' }
+
+              it do
+                expect(first_result.token).to eq expected.token
+                expect(first_result.identifier).to eq expected.identifier
+                expect(first_result.expression.token).to eq expected.expression.token
+                expect(first_result.expression.left).to eq expected.expression.left
+                expect(first_result.expression.operator).to eq expected.expression.operator
+                expect(first_result.expression.right).to eq expected.expression.right
+              end
+            end
+
+            context 'double' do
+              let(:terms) { '(111) + (222);' }
+
+              it do
+                expect(first_result.token).to eq expected.token
+                expect(first_result.identifier).to eq expected.identifier
+                expect(first_result.expression.token).to eq expected.expression.token
+                expect(first_result.expression.left).to eq expected.expression.left
+                expect(first_result.expression.operator).to eq expected.expression.operator
+                expect(first_result.expression.right).to eq expected.expression.right
+              end
+            end
+
+            context 'last' do
+              let(:terms) { '(111 + (222));' }
+
+              it do
+                expect(first_result.token).to eq expected.token
+                expect(first_result.identifier).to eq expected.identifier
+                expect(first_result.expression.token).to eq expected.expression.token
+                expect(first_result.expression.left).to eq expected.expression.left
+                expect(first_result.expression.operator).to eq expected.expression.operator
+                expect(first_result.expression.right).to eq expected.expression.right
+              end
+            end
+          end
+
+          context 'three parens' do
+
+          end
+        end
       end
     end
 
