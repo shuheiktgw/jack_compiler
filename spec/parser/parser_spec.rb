@@ -538,9 +538,51 @@ describe Parser do
               end
             end
           end
+        end
 
-          context 'three parens' do
+        context 'three terms' do
+          let(:left) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '111'), value: 111) }
+          let(:middle) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '222'), value: 222) }
+          let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '444'), value: 444) }
 
+          context 'prioritize first' do
+            let(:terms) {'(111 + 222) > 444;'}
+            let(:left_expression) { InfixExpression.new(token: Token.new(type: '+', literal: '+'), left: left, operator: '+', right: middle) }
+            let(:expression) { InfixExpression.new(token: Token.new(type: '>', literal: '>'), left: left_expression, operator: '>', right: right) }
+
+            it do
+              expect(first_result.token).to eq expected.token
+              expect(first_result.identifier).to eq expected.identifier
+              expect(first_result.expression.token).to eq expected.expression.token
+
+              expect(first_result.expression.left.token).to eq expected.expression.left.token
+              expect(first_result.expression.left.left).to eq expected.expression.left.left
+              expect(first_result.expression.left.operator).to eq expected.expression.left.operator
+              expect(first_result.expression.left.right).to eq expected.expression.left.right
+
+              expect(first_result.expression.operator).to eq expected.expression.operator
+              expect(first_result.expression.right).to eq expected.expression.right
+            end
+          end
+
+          context 'prioritize last' do
+            let(:terms) {'111 > (222 + 444);'}
+            let(:expression) { InfixExpression.new(token: Token.new(type: '>', literal: '>'), left: left, operator: '>', right: right_expression) }
+            let(:right_expression) { InfixExpression.new(token: Token.new(type: '+', literal: '+'), left: middle, operator: '+', right: right) }
+
+            it do
+              expect(first_result.token).to eq expected.token
+              expect(first_result.identifier).to eq expected.identifier
+              expect(first_result.expression.token).to eq expected.expression.token
+
+              expect(first_result.expression.left).to eq expected.expression.left
+              expect(first_result.expression.operator).to eq expected.expression.operator
+
+              expect(first_result.expression.right.token).to eq expected.expression.right.token
+              expect(first_result.expression.right.left).to eq expected.expression.right.left
+              expect(first_result.expression.right.operator).to eq expected.expression.right.operator
+              expect(first_result.expression.right.right).to eq expected.expression.right.right
+            end
           end
         end
       end
