@@ -197,7 +197,8 @@ class Parser
     next_token
     statements = []
 
-    while @current_token.type != Token::RBRACE
+    # TODO(ktgw): This part is very very very vulnerable... should strengthen somehow
+    while @current_token.type != Token::RBRACE && @current_token.type != Token::ELSE
       stmt = parse_statement
       statements << stmt if stmt
 
@@ -368,7 +369,7 @@ class Parser
   end
 
   def next_token_error(token_type)
-    message = "expected next token to be #{token_type}, got #{@current_token.type} instead."
+    message = "expected next token to be #{token_type}, got #{@next_token.type} instead."
     @errors << message
   end
 
