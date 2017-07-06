@@ -5,7 +5,7 @@ require 'spec_helper'
 # Done(ktgw): enable to parse subroutine call with .
 # Done(ktgw): enable to parse unary operations, add more test cases when more than one term.
 # Done(ktgw): enable to parse [] after variable name
-# TODO(ktgw): enable to parse group expression ()
+# Done(ktgw): enable to parse group expression ()
 # TODO(ktgw): check if being able to parse return statement without expression
 # TODO(ktgw): add test cases when semicolon is missing
 
@@ -646,6 +646,16 @@ describe Parser do
         it 'should return BooleanLiteral with true' do
           expression = BooleanLiteral.new(token: Token.new(type: Token::NULL, literal: 'null'), value: nil)
           expected = ReturnStatement.new(token: token, return_value: expression)
+
+          expect(first_result).to eq expected
+        end
+      end
+
+      context 'no expressions' do
+        let(:expressions) { ';' }
+
+        it 'should return BooleanLiteral with true' do
+          expected = ReturnStatement.new(token: token, return_value: nil)
 
           expect(first_result).to eq expected
         end

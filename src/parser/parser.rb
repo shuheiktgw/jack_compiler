@@ -78,7 +78,11 @@ class Parser
 
     next_token
 
-    return_value = parse_expression
+    return_value = if @current_token.type == Token::SEMICOLON
+      nil
+    else
+      parse_expression
+    end
 
     next_token if next_token? Token::SEMICOLON
 
