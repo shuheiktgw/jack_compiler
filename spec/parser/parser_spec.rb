@@ -1262,7 +1262,7 @@ return test2;
           let(:input) { 'return 111' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'unexpected EOF has gotten.'
+            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, "unexpected EOF has gotten.\nexpected next token to be ;, got EOF instead."
           end
         end
       end
@@ -1278,7 +1278,7 @@ return test2;
           end
 
           context 'expression is missing' do
-            let(:input) { 'if (){ return true }' }
+            let(:input) { 'if (){ return true; }' }
 
             it 'raise Parser::ParseError' do
               expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, "no prefix parse function for ) found.\nexpected next token to be ), got { instead."
@@ -1286,7 +1286,7 @@ return test2;
           end
 
           context 'rparen is missing' do
-            let(:input) { 'if (a < 1{ return true }' }
+            let(:input) { 'if (a < 1{ return true; }' }
 
             it 'raise Parser::ParseError' do
               expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError
@@ -1296,7 +1296,7 @@ return test2;
 
         context 'consequence' do
           context 'left rbrace is missing' do
-            let(:input) { 'if (a < 1) return true }' }
+            let(:input) { 'if (a < 1) return true; }' }
 
             it 'raise Parser::ParseError' do
               expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be {, got RETURN instead.'
@@ -1310,14 +1310,23 @@ return test2;
               expect{Parser.new(lexer).parse_program}.not_to raise_error
             end
           end
+
         end
 
         context 'else' do
           context 'left rbrace is missing' do
-            let(:input) { 'if (a < 1) { return true } else return false}' }
+            let(:input) { 'if (a < 1) { return true; } else return false;}' }
 
             it 'raise Parser::ParseError' do
               expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be {, got RETURN instead.'
+            end
+          end
+
+          context 'left semicolon is missing' do
+            let(:input) { 'if (a < 1) { return true; } else { return false }' }
+
+            it 'raise Parser::ParseError' do
+              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be ;, got EOF instead.'
             end
           end
         end

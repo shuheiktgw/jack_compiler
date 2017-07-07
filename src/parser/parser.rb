@@ -81,10 +81,11 @@ class Parser
     return_value = if @current_token.type == Token::SEMICOLON
       nil
     else
-      parse_expression
-    end
+      exp = parse_expression
+      return unless expect_next Token::SEMICOLON
 
-    next_token if next_token? Token::SEMICOLON
+      exp
+    end
 
     ReturnStatement.new(token: token, return_value: return_value)
   end
@@ -198,7 +199,7 @@ class Parser
     statements = []
 
     # TODO(ktgw): This part is very very very vulnerable... should strengthen somehow
-    while @current_token.type != Token::RBRACE && @current_token.type != Token::ELSE
+    while @current_token.type != Token::RBRACE && @current_token.type != Token::ELSE && @current_token.type != Token::EOF
       stmt = parse_statement
       statements << stmt if stmt
 
