@@ -126,6 +126,8 @@ class Parser
 
     arguments = parse_do_arguments
 
+    return unless expect_next Token::SEMICOLON
+
     DoStatement.new(token: token, prefix: prefix, function: function, arguments: arguments)
   end
 

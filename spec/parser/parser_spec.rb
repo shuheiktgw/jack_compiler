@@ -1385,6 +1385,56 @@ return test2;
           end
         end
       end
+
+      context 'do statement' do
+        context 'only period' do
+          let(:input) {'do .some_method();'}
+
+          it 'raise Parser::ParseError' do
+            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be IDENT or THIS, got . instead.'
+          end
+        end
+
+        context 'missing lparen' do
+          let(:input) {'do some_method);'}
+
+          it 'raise Parser::ParseError' do
+            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be (, got ) instead.'
+          end
+        end
+
+        context 'missing rparen' do
+          let(:input) {'do some_method(;'}
+
+          it 'raise Parser::ParseError' do
+            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, "no prefix parse function for ; found.\nexpected next token to be ), got EOF instead.\nexpected next token to be ;, got EOF instead."
+          end
+        end
+
+        context 'missing semicolon' do
+          let(:input) {'do some_method()'}
+
+          it 'raise Parser::ParseError' do
+            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be ;, got EOF instead.'
+          end
+        end
+
+        context 'only comma' do
+          let(:input) {'do some_method(,);'}
+
+          it 'raise Parser::ParseError' do
+            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'no prefix parse function for , found.'
+          end
+        end
+
+        context 'last comma' do
+          let(:input) {'do some_method(some, thing, );'}
+
+          it 'raise Parser::ParseError' do
+            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, "no prefix parse function for ) found.\nexpected next token to be ), got ; instead."
+          end
+        end
+      end
     end
   end
 end
