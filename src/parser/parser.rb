@@ -199,9 +199,14 @@ class Parser
     statements = []
 
     # TODO(ktgw): This part is very very very vulnerable... should strengthen somehow
-    while @current_token.type != Token::RBRACE && @current_token.type != Token::ELSE && @current_token.type != Token::EOF
+    while @current_token.type != Token::RBRACE && @current_token.type != Token::ELSE
       stmt = parse_statement
       statements << stmt if stmt
+
+      if next_token? Token::EOF
+        unexpected_eof_error
+        return
+      end
 
       next_token
     end

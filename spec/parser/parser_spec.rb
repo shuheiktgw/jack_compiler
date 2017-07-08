@@ -1314,7 +1314,7 @@ return test2;
         end
 
         context 'else' do
-          context 'left rbrace is missing' do
+          context 'lbrace is missing' do
             let(:input) { 'if (a < 1) { return true; } else return false;}' }
 
             it 'raise Parser::ParseError' do
@@ -1322,11 +1322,11 @@ return test2;
             end
           end
 
-          context 'left semicolon is missing' do
-            let(:input) { 'if (a < 1) { return true; } else { return false }' }
+          context 'rbrace is missing' do
+            let(:input) { 'if (a < 1) { return true; } else { return false;' }
 
             it 'raise Parser::ParseError' do
-              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be ;, got EOF instead.'
+              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'unexpected EOF has gotten.'
             end
           end
         end
