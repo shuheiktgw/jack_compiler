@@ -1,13 +1,11 @@
 require 'spec_helper'
 
 # Remaining Tasks
-#
-# Done(ktgw): enable to parse subroutine call with .
-# Done(ktgw): enable to parse unary operations, add more test cases when more than one term.
-# Done(ktgw): enable to parse [] after variable name
-# Done(ktgw): enable to parse group expression ()
-# Done(ktgw): check if being able to parse return statement without expression
-# TODO(ktgw): add test cases when semicolon is missing
+
+# TODO: add parser for class
+# TODO: add parser for var
+# TODO: add parser for function
+# TODO: add parser for method definition
 
 describe Parser do
 
@@ -1432,6 +1430,24 @@ return test2;
 
           it 'raise Parser::ParseError' do
             expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, "no prefix parse function for ) found.\nexpected next token to be ), got ; instead."
+          end
+        end
+      end
+
+      context 'group expression' do
+        context 'unmatching left parens' do
+          let(:input) {'let some = ((1 + 2);'}
+
+          it 'raise Parser::ParseError' do
+            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be ), got ; instead.'
+          end
+        end
+
+        context 'unmatching right parens' do
+          let(:input) {'let some = (1 + 2));'}
+
+          it 'raise Parser::ParseError' do
+            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be ;, got ) instead.'
           end
         end
       end
