@@ -1331,6 +1331,60 @@ return test2;
           end
         end
       end
+
+      context 'while statement' do
+        context 'condition' do
+          context 'condition is missing' do
+            let(:input) {'while (){return false;}'}
+
+            it 'raise Parser::ParseError' do
+              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError
+            end
+          end
+
+          context 'lparen is missing' do
+            let(:input) {'while false){return false;}'}
+
+            it 'raise Parser::ParseError' do
+              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be (, got FALSE instead.'
+            end
+          end
+
+          context 'rparen is missing' do
+            let(:input) {'while (false{return false;}'}
+
+            it 'raise Parser::ParseError' do
+              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be ), got RETURN instead.'
+            end
+          end
+        end
+
+        context 'body' do
+          context 'lbrace is missing' do
+            let(:input) {'while (true) return false;}'}
+
+            it 'raise Parser::ParseError' do
+              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be {, got RETURN instead.'
+            end
+          end
+
+          context 'semicolon is missing' do
+            let(:input) {'while (true) {return false}'}
+
+            it 'raise Parser::ParseError' do
+              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, "expected next token to be ;, got EOF instead.\nunexpected EOF has gotten."
+            end
+          end
+
+          context 'rbrace is missing' do
+            let(:input) {'while (true) {return false;'}
+
+            it 'raise Parser::ParseError' do
+              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'unexpected EOF has gotten.'
+            end
+          end
+        end
+      end
     end
   end
 end
