@@ -6,6 +6,7 @@ require_relative '../ast/expression/term/string_literal'
 require_relative '../ast/expression/infix_expression'
 
 class Parser
+
   def initialize(lexer)
     @lexer = lexer
     @errors = []
@@ -26,8 +27,7 @@ class Parser
     end
 
     if @errors.size > 0
-      messages = @errors.join "\n"
-      raise ParseError, messages
+      raise ParseError, error_message
     end
 
     method_declarations
@@ -54,9 +54,11 @@ class Parser
 
     return unless expect_next Token::LBRACE
 
+    body = parse_method_body
 
+    return unless expect_next Token::RBRACE
 
-    MethodDeclaration.new(token: token, type: type, method_name: identifier, parameters: parameters, body:)
+    MethodDeclaration.new(token: token, type: type, method_name: identifier, parameters: parameters, body: body)
   end
 
   def parse_parameters
@@ -84,8 +86,11 @@ class Parser
   end
 
   def parse_method_body
+    token = @current_token
     vars = parse_var_declarations
     stmts = parse_statements
+
+    MethodBody.new(token: token, vars: vars, statements: stmts)
   end
 
   def parse_var_declarations
@@ -413,6 +418,10 @@ class Parser
 
       nil
     end
+  end
+
+  def error_message
+    @errors.join "\n"
   end
 
   private
