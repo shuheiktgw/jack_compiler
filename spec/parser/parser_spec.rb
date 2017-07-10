@@ -3,7 +3,9 @@ require 'spec_helper'
 # Remaining Tasks
 
 # TODO: add parser for class
-# TODO: add parser for var
+# Done: add parser for var
+# パーサーの構造を変えたテストケースを修正する必要があるので注意!!!
+# parse_statementsでUnitテストできるようにmethodとテストケースの双方を修正する
 # TODO: add parser for function
 # TODO: add parser for method definition
 

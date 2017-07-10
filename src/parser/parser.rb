@@ -16,19 +16,11 @@ class Parser
   end
 
   def parse_program
-    var_declarations = []
-    statements = []
+    method_declarations = []
 
-    while @current_token.type == Token::VAR
-      var = parse_var_declaration
-      var_declarations << var if var
-
-      next_token
-    end
-
-    while @current_token.type != Token::EOF
-      stmt = parse_statement
-      statements << stmt if stmt
+    while @current_token.type != Token::RBRACE
+      method = parse_method
+      method_declarations << method if method
 
       next_token
     end
@@ -38,18 +30,82 @@ class Parser
       raise ParseError, messages
     end
 
-    {vars: var_declarations, statements: statements}
+    method_declarations
   end
 
   # ====================
   # Parsers
   # ====================
 
+  def parse_method
+    token = @current_token
+
+    return unless expect_next Token::TYPE_TOKENS
+
+    type = @current_token
+
+    return unless expect_next Token::IDENT
+
+    identifier = @current_token
+
+    return unless expect_next Token::LPAREN
+
+    parameters = parse_parameters
+
+    return unless expect_next Token::LBRACE
+
+
+
+    MethodDeclaration.new(token: token, type: type, method_name: identifier, parameters: parameters, body:)
+  end
+
+  def parse_parameters
+    parameters = []
+
+    next_token
+
+    if @current_token.type == Token::RPAREN
+      return parameters
+    end
+
+    return unless expect_next Token::IDENT
+
+    parameters << @current_token
+
+    while next_token? Token::COMMA
+      next_token
+      return unless expect_next Token::IDENT
+      parameters << @current_token
+    end
+
+    return unless expect_next Token::RPAREN
+
+    parameters
+  end
+
+  def parse_method_body
+    vars = parse_var_declarations
+    stmts = parse_statements
+  end
+
+  def parse_var_declarations
+    var_declarations = []
+
+    while @current_token.type == Token::VAR
+      var = parse_var_declaration
+      var_declarations << var if var
+
+      next_token
+    end
+
+    var_declarations
+  end
+
   def parse_var_declaration
     token = @current_token
 
     # Checking type
-    expect_next Token::INT_TYPE, Token::CHAR_TYPE, Token::BOOLEAN_TYPE, Token::VOID_TYPE, Token::IDENT
+    expect_next Token::TYPE_TOKENS
 
     type = @current_token
 
@@ -60,6 +116,22 @@ class Parser
     expect_next Token::SEMICOLON
 
     VarDeclaration.new(token: token, type: type, identifier: identifier)
+  end
+
+  # ここテストケースを修正する必要があるので注意!!!
+  def parse_statements
+    statements = []
+    while @current_token.type != Token::RBRACE
+      if @current_token.type == Token::EOF
+        unexpected_eof_error
+        return
+      end
+
+      stmt = parse_statement
+      statements << stmt if stmt
+
+      next_token
+    end
   end
 
   def parse_statement
@@ -74,9 +146,9 @@ class Parser
       parse_while_statement
     when Token::DO
       parse_do_statement
+    else
+      raise ParseError, "Unknown statement is detected. Cannot parse token type #{@current_token.type}."
     end
-
-
   end
 
   def parse_let_statement
@@ -387,11 +459,12 @@ class Parser
   end
 
   def expect_next(*token_types)
-    if token_types.map{|tt| next_token? tt}.any?
+    types = token_types.flatten
+    if types.map{|tt| next_token? tt}.any?
       next_token
       true
     else
-      next_token_error token_types.join ' or '
+      next_token_error types.join ' or '
       false
     end
   end
