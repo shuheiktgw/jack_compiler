@@ -8,12 +8,40 @@ require 'spec_helper'
 # TODO: add parser for method definition
 
 describe Parser do
+  let(:lexer) { Lexer.new(input) }
 
-  describe '#parse_program' do
-    let(:lexer) { Lexer.new(input) }
+  describe '#parse_var_declaration' do
+    context 'normal' do
+      subject(:vars) { Parser.new(lexer).parse_program[:vars]}
+
+      context 'single var' do
+        context 'int' do
+          let(:input) {'var int i;'}
+
+          it do
+            expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+            expect(vars.first).to eq expected
+          end
+        end
+
+        context 'char' do
+          let(:input) {'var char someChar;'}
+
+          it do
+            expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'someChar'))
+            expect(vars.first).to eq expected
+          end
+        end
+      end
+    end
+
+  end
+
+  describe '#parse_statement' do
+
 
     context 'normal' do
-      subject(:results) { Parser.new(lexer).parse_program }
+      subject(:results) { Parser.new(lexer).parse_program[:statements] }
       subject(:first_result) { results.first }
 
       context 'let statement' do

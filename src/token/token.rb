@@ -45,6 +45,8 @@ class Token
   INT_TYPE = 'INT_TYPE'
   CHAR_TYPE = 'CHAR_TYPE'
   BOOLEAN_TYPE = 'BOOLEAN_TYPE'
+  STRING_TYPE = 'STRING_TYPE'
+  ARRAY_TYPE = 'ARRAY_TYPE'
   VOID_TYPE = 'VOID_TYPE'
   TRUE = 'TRUE'
   FALSE = 'FALSE'
@@ -81,6 +83,14 @@ class Token
     return: RETURN
   }
 
+  TYPE_TOKENS = [
+    INT_TYPE,
+    CHAR_TYPE,
+    BOOLEAN_TYPE,
+    VOID_TYPE,
+    IDENT
+  ]
+
   def self.lookup_ident(literal)
     KEYWORDS[literal.to_sym] || IDENT
   end
@@ -88,6 +98,10 @@ class Token
   def initialize(type:, literal:)
     @type = type
     @literal = literal
+  end
+
+  def type_token?
+    TYPE_TOKENS.include? type
   end
 
   def ==(other)

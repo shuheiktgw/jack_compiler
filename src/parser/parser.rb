@@ -16,8 +16,15 @@ class Parser
   end
 
   def parse_program
-
+    var_declarations = []
     statements = []
+
+    while @current_token.type == Token::VAR
+      var = parse_var_declaration
+      var_declarations << var if var
+
+      next_token
+    end
 
     while @current_token.type != Token::EOF
       stmt = parse_statement
@@ -31,12 +38,29 @@ class Parser
       raise ParseError, messages
     end
 
-    statements
+    {vars: var_declarations, statements: statements}
   end
 
   # ====================
   # Parsers
   # ====================
+
+  def parse_var_declaration
+    token = @current_token
+
+    # Checking type
+    expect_next Token::INT_TYPE, Token::CHAR_TYPE, Token::BOOLEAN_TYPE, Token::VOID_TYPE, Token::IDENT
+
+    type = @current_token
+
+    expect_next Token::IDENT
+
+    identifier = @current_token
+
+    expect_next Token::SEMICOLON
+
+    VarDeclaration.new(token: token, type: type, identifier: identifier)
+  end
 
   def parse_statement
     case @current_token.type
