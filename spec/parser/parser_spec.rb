@@ -32,6 +32,15 @@ describe Parser do
             expect(vars.first).to eq expected
           end
         end
+
+        context 'user defined class' do
+          let(:input) {'var SomeClass userDefinedInstance;'}
+
+          it do
+            expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'userDefinedInstance'))
+            expect(vars.first).to eq expected
+          end
+        end
       end
     end
 
@@ -1476,6 +1485,32 @@ return test2;
 
           it 'raise Parser::ParseError' do
             expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be ;, got ) instead.'
+          end
+        end
+      end
+
+      context 'var declarations' do
+        context 'class name is missing' do
+          let(:input) {'var someVar;'}
+
+          it 'raise Parser::ParseError' do
+            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be IDENT, got ; instead.'
+          end
+        end
+
+        context 'var name is missing' do
+          let(:input) {'var int;'}
+
+          it 'raise Parser::ParseError' do
+            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be IDENT, got ; instead.'
+          end
+        end
+
+        context 'semicolon is missing' do
+          let(:input) {'var int someVar'}
+
+          it 'raise Parser::ParseError' do
+            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be ;, got EOF instead.'
           end
         end
       end
