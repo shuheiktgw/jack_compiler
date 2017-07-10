@@ -12,11 +12,11 @@ describe Parser do
 
   describe '#parse_var_declaration' do
     context 'normal' do
-      subject(:vars) { Parser.new(lexer).parse_program[:vars]}
+      subject(:vars) { Parser.new(lexer).parse_program[:vars] }
 
-      context 'single var' do
+      context 'single var declaration' do
         context 'int' do
-          let(:input) {'var int i;'}
+          let(:input) { 'var int i;' }
 
           it do
             expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
@@ -25,7 +25,7 @@ describe Parser do
         end
 
         context 'char' do
-          let(:input) {'var char someChar;'}
+          let(:input) { 'var char someChar;' }
 
           it do
             expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'someChar'))
@@ -34,7 +34,7 @@ describe Parser do
         end
 
         context 'user defined class' do
-          let(:input) {'var SomeClass userDefinedInstance;'}
+          let(:input) { 'var SomeClass userDefinedInstance;' }
 
           it do
             expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'userDefinedInstance'))
@@ -42,8 +42,26 @@ describe Parser do
           end
         end
       end
-    end
 
+      context 'multiple var declarations' do
+        let(:input) do
+          '' '
+            var int i;
+var char c;
+var SomeClass someVar;
+' ''
+        end
+
+        it do
+          expected_first = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+          expected_second = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'c'))
+          expected_third = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'someVar'))
+          expect(vars[0]).to eq expected_first
+          expect(vars[1]).to eq expected_second
+          expect(vars[2]).to eq expected_third
+        end
+      end
+    end
   end
 
   describe '#parse_statement' do
@@ -183,8 +201,8 @@ describe Parser do
                 let(:expressions) { '1' + op + '2' + ';' }
 
                 context 'plus' do
-                  let(:op) {'+'}
-                  let(:op_type) {Token::PLUS}
+                  let(:op) { '+' }
+                  let(:op_type) { Token::PLUS }
 
                   it do
                     expect(first_result).to eq expected
@@ -192,8 +210,8 @@ describe Parser do
                 end
 
                 context 'minus' do
-                  let(:op) {'-'}
-                  let(:op_type) {Token::MINUS}
+                  let(:op) { '-' }
+                  let(:op_type) { Token::MINUS }
 
                   it do
                     expect(first_result).to eq expected
@@ -201,8 +219,8 @@ describe Parser do
                 end
 
                 context 'multiple' do
-                  let(:op) {'*'}
-                  let(:op_type) {Token::ASTERISK}
+                  let(:op) { '*' }
+                  let(:op_type) { Token::ASTERISK }
 
                   it do
                     expect(first_result).to eq expected
@@ -210,8 +228,8 @@ describe Parser do
                 end
 
                 context 'slash' do
-                  let(:op) {'/'}
-                  let(:op_type) {Token::SLASH}
+                  let(:op) { '/' }
+                  let(:op_type) { Token::SLASH }
 
                   it do
                     expect(first_result).to eq expected
@@ -221,14 +239,14 @@ describe Parser do
 
               context 'three terms' do
                 let(:middle) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '3'), value: 3) }
-                let(:right_expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: middle, operator: op, right: right ) }
-                let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right_expression ) }
+                let(:right_expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: middle, operator: op, right: right) }
+                let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right_expression) }
                 let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
                 let(:expressions) { '1' + op + '3' + op + '2' + ';' }
 
                 context 'plus' do
-                  let(:op) {'+'}
-                  let(:op_type) {Token::PLUS}
+                  let(:op) { '+' }
+                  let(:op_type) { Token::PLUS }
 
                   it do
                     expect(first_result).to eq expected
@@ -236,8 +254,8 @@ describe Parser do
                 end
 
                 context 'minus' do
-                  let(:op) {'-'}
-                  let(:op_type) {Token::MINUS}
+                  let(:op) { '-' }
+                  let(:op_type) { Token::MINUS }
 
                   it do
                     expect(first_result).to eq expected
@@ -245,8 +263,8 @@ describe Parser do
                 end
 
                 context 'multiple' do
-                  let(:op) {'*'}
-                  let(:op_type) {Token::ASTERISK}
+                  let(:op) { '*' }
+                  let(:op_type) { Token::ASTERISK }
 
                   it do
                     expect(first_result).to eq expected
@@ -254,8 +272,8 @@ describe Parser do
                 end
 
                 context 'slash' do
-                  let(:op) {'/'}
-                  let(:op_type) {Token::SLASH}
+                  let(:op) { '/' }
+                  let(:op_type) { Token::SLASH }
 
                   it do
                     expect(first_result).to eq expected
@@ -274,8 +292,8 @@ describe Parser do
                 let(:expressions) { '111' + op + '222' + ';' }
 
                 context 'plus' do
-                  let(:op) {'+'}
-                  let(:op_type) {Token::PLUS}
+                  let(:op) { '+' }
+                  let(:op_type) { Token::PLUS }
 
                   it do
                     expect(first_result).to eq expected
@@ -283,8 +301,8 @@ describe Parser do
                 end
 
                 context 'minus' do
-                  let(:op) {'-'}
-                  let(:op_type) {Token::MINUS}
+                  let(:op) { '-' }
+                  let(:op_type) { Token::MINUS }
 
                   it do
                     expect(first_result).to eq expected
@@ -292,8 +310,8 @@ describe Parser do
                 end
 
                 context 'multiple' do
-                  let(:op) {'*'}
-                  let(:op_type) {Token::ASTERISK}
+                  let(:op) { '*' }
+                  let(:op_type) { Token::ASTERISK }
 
                   it do
                     expect(first_result).to eq expected
@@ -301,8 +319,8 @@ describe Parser do
                 end
 
                 context 'slash' do
-                  let(:op) {'/'}
-                  let(:op_type) {Token::SLASH}
+                  let(:op) { '/' }
+                  let(:op_type) { Token::SLASH }
 
                   it do
                     expect(first_result).to eq expected
@@ -312,14 +330,14 @@ describe Parser do
 
               context 'three terms' do
                 let(:middle) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '333'), value: 333) }
-                let(:right_expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: middle, operator: op, right: right ) }
-                let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right_expression ) }
+                let(:right_expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: middle, operator: op, right: right) }
+                let(:expression) { InfixExpression.new(token: Token.new(type: op_type, literal: op), left: left, operator: op, right: right_expression) }
                 let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
                 let(:expressions) { '111' + op + '333' + op + '222' + ';' }
 
                 context 'plus' do
-                  let(:op) {'+'}
-                  let(:op_type) {Token::PLUS}
+                  let(:op) { '+' }
+                  let(:op_type) { Token::PLUS }
 
                   it do
                     expect(first_result).to eq expected
@@ -327,8 +345,8 @@ describe Parser do
                 end
 
                 context 'minus' do
-                  let(:op) {'-'}
-                  let(:op_type) {Token::MINUS}
+                  let(:op) { '-' }
+                  let(:op_type) { Token::MINUS }
 
                   it do
                     expect(first_result).to eq expected
@@ -336,8 +354,8 @@ describe Parser do
                 end
 
                 context 'multiple' do
-                  let(:op) {'*'}
-                  let(:op_type) {Token::ASTERISK}
+                  let(:op) { '*' }
+                  let(:op_type) { Token::ASTERISK }
 
                   it do
                     expect(first_result).to eq expected
@@ -345,8 +363,8 @@ describe Parser do
                 end
 
                 context 'slash' do
-                  let(:op) {'/'}
-                  let(:op_type) {Token::SLASH}
+                  let(:op) { '/' }
+                  let(:op_type) { Token::SLASH }
 
                   it do
                     expect(first_result).to eq expected
@@ -358,7 +376,7 @@ describe Parser do
 
           context 'multiple prefix expression' do
             context 'minus' do
-              let(:expressions) {'-1234 + 1273;'}
+              let(:expressions) { '-1234 + 1273;' }
 
               it do
                 infix_left = IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1234'), value: 1234)
@@ -377,7 +395,7 @@ describe Parser do
             end
 
             context 'not' do
-              let(:expressions) {'~indent + 1273;'}
+              let(:expressions) { '~indent + 1273;' }
 
               it do
                 infix_left = Identifier.new(token: Token.new(type: Token::IDENT, literal: 'indent'), value: 'indent')
@@ -461,7 +479,7 @@ describe Parser do
         end
 
         context 'group expression' do
-          let(:input){"let variable = #{terms};"}
+          let(:input) { "let variable = #{terms};" }
           let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
           let(:identifier) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'variable'), value: 'variable') }
 
@@ -583,7 +601,7 @@ describe Parser do
             let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '444'), value: 444) }
 
             context 'prioritize first' do
-              let(:terms) {'(111 + 222) > 444;'}
+              let(:terms) { '(111 + 222) > 444;' }
               let(:left_expression) { InfixExpression.new(token: Token.new(type: '+', literal: '+'), left: left, operator: '+', right: middle) }
               let(:expression) { InfixExpression.new(token: Token.new(type: '>', literal: '>'), left: left_expression, operator: '>', right: right) }
 
@@ -603,7 +621,7 @@ describe Parser do
             end
 
             context 'prioritize last' do
-              let(:terms) {'111 > (222 + 444);'}
+              let(:terms) { '111 > (222 + 444);' }
               let(:expression) { InfixExpression.new(token: Token.new(type: '>', literal: '>'), left: left, operator: '>', right: right_expression) }
               let(:right_expression) { InfixExpression.new(token: Token.new(type: '+', literal: '+'), left: middle, operator: '+', right: right) }
 
@@ -702,13 +720,13 @@ describe Parser do
       context 'if statement' do
         context 'without else' do
           let(:input) do
-            '''
+            '' '
         if(a < 2) {
 let test1 = 1 + 2;
 
 return test1;
 }
-        '''
+        ' ''
 
           end
 
@@ -743,7 +761,7 @@ return test1;
 
         context 'with else' do
           let(:input) do
-            '''
+            '' '
         if(a < 2) {
 let test1 = 1 + 2;
 
@@ -754,7 +772,7 @@ let test3 = 3 + 4;
 return test3;
 
 }
-        '''
+        ' ''
           end
           let(:token) { Token.new(type: Token::IF, literal: 'if') }
           subject(:first_result) { results.first }
@@ -802,11 +820,11 @@ return test3;
       context 'while statement' do
         context 'single line' do
           let(:input) do
-            '''
+            '' '
         while(i < 2) {
 return test1;
 }
-        '''
+        ' ''
           end
 
           let(:token) { Token.new(type: Token::WHILE, literal: 'while') }
@@ -836,13 +854,13 @@ return test1;
 
         context 'multiple line' do
           let(:input) do
-            '''
+            '' '
         while(i = 2) {
 let test1 = 1 + 345;
 let test2 = test1 * 1123;
 return test2;
 }
-        '''
+        ' ''
           end
 
           let(:token) { Token.new(type: Token::WHILE, literal: 'while') }
@@ -888,20 +906,20 @@ return test2;
       end
 
       context 'parse do statements' do
-        let(:do_token){ Token.new(type: Token::DO, literal: 'do') }
-        let(:ident){ Token.new(type: Token::IDENT, literal: 'some_thing') }
+        let(:do_token) { Token.new(type: Token::DO, literal: 'do') }
+        let(:ident) { Token.new(type: Token::IDENT, literal: 'some_thing') }
         subject(:first_result) { results.first }
 
         context 'without prefix' do
           context 'simple identifiers' do
             context 'zero parameter' do
               let(:input) do
-                '''
+                '' '
             do some_thing();
-          '''
+          ' ''
               end
 
-              let(:args){ [] }
+              let(:args) { [] }
 
               it do
                 expect(first_result.token).to eq do_token
@@ -913,9 +931,9 @@ return test2;
 
             context 'one parameter' do
               let(:input) do
-                '''
+                '' '
           do some_thing(first);
-          '''
+          ' ''
               end
 
               let(:args) { [Identifier.new(token: Token.new(type: Token::IDENT, literal: 'first'), value: 'first')] }
@@ -930,9 +948,9 @@ return test2;
 
             context 'three parameters' do
               let(:input) do
-                '''
+                '' '
           do some_thing(first, second, third);
-          '''
+          ' ''
               end
 
               let(:args) do
@@ -955,9 +973,9 @@ return test2;
           context 'integer calculation' do
             context 'one parameter' do
               let(:input) do
-                '''
+                '' '
           do some_thing(1 + 22);
-          '''
+          ' ''
               end
 
               let(:args) do
@@ -978,9 +996,9 @@ return test2;
 
             context 'three parameters' do
               let(:input) do
-                '''
+                '' '
           do some_thing(1 + 2, second / 22, third * 555);
-          '''
+          ' ''
               end
 
               let(:args) do
@@ -1013,17 +1031,17 @@ return test2;
 
         context 'with prefix' do
           context 'prefix is this' do
-            let(:prefix){ Token.new(type: Token::THIS, literal: 'this') }
+            let(:prefix) { Token.new(type: Token::THIS, literal: 'this') }
 
             context 'simple identifiers' do
               context 'zero parameter' do
                 let(:input) do
-                  '''
+                  '' '
             do this.some_thing();
-          '''
+          ' ''
                 end
 
-                let(:args){ [] }
+                let(:args) { [] }
 
                 it do
                   expect(first_result.token).to eq do_token
@@ -1035,9 +1053,9 @@ return test2;
 
               context 'one parameter' do
                 let(:input) do
-                  '''
+                  '' '
           do this.some_thing(first);
-          '''
+          ' ''
                 end
 
                 let(:args) { [Identifier.new(token: Token.new(type: Token::IDENT, literal: 'first'), value: 'first')] }
@@ -1052,9 +1070,9 @@ return test2;
 
               context 'three parameters' do
                 let(:input) do
-                  '''
+                  '' '
           do this.some_thing(first, second, third);
-          '''
+          ' ''
                 end
 
                 let(:args) do
@@ -1077,9 +1095,9 @@ return test2;
             context 'integer calculation' do
               context 'one parameter' do
                 let(:input) do
-                  '''
+                  '' '
           do this.some_thing(1 + 22);
-          '''
+          ' ''
                 end
 
                 let(:args) do
@@ -1100,9 +1118,9 @@ return test2;
 
               context 'three parameters' do
                 let(:input) do
-                  '''
+                  '' '
           do this.some_thing(1 + 2, second / 22, third * 555);
-          '''
+          ' ''
                 end
 
                 let(:args) do
@@ -1134,17 +1152,17 @@ return test2;
           end
 
           context 'prefix is identifier' do
-            let(:prefix){ Token.new(type: Token::IDENT, literal: 'someClass') }
+            let(:prefix) { Token.new(type: Token::IDENT, literal: 'someClass') }
 
             context 'simple identifiers' do
               context 'zero parameter' do
                 let(:input) do
-                  '''
+                  '' '
             do someClass.some_thing();
-          '''
+          ' ''
                 end
 
-                let(:args){ [] }
+                let(:args) { [] }
 
                 it do
                   expect(first_result.token).to eq do_token
@@ -1156,9 +1174,9 @@ return test2;
 
               context 'one parameter' do
                 let(:input) do
-                  '''
+                  '' '
           do someClass.some_thing(first);
-          '''
+          ' ''
                 end
 
                 let(:args) { [Identifier.new(token: Token.new(type: Token::IDENT, literal: 'first'), value: 'first')] }
@@ -1173,9 +1191,9 @@ return test2;
 
               context 'three parameters' do
                 let(:input) do
-                  '''
+                  '' '
           do someClass.some_thing(first, second, third);
-          '''
+          ' ''
                 end
 
                 let(:args) do
@@ -1198,9 +1216,9 @@ return test2;
             context 'integer calculation' do
               context 'one parameter' do
                 let(:input) do
-                  '''
+                  '' '
           do someClass.some_thing(1 + 22);
-          '''
+          ' ''
                 end
 
                 let(:args) do
@@ -1221,9 +1239,9 @@ return test2;
 
               context 'three parameters' do
                 let(:input) do
-                  '''
+                  '' '
           do someClass.some_thing(1 + 2, second / 22, third * 555);
-          '''
+          ' ''
                 end
 
                 let(:args) do
@@ -1263,7 +1281,7 @@ return test2;
           let(:input) { 'let = 111;' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be IDENT, got = instead.'
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be IDENT, got = instead.'
           end
         end
 
@@ -1271,7 +1289,7 @@ return test2;
           let(:input) { 'let variable 111;' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be =, got INT instead.'
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be =, got INT instead.'
           end
         end
 
@@ -1279,7 +1297,7 @@ return test2;
           let(:input) { 'let variable =;' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError
           end
         end
 
@@ -1287,7 +1305,7 @@ return test2;
           let(:input) { 'let variable = 111' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError
           end
         end
       end
@@ -1297,7 +1315,7 @@ return test2;
           let(:input) { 'return 111' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, "unexpected EOF has gotten.\nexpected next token to be ;, got EOF instead."
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, "unexpected EOF has gotten.\nexpected next token to be ;, got EOF instead."
           end
         end
       end
@@ -1308,7 +1326,7 @@ return test2;
             let(:input) { 'if a < 1){ return true; }' }
 
             it 'raise Parser::ParseError' do
-              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be (, got IDENT instead.'
+              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be (, got IDENT instead.'
             end
           end
 
@@ -1316,7 +1334,7 @@ return test2;
             let(:input) { 'if (){ return true; }' }
 
             it 'raise Parser::ParseError' do
-              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, "no prefix parse function for ) found.\nexpected next token to be ), got { instead."
+              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, "no prefix parse function for ) found.\nexpected next token to be ), got { instead."
             end
           end
 
@@ -1324,7 +1342,7 @@ return test2;
             let(:input) { 'if (a < 1{ return true; }' }
 
             it 'raise Parser::ParseError' do
-              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError
+              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError
             end
           end
         end
@@ -1334,7 +1352,7 @@ return test2;
             let(:input) { 'if (a < 1) return true; }' }
 
             it 'raise Parser::ParseError' do
-              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be {, got RETURN instead.'
+              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be {, got RETURN instead.'
             end
           end
 
@@ -1342,7 +1360,7 @@ return test2;
             let(:input) { 'if (a < 1) {}' }
 
             it 'should not raise Error' do # I know it should not be here, but...
-              expect{Parser.new(lexer).parse_program}.not_to raise_error
+              expect { Parser.new(lexer).parse_program }.not_to raise_error
             end
           end
 
@@ -1353,7 +1371,7 @@ return test2;
             let(:input) { 'if (a < 1) { return true; } else return false;}' }
 
             it 'raise Parser::ParseError' do
-              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be {, got RETURN instead.'
+              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be {, got RETURN instead.'
             end
           end
 
@@ -1361,7 +1379,7 @@ return test2;
             let(:input) { 'if (a < 1) { return true; } else { return false;' }
 
             it 'raise Parser::ParseError' do
-              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'unexpected EOF has gotten.'
+              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'unexpected EOF has gotten.'
             end
           end
         end
@@ -1370,52 +1388,52 @@ return test2;
       context 'while statement' do
         context 'condition' do
           context 'condition is missing' do
-            let(:input) {'while (){return false;}'}
+            let(:input) { 'while (){return false;}' }
 
             it 'raise Parser::ParseError' do
-              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError
+              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError
             end
           end
 
           context 'lparen is missing' do
-            let(:input) {'while false){return false;}'}
+            let(:input) { 'while false){return false;}' }
 
             it 'raise Parser::ParseError' do
-              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be (, got FALSE instead.'
+              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be (, got FALSE instead.'
             end
           end
 
           context 'rparen is missing' do
-            let(:input) {'while (false{return false;}'}
+            let(:input) { 'while (false{return false;}' }
 
             it 'raise Parser::ParseError' do
-              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be ), got RETURN instead.'
+              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be ), got RETURN instead.'
             end
           end
         end
 
         context 'body' do
           context 'lbrace is missing' do
-            let(:input) {'while (true) return false;}'}
+            let(:input) { 'while (true) return false;}' }
 
             it 'raise Parser::ParseError' do
-              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be {, got RETURN instead.'
+              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be {, got RETURN instead.'
             end
           end
 
           context 'semicolon is missing' do
-            let(:input) {'while (true) {return false}'}
+            let(:input) { 'while (true) {return false}' }
 
             it 'raise Parser::ParseError' do
-              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, "expected next token to be ;, got EOF instead.\nunexpected EOF has gotten."
+              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, "expected next token to be ;, got EOF instead.\nunexpected EOF has gotten."
             end
           end
 
           context 'rbrace is missing' do
-            let(:input) {'while (true) {return false;'}
+            let(:input) { 'while (true) {return false;' }
 
             it 'raise Parser::ParseError' do
-              expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'unexpected EOF has gotten.'
+              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'unexpected EOF has gotten.'
             end
           end
         end
@@ -1423,94 +1441,94 @@ return test2;
 
       context 'do statement' do
         context 'only period' do
-          let(:input) {'do .some_method();'}
+          let(:input) { 'do .some_method();' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be IDENT or THIS, got . instead.'
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be IDENT or THIS, got . instead.'
           end
         end
 
         context 'missing lparen' do
-          let(:input) {'do some_method);'}
+          let(:input) { 'do some_method);' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be (, got ) instead.'
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be (, got ) instead.'
           end
         end
 
         context 'missing rparen' do
-          let(:input) {'do some_method(;'}
+          let(:input) { 'do some_method(;' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, "no prefix parse function for ; found.\nexpected next token to be ), got EOF instead.\nexpected next token to be ;, got EOF instead."
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, "no prefix parse function for ; found.\nexpected next token to be ), got EOF instead.\nexpected next token to be ;, got EOF instead."
           end
         end
 
         context 'missing semicolon' do
-          let(:input) {'do some_method()'}
+          let(:input) { 'do some_method()' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be ;, got EOF instead.'
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be ;, got EOF instead.'
           end
         end
 
         context 'only comma' do
-          let(:input) {'do some_method(,);'}
+          let(:input) { 'do some_method(,);' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'no prefix parse function for , found.'
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'no prefix parse function for , found.'
           end
         end
 
         context 'last comma' do
-          let(:input) {'do some_method(some, thing, );'}
+          let(:input) { 'do some_method(some, thing, );' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, "no prefix parse function for ) found.\nexpected next token to be ), got ; instead."
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, "no prefix parse function for ) found.\nexpected next token to be ), got ; instead."
           end
         end
       end
 
       context 'group expression' do
         context 'unmatching left parens' do
-          let(:input) {'let some = ((1 + 2);'}
+          let(:input) { 'let some = ((1 + 2);' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be ), got ; instead.'
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be ), got ; instead.'
           end
         end
 
         context 'unmatching right parens' do
-          let(:input) {'let some = (1 + 2));'}
+          let(:input) { 'let some = (1 + 2));' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be ;, got ) instead.'
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be ;, got ) instead.'
           end
         end
       end
 
       context 'var declarations' do
         context 'class name is missing' do
-          let(:input) {'var someVar;'}
+          let(:input) { 'var someVar;' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be IDENT, got ; instead.'
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be IDENT, got ; instead.'
           end
         end
 
         context 'var name is missing' do
-          let(:input) {'var int;'}
+          let(:input) { 'var int;' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be IDENT, got ; instead.'
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be IDENT, got ; instead.'
           end
         end
 
         context 'semicolon is missing' do
-          let(:input) {'var int someVar'}
+          let(:input) { 'var int someVar' }
 
           it 'raise Parser::ParseError' do
-            expect{Parser.new(lexer).parse_program}.to raise_error Parser::ParseError, 'expected next token to be ;, got EOF instead.'
+            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be ;, got EOF instead.'
           end
         end
       end
