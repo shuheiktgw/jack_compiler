@@ -137,6 +137,8 @@ class Parser
 
       next_token
     end
+
+    statements
   end
 
   def parse_statement
@@ -424,6 +426,11 @@ class Parser
     @errors.join "\n"
   end
 
+  def next_token
+    @current_token = @next_token
+    @next_token = @lexer.next_token
+  end
+
   private
 
   # ====================
@@ -460,11 +467,6 @@ class Parser
     else
       nil
     end
-  end
-
-  def next_token
-    @current_token = @next_token
-    @next_token = @lexer.next_token
   end
 
   def expect_next(*token_types)

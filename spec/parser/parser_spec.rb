@@ -11,9 +11,10 @@ require 'spec_helper'
 
 describe Parser do
   let(:lexer) { Lexer.new(input) }
+  let(:parser) { Parser.new(lexer) }
 
   describe '#parse_var_declaration' do
-    subject(:vars) { Parser.new(lexer).parse_var_declarations }
+    subject(:vars) { parser.parse_var_declarations }
 
     context 'single var declaration' do
       context 'int' do
@@ -22,6 +23,7 @@ describe Parser do
         it do
           expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
           expect(vars.first).to eq expected
+          expect(parser.error_message).to be_empty
         end
       end
 
@@ -31,6 +33,7 @@ describe Parser do
         it do
           expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'someChar'))
           expect(vars.first).to eq expected
+          expect(parser.error_message).to be_empty
         end
       end
 
@@ -40,6 +43,7 @@ describe Parser do
         it do
           expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'userDefinedInstance'))
           expect(vars.first).to eq expected
+          expect(parser.error_message).to be_empty
         end
       end
     end
@@ -60,13 +64,14 @@ var SomeClass someVar;
         expect(vars[0]).to eq expected_first
         expect(vars[1]).to eq expected_second
         expect(vars[2]).to eq expected_third
+        expect(parser.error_message).to be_empty
       end
     end
   end
 
   describe '#parse_statement' do
     context 'normal' do
-      subject(:results) { Parser.new(lexer).parse_program[:statements] }
+      subject(:results) { parser.parse_statements }
       subject(:first_result) { results.first }
 
       context 'let statement' do
@@ -74,7 +79,7 @@ var SomeClass someVar;
 
         context 'plain indentifier' do
           let(:identifier) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'variable'), value: 'variable') }
-          let(:input) { 'let variable = ' + expressions }
+          let(:input) { "let variable = #{ expressions } }"}
 
           context 'expression is string constant' do
             let(:expressions) { '"This is a string sentence!!!";' }
@@ -84,6 +89,7 @@ var SomeClass someVar;
               expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
               expect(first_result).to eq expected
+              expect(parser.error_message).to be_empty
             end
           end
 
@@ -95,6 +101,7 @@ var SomeClass someVar;
               expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
               expect(first_result).to eq expected
+              expect(parser.error_message).to be_empty
             end
           end
 
@@ -107,6 +114,7 @@ var SomeClass someVar;
                 expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
                 expect(first_result).to eq expected
+                expect(parser.error_message).to be_empty
               end
             end
 
@@ -118,6 +126,7 @@ var SomeClass someVar;
                 expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
                 expect(first_result).to eq expected
+                expect(parser.error_message).to be_empty
               end
             end
           end
@@ -133,6 +142,7 @@ var SomeClass someVar;
                 expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
                 expect(first_result).to eq expected
+                expect(parser.error_message).to be_empty
               end
             end
 
@@ -145,6 +155,7 @@ var SomeClass someVar;
                 expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
                 expect(first_result).to eq expected
+                expect(parser.error_message).to be_empty
               end
             end
           end
@@ -160,6 +171,7 @@ var SomeClass someVar;
                 expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
                 expect(first_result).to eq expected
+                expect(parser.error_message).to be_empty
               end
             end
 
@@ -172,6 +184,7 @@ var SomeClass someVar;
                 expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
                 expect(first_result).to eq expected
+                expect(parser.error_message).to be_empty
               end
             end
           end
@@ -184,6 +197,7 @@ var SomeClass someVar;
               expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
               expect(first_result).to eq expected
+              expect(parser.error_message).to be_empty
             end
           end
 
@@ -204,6 +218,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
 
@@ -213,6 +228,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
 
@@ -222,6 +238,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
 
@@ -231,6 +248,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
               end
@@ -248,6 +266,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
 
@@ -257,6 +276,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
 
@@ -266,6 +286,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
 
@@ -275,6 +296,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
               end
@@ -295,6 +317,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
 
@@ -304,6 +327,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
 
@@ -313,6 +337,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
 
@@ -322,6 +347,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
               end
@@ -339,6 +365,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
 
@@ -348,6 +375,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
 
@@ -357,6 +385,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
 
@@ -366,6 +395,7 @@ var SomeClass someVar;
 
                   it do
                     expect(first_result).to eq expected
+                    expect(parser.error_message).to be_empty
                   end
                 end
               end
@@ -389,6 +419,7 @@ var SomeClass someVar;
                 expect(first_result.expression.token).to eq expected.expression.token
                 expect(first_result.expression.operator).to eq expected.expression.operator
                 expect(first_result.expression.right).to eq expected.expression.right
+                expect(parser.error_message).to be_empty
               end
             end
 
@@ -408,13 +439,14 @@ var SomeClass someVar;
                 expect(first_result.expression.token).to eq expected.expression.token
                 expect(first_result.expression.operator).to eq expected.expression.operator
                 expect(first_result.expression.right).to eq expected.expression.right
+                expect(parser.error_message).to be_empty
               end
             end
           end
         end
 
         context 'with index' do
-          let(:input) { "let variable[#{index}] =  111;" }
+          let(:input) { "let variable[#{index}] =  111; }" }
           let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
           let(:identifier) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'variable'), value: 'variable', index: index_expression) }
           let(:expression) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '111'), value: 111) }
@@ -429,6 +461,7 @@ var SomeClass someVar;
               expect(first_result.identifier.value).to eq expected.identifier.value
               expect(first_result.identifier.index).to eq expected.identifier.index
               expect(first_result.expression).to eq expected.expression
+              expect(parser.error_message).to be_empty
             end
           end
 
@@ -442,6 +475,7 @@ var SomeClass someVar;
               expect(first_result.identifier.value).to eq expected.identifier.value
               expect(first_result.identifier.index).to eq expected.identifier.index
               expect(first_result.expression).to eq expected.expression
+              expect(parser.error_message).to be_empty
             end
           end
 
@@ -457,6 +491,7 @@ var SomeClass someVar;
               expect(first_result.identifier.value).to eq expected.identifier.value
               expect(first_result.identifier.index).to eq expected.identifier.index
               expect(first_result.expression).to eq expected.expression
+              expect(parser.error_message).to be_empty
             end
           end
 
@@ -472,12 +507,13 @@ var SomeClass someVar;
               expect(first_result.identifier.value).to eq expected.identifier.value
               expect(first_result.identifier.index).to eq expected.identifier.index
               expect(first_result.expression).to eq expected.expression
+              expect(parser.error_message).to be_empty
             end
           end
         end
 
         context 'group expression' do
-          let(:input) { "let variable = #{terms};" }
+          let(:input) { "let variable = #{terms} }" }
           let(:expected) { LetStatement.new(token: token, identifier: identifier, expression: expression) }
           let(:identifier) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'variable'), value: 'variable') }
 
@@ -492,6 +528,7 @@ var SomeClass someVar;
                 expect(first_result.identifier).to eq expected.identifier
                 expect(first_result.expression.token).to eq expected.expression.token
                 expect(first_result.expression.value).to eq expected.expression.value
+                expect(parser.error_message).to be_empty
               end
             end
 
@@ -503,6 +540,7 @@ var SomeClass someVar;
                 expect(first_result.identifier).to eq expected.identifier
                 expect(first_result.expression.token).to eq expected.expression.token
                 expect(first_result.expression.value).to eq expected.expression.value
+                expect(parser.error_message).to be_empty
               end
             end
 
@@ -514,6 +552,7 @@ var SomeClass someVar;
                 expect(first_result.identifier).to eq expected.identifier
                 expect(first_result.expression.token).to eq expected.expression.token
                 expect(first_result.expression.value).to eq expected.expression.value
+                expect(parser.error_message).to be_empty
               end
             end
           end
@@ -534,6 +573,7 @@ var SomeClass someVar;
                   expect(first_result.expression.left).to eq expected.expression.left
                   expect(first_result.expression.operator).to eq expected.expression.operator
                   expect(first_result.expression.right).to eq expected.expression.right
+                  expect(parser.error_message).to be_empty
                 end
               end
 
@@ -547,6 +587,7 @@ var SomeClass someVar;
                   expect(first_result.expression.left).to eq expected.expression.left
                   expect(first_result.expression.operator).to eq expected.expression.operator
                   expect(first_result.expression.right).to eq expected.expression.right
+                  expect(parser.error_message).to be_empty
                 end
               end
             end
@@ -562,6 +603,7 @@ var SomeClass someVar;
                   expect(first_result.expression.left).to eq expected.expression.left
                   expect(first_result.expression.operator).to eq expected.expression.operator
                   expect(first_result.expression.right).to eq expected.expression.right
+                  expect(parser.error_message).to be_empty
                 end
               end
 
@@ -575,6 +617,7 @@ var SomeClass someVar;
                   expect(first_result.expression.left).to eq expected.expression.left
                   expect(first_result.expression.operator).to eq expected.expression.operator
                   expect(first_result.expression.right).to eq expected.expression.right
+                  expect(parser.error_message).to be_empty
                 end
               end
 
@@ -588,6 +631,7 @@ var SomeClass someVar;
                   expect(first_result.expression.left).to eq expected.expression.left
                   expect(first_result.expression.operator).to eq expected.expression.operator
                   expect(first_result.expression.right).to eq expected.expression.right
+                  expect(parser.error_message).to be_empty
                 end
               end
             end
@@ -615,6 +659,8 @@ var SomeClass someVar;
 
                 expect(first_result.expression.operator).to eq expected.expression.operator
                 expect(first_result.expression.right).to eq expected.expression.right
+
+                expect(parser.error_message).to be_empty
               end
             end
 
@@ -635,6 +681,8 @@ var SomeClass someVar;
                 expect(first_result.expression.right.left).to eq expected.expression.right.left
                 expect(first_result.expression.right.operator).to eq expected.expression.right.operator
                 expect(first_result.expression.right.right).to eq expected.expression.right.right
+
+                expect(parser.error_message).to be_empty
               end
             end
           end
