@@ -690,7 +690,7 @@ var SomeClass someVar;
       end
 
       context 'return statement' do
-        let(:input) { 'return ' + expressions }
+        let(:input) { "return #{expressions} }" }
         let(:token) { Token.new(type: Token::RETURN, literal: 'return') }
 
         subject(:first_result) { results.first }
@@ -703,6 +703,7 @@ var SomeClass someVar;
             expected = ReturnStatement.new(token: token, return_value: expression)
 
             expect(first_result).to eq expected
+            expect(parser.error_message).to be_empty
           end
         end
 
@@ -714,6 +715,7 @@ var SomeClass someVar;
             expected = ReturnStatement.new(token: token, return_value: expression)
 
             expect(first_result).to eq expected
+            expect(parser.error_message).to be_empty
           end
         end
 
@@ -726,6 +728,7 @@ var SomeClass someVar;
               expected = ReturnStatement.new(token: token, return_value: expression)
 
               expect(first_result).to eq expected
+              expect(parser.error_message).to be_empty
             end
           end
 
@@ -749,6 +752,7 @@ var SomeClass someVar;
             expected = ReturnStatement.new(token: token, return_value: expression)
 
             expect(first_result).to eq expected
+            expect(parser.error_message).to be_empty
           end
         end
 
@@ -759,6 +763,7 @@ var SomeClass someVar;
             expected = ReturnStatement.new(token: token, return_value: nil)
 
             expect(first_result).to eq expected
+            expect(parser.error_message).to be_empty
           end
         end
       end
@@ -771,6 +776,7 @@ var SomeClass someVar;
 let test1 = 1 + 2;
 
 return test1;
+}
 }
         ' ''
 
@@ -802,6 +808,7 @@ return test1;
             expected = IfStatement.new(token: token, condition: expected_condition, consequence: expected_consequence, alternative: nil)
 
             expect(first_result).to eq expected
+            expect(parser.error_message).to be_empty
           end
         end
 
@@ -817,6 +824,7 @@ let test3 = 3 + 4;
 
 return test3;
 
+}
 }
         ' ''
           end
@@ -859,6 +867,7 @@ return test3;
             expected = IfStatement.new(token: token, condition: expected_condition, consequence: expected_consequence, alternative: expected_alternative)
 
             expect(first_result).to eq expected
+            expect(parser.error_message).to be_empty
           end
         end
       end
@@ -869,6 +878,7 @@ return test3;
             '' '
         while(i < 2) {
 return test1;
+}
 }
         ' ''
           end
@@ -895,6 +905,7 @@ return test1;
             expect(first_result.consequence.statements.first).to eq consequence_return
             expect(first_result.consequence).to eq expected_consequence
             expect(first_result).to eq expected
+            expect(parser.error_message).to be_empty
           end
         end
 
@@ -905,6 +916,7 @@ return test1;
 let test1 = 1 + 345;
 let test2 = test1 * 1123;
 return test2;
+}
 }
         ' ''
           end
@@ -947,6 +959,7 @@ return test2;
             expect(first_result.consequence.statements[2]).to eq consequence_return
             expect(first_result.consequence).to eq expected_consequence
             expect(first_result).to eq expected
+            expect(parser.error_message).to be_empty
           end
         end
       end
@@ -961,7 +974,7 @@ return test2;
             context 'zero parameter' do
               let(:input) do
                 '' '
-            do some_thing();
+            do some_thing(); }
           ' ''
               end
 
@@ -972,13 +985,14 @@ return test2;
                 expect(first_result.prefix).to be_nil
                 expect(first_result.function).to eq ident
                 expect(first_result.arguments).to eq args
+                expect(parser.error_message).to be_empty
               end
             end
 
             context 'one parameter' do
               let(:input) do
                 '' '
-          do some_thing(first);
+          do some_thing(first); }
           ' ''
               end
 
@@ -989,13 +1003,14 @@ return test2;
                 expect(first_result.prefix).to be_nil
                 expect(first_result.function).to eq ident
                 expect(first_result.arguments).to eq args
+                expect(parser.error_message).to be_empty
               end
             end
 
             context 'three parameters' do
               let(:input) do
                 '' '
-          do some_thing(first, second, third);
+          do some_thing(first, second, third); }
           ' ''
               end
 
@@ -1012,6 +1027,7 @@ return test2;
                 expect(first_result.prefix).to be_nil
                 expect(first_result.function).to eq ident
                 expect(first_result.arguments).to eq args
+                expect(parser.error_message).to be_empty
               end
             end
           end
@@ -1020,7 +1036,7 @@ return test2;
             context 'one parameter' do
               let(:input) do
                 '' '
-          do some_thing(1 + 22);
+          do some_thing(1 + 22); }
           ' ''
               end
 
@@ -1037,13 +1053,14 @@ return test2;
                 expect(first_result.prefix).to be_nil
                 expect(first_result.function).to eq ident
                 expect(first_result.arguments).to eq args
+                expect(parser.error_message).to be_empty
               end
             end
 
             context 'three parameters' do
               let(:input) do
                 '' '
-          do some_thing(1 + 2, second / 22, third * 555);
+          do some_thing(1 + 2, second / 22, third * 555); }
           ' ''
               end
 
@@ -1070,6 +1087,7 @@ return test2;
                 expect(first_result.arguments[0]).to eq args[0]
                 expect(first_result.arguments[1]).to eq args[1]
                 expect(first_result.arguments[2]).to eq args[2]
+                expect(parser.error_message).to be_empty
               end
             end
           end
@@ -1083,7 +1101,7 @@ return test2;
               context 'zero parameter' do
                 let(:input) do
                   '' '
-            do this.some_thing();
+            do this.some_thing(); }
           ' ''
                 end
 
@@ -1094,13 +1112,14 @@ return test2;
                   expect(first_result.prefix).to eq prefix
                   expect(first_result.function).to eq ident
                   expect(first_result.arguments).to eq args
+                  expect(parser.error_message).to be_empty
                 end
               end
 
               context 'one parameter' do
                 let(:input) do
                   '' '
-          do this.some_thing(first);
+          do this.some_thing(first); }
           ' ''
                 end
 
@@ -1111,13 +1130,14 @@ return test2;
                   expect(first_result.prefix).to eq prefix
                   expect(first_result.function).to eq ident
                   expect(first_result.arguments).to eq args
+                  expect(parser.error_message).to be_empty
                 end
               end
 
               context 'three parameters' do
                 let(:input) do
                   '' '
-          do this.some_thing(first, second, third);
+          do this.some_thing(first, second, third); }
           ' ''
                 end
 
@@ -1134,6 +1154,7 @@ return test2;
                   expect(first_result.prefix).to eq prefix
                   expect(first_result.function).to eq ident
                   expect(first_result.arguments).to eq args
+                  expect(parser.error_message).to be_empty
                 end
               end
             end
@@ -1142,7 +1163,7 @@ return test2;
               context 'one parameter' do
                 let(:input) do
                   '' '
-          do this.some_thing(1 + 22);
+          do this.some_thing(1 + 22); }
           ' ''
                 end
 
@@ -1159,13 +1180,14 @@ return test2;
                   expect(first_result.function).to eq ident
                   expect(first_result.prefix).to eq prefix
                   expect(first_result.arguments).to eq args
+                  expect(parser.error_message).to be_empty
                 end
               end
 
               context 'three parameters' do
                 let(:input) do
                   '' '
-          do this.some_thing(1 + 2, second / 22, third * 555);
+          do this.some_thing(1 + 2, second / 22, third * 555); }
           ' ''
                 end
 
@@ -1192,6 +1214,7 @@ return test2;
                   expect(first_result.arguments[0]).to eq args[0]
                   expect(first_result.arguments[1]).to eq args[1]
                   expect(first_result.arguments[2]).to eq args[2]
+                  expect(parser.error_message).to be_empty
                 end
               end
             end
@@ -1204,7 +1227,7 @@ return test2;
               context 'zero parameter' do
                 let(:input) do
                   '' '
-            do someClass.some_thing();
+            do someClass.some_thing(); }
           ' ''
                 end
 
@@ -1215,13 +1238,14 @@ return test2;
                   expect(first_result.prefix).to eq prefix
                   expect(first_result.function).to eq ident
                   expect(first_result.arguments).to eq args
+                  expect(parser.error_message).to be_empty
                 end
               end
 
               context 'one parameter' do
                 let(:input) do
                   '' '
-          do someClass.some_thing(first);
+          do someClass.some_thing(first); }
           ' ''
                 end
 
@@ -1232,13 +1256,14 @@ return test2;
                   expect(first_result.prefix).to eq prefix
                   expect(first_result.function).to eq ident
                   expect(first_result.arguments).to eq args
+                  expect(parser.error_message).to be_empty
                 end
               end
 
               context 'three parameters' do
                 let(:input) do
                   '' '
-          do someClass.some_thing(first, second, third);
+          do someClass.some_thing(first, second, third); }
           ' ''
                 end
 
@@ -1255,6 +1280,7 @@ return test2;
                   expect(first_result.prefix).to eq prefix
                   expect(first_result.function).to eq ident
                   expect(first_result.arguments).to eq args
+                  expect(parser.error_message).to be_empty
                 end
               end
             end
@@ -1263,7 +1289,7 @@ return test2;
               context 'one parameter' do
                 let(:input) do
                   '' '
-          do someClass.some_thing(1 + 22);
+          do someClass.some_thing(1 + 22); }
           ' ''
                 end
 
@@ -1280,13 +1306,14 @@ return test2;
                   expect(first_result.function).to eq ident
                   expect(first_result.prefix).to eq prefix
                   expect(first_result.arguments).to eq args
+                  expect(parser.error_message).to be_empty
                 end
               end
 
               context 'three parameters' do
                 let(:input) do
                   '' '
-          do someClass.some_thing(1 + 2, second / 22, third * 555);
+          do someClass.some_thing(1 + 2, second / 22, third * 555); }
           ' ''
                 end
 
@@ -1313,6 +1340,7 @@ return test2;
                   expect(first_result.arguments[0]).to eq args[0]
                   expect(first_result.arguments[1]).to eq args[1]
                   expect(first_result.arguments[2]).to eq args[2]
+                  expect(parser.error_message).to be_empty
                 end
               end
             end
