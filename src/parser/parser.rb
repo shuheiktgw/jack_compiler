@@ -62,8 +62,6 @@ class Parser
   end
 
   def parse_parameters
-    binding.pry
-
     parameters = []
 
     if next_token? Token::RPAREN
@@ -82,6 +80,7 @@ class Parser
 
     while next_token? Token::COMMA
       next_token
+      
       return unless expect_next Token::TYPE_TOKENS
 
       type = @current_token

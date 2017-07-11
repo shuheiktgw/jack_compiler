@@ -33,6 +33,33 @@ describe Parser do
         expect(parser.error_message).to be_empty
       end
     end
+
+    context 'two parameters' do
+      let(:input) {'(int i, String str)'}
+
+      it do
+        param_i = Parameter.new(type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+        param_str = Parameter.new(type: Token.new(type: Token::IDENT, literal: 'String'), identifier: Token.new(type: Token::IDENT, literal: 'str'))
+        expected = [param_i, param_str]
+
+        is_expected.to eq expected
+        expect(parser.error_message).to be_empty
+      end
+    end
+
+    context 'three parameters' do
+      let(:input) {'(int i, String str, char chr)'}
+
+      it do
+        param_i = Parameter.new(type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+        param_str = Parameter.new(type: Token.new(type: Token::IDENT, literal: 'String'), identifier: Token.new(type: Token::IDENT, literal: 'str'))
+        param_chr = Parameter.new(type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'chr'))
+        expected = [param_i, param_str, param_chr]
+
+        is_expected.to eq expected
+        expect(parser.error_message).to be_empty
+      end
+    end
   end
 
   describe '#parse_var_declarations' do
@@ -1636,6 +1663,45 @@ return test2;
 
           it 'raise Parser::ParseError' do
             is_expected.to eq 'expected next token to be ;, got EOF instead.'
+          end
+        end
+      end
+
+      context 'parse_parameters' do
+        subject do
+          parser.parse_parameters
+          parser.error_message
+        end
+
+        context 'left paren is missing' do
+          let(:input) { 'int i)' }
+
+          it do
+            is_expected.to eq 'expected next token to be IDENT, got ) instead.'
+          end
+        end
+
+        context 'class type is missing' do
+          let(:input) { '(i)' }
+
+          it do
+            is_expected.to eq 'expected next token to be IDENT, got ) instead.'
+          end
+        end
+
+        context 'ident is missing' do
+          let(:input) { '(int )' }
+
+          it do
+            is_expected.to eq 'expected next token to be IDENT, got ) instead.'
+          end
+        end
+
+        context 'right paren is missing' do
+          let(:input) { '(int i' }
+
+          it do
+            is_expected.to eq 'expected next token to be ), got EOF instead.'
           end
         end
       end
