@@ -2,18 +2,40 @@ require 'spec_helper'
 
 # Remaining Tasks
 
+# TODO: add tests for parse_parameters
+# TODO: add tests for parse_method
 # TODO: add parser for class
-# Done: add parser for var
-# パーサーの構造を変えたテストケースを修正する必要があるので注意!!!
-# parse_statementsでUnitテストできるようにmethodとテストケースの双方を修正する
-# TODO: add parser for function
-# TODO: add parser for method definition
 
 describe Parser do
   let(:lexer) { Lexer.new(input) }
   let(:parser) { Parser.new(lexer) }
 
-  describe '#parse_var_declaration' do
+  describe '#parse_parameters' do
+    subject(:params) { parser.parse_parameters }
+
+    context 'blank' do
+      let(:input) {'()'}
+
+      it do
+        is_expected.to be_empty
+        expect(parser.error_message).to be_empty
+      end
+    end
+
+    context 'one parameter' do
+      let(:input) {'(int i)'}
+
+      it do
+        param = Parameter.new(type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+        expected = [param]
+
+        is_expected.to eq expected
+        expect(parser.error_message).to be_empty
+      end
+    end
+  end
+
+  describe '#parse_var_declarations' do
     subject(:vars) { parser.parse_var_declarations }
 
     context 'single var declaration' do
@@ -69,7 +91,7 @@ var SomeClass someVar;
     end
   end
 
-  describe '#parse_statement' do
+  describe '#parse_statements' do
     context 'normal' do
       subject(:results) { parser.parse_statements }
       subject(:first_result) { results.first }

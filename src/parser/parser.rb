@@ -62,22 +62,35 @@ class Parser
   end
 
   def parse_parameters
+    binding.pry
+
     parameters = []
 
-    next_token
-
-    if @current_token.type == Token::RPAREN
+    if next_token? Token::RPAREN
       return parameters
     end
 
+    return unless expect_next Token::TYPE_TOKENS
+
+    type = @current_token
+
     return unless expect_next Token::IDENT
 
-    parameters << @current_token
+    identifier = @current_token
+
+    parameters << Parameter.new(type: type, identifier: identifier)
 
     while next_token? Token::COMMA
       next_token
+      return unless expect_next Token::TYPE_TOKENS
+
+      type = @current_token
+
       return unless expect_next Token::IDENT
-      parameters << @current_token
+
+      identifier = @current_token
+
+      parameters << Parameter.new(type: type, identifier: identifier)
     end
 
     return unless expect_next Token::RPAREN
@@ -123,7 +136,6 @@ class Parser
     VarDeclaration.new(token: token, type: type, identifier: identifier)
   end
 
-  # ここテストケースを修正する必要があるので注意!!!
   def parse_statements
     statements = []
     while @current_token.type != Token::RBRACE
