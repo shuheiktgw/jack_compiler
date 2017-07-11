@@ -133,7 +133,7 @@ class Parser
       end
 
       stmt = parse_statement
-      statements << stmt if stmt
+      stmt ? statements << stmt : return
 
       next_token
     end
@@ -154,7 +154,9 @@ class Parser
     when Token::DO
       parse_do_statement
     else
-      raise ParseError, "Unknown statement is detected. Cannot parse token type #{@current_token.type}."
+      message = "Unknown statement is detected. Cannot parse token type #{@current_token.type}."
+      @errors << message
+      nil
     end
   end
 

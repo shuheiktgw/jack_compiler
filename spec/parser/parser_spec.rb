@@ -1350,240 +1350,245 @@ return test2;
     end
 
     context 'abnormal' do
-      context 'let statement' do
-        context 'ident is missing' do
-          let(:input) { 'let = 111;' }
-
-          it 'raise Parser::ParseError' do
-            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be IDENT, got = instead.'
-          end
+      context 'body' do
+        subject do
+          parser.parse_statements
+          parser.error_message
         end
 
-        context 'eq is missing' do
-          let(:input) { 'let variable 111;' }
-
-          it 'raise Parser::ParseError' do
-            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be =, got INT instead.'
-          end
-        end
-
-        context 'expression is missing' do
-          let(:input) { 'let variable =;' }
-
-          it 'raise Parser::ParseError' do
-            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError
-          end
-        end
-
-        context 'semicolon is missing' do
-          let(:input) { 'let variable = 111' }
-
-          it 'raise Parser::ParseError' do
-            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError
-          end
-        end
-      end
-
-      context 'return statement' do
-        context 'semicolon is missing' do
-          let(:input) { 'return 111' }
-
-          it 'raise Parser::ParseError' do
-            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, "unexpected EOF has gotten.\nexpected next token to be ;, got EOF instead."
-          end
-        end
-      end
-
-      context 'if statement' do
-        context 'condition' do
-          context 'left paren is missing' do
-            let(:input) { 'if a < 1){ return true; }' }
+        context 'let statement' do
+          context 'ident is missing' do
+            let(:input) { 'let = 111; }' }
 
             it 'raise Parser::ParseError' do
-              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be (, got IDENT instead.'
+              is_expected.to eq 'expected next token to be IDENT, got = instead.'
+            end
+          end
+
+          context 'eq is missing' do
+            let(:input) { 'let variable 111; }' }
+
+            it 'raise Parser::ParseError' do
+              is_expected.to eq 'expected next token to be =, got INT instead.'
             end
           end
 
           context 'expression is missing' do
-            let(:input) { 'if (){ return true; }' }
+            let(:input) { 'let variable =; }' }
 
             it 'raise Parser::ParseError' do
-              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, "no prefix parse function for ) found.\nexpected next token to be ), got { instead."
-            end
-          end
-
-          context 'rparen is missing' do
-            let(:input) { 'if (a < 1{ return true; }' }
-
-            it 'raise Parser::ParseError' do
-              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError
-            end
-          end
-        end
-
-        context 'consequence' do
-          context 'left rbrace is missing' do
-            let(:input) { 'if (a < 1) return true; }' }
-
-            it 'raise Parser::ParseError' do
-              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be {, got RETURN instead.'
-            end
-          end
-
-          context 'left body is missing' do
-            let(:input) { 'if (a < 1) {}' }
-
-            it 'should not raise Error' do # I know it should not be here, but...
-              expect { Parser.new(lexer).parse_program }.not_to raise_error
-            end
-          end
-
-        end
-
-        context 'else' do
-          context 'lbrace is missing' do
-            let(:input) { 'if (a < 1) { return true; } else return false;}' }
-
-            it 'raise Parser::ParseError' do
-              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be {, got RETURN instead.'
-            end
-          end
-
-          context 'rbrace is missing' do
-            let(:input) { 'if (a < 1) { return true; } else { return false;' }
-
-            it 'raise Parser::ParseError' do
-              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'unexpected EOF has gotten.'
-            end
-          end
-        end
-      end
-
-      context 'while statement' do
-        context 'condition' do
-          context 'condition is missing' do
-            let(:input) { 'while (){return false;}' }
-
-            it 'raise Parser::ParseError' do
-              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError
-            end
-          end
-
-          context 'lparen is missing' do
-            let(:input) { 'while false){return false;}' }
-
-            it 'raise Parser::ParseError' do
-              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be (, got FALSE instead.'
-            end
-          end
-
-          context 'rparen is missing' do
-            let(:input) { 'while (false{return false;}' }
-
-            it 'raise Parser::ParseError' do
-              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be ), got RETURN instead.'
-            end
-          end
-        end
-
-        context 'body' do
-          context 'lbrace is missing' do
-            let(:input) { 'while (true) return false;}' }
-
-            it 'raise Parser::ParseError' do
-              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be {, got RETURN instead.'
+              is_expected.not_to be_empty
             end
           end
 
           context 'semicolon is missing' do
-            let(:input) { 'while (true) {return false}' }
+            let(:input) { 'let variable = 111 }' }
 
             it 'raise Parser::ParseError' do
-              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, "expected next token to be ;, got EOF instead.\nunexpected EOF has gotten."
-            end
-          end
-
-          context 'rbrace is missing' do
-            let(:input) { 'while (true) {return false;' }
-
-            it 'raise Parser::ParseError' do
-              expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'unexpected EOF has gotten.'
+              is_expected.not_to be_empty
             end
           end
         end
-      end
 
-      context 'do statement' do
-        context 'only period' do
-          let(:input) { 'do .some_method();' }
+        context 'return statement' do
+          context 'semicolon is missing' do
+            let(:input) { 'return 111 }'  }
 
-          it 'raise Parser::ParseError' do
-            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be IDENT or THIS, got . instead.'
+            it 'raise Parser::ParseError' do
+              is_expected.to eq 'expected next token to be ;, got EOF instead.'
+            end
           end
         end
 
-        context 'missing lparen' do
-          let(:input) { 'do some_method);' }
+        context 'if statement' do
+          context 'condition' do
+            context 'left paren is missing' do
+              let(:input) { 'if a < 1){ return true; } }' }
 
-          it 'raise Parser::ParseError' do
-            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be (, got ) instead.'
+              it 'raise Parser::ParseError' do
+                is_expected.to eq 'expected next token to be (, got IDENT instead.'
+              end
+            end
+
+            context 'expression is missing' do
+              let(:input) { 'if (){ return true; } }' }
+
+              it 'raise Parser::ParseError' do
+                is_expected.to eq "no prefix parse function for ) found.\nexpected next token to be ), got { instead."
+              end
+            end
+
+            context 'rparen is missing' do
+              let(:input) { 'if (a < 1{ return true; } }' }
+
+              it 'raise Parser::ParseError' do
+                is_expected.not_to be_empty
+              end
+            end
+          end
+
+          context 'consequence' do
+            context 'left rbrace is missing' do
+              let(:input) { 'if (a < 1) return true; } }' }
+
+              it 'raise Parser::ParseError' do
+                is_expected.to eq 'expected next token to be {, got RETURN instead.'
+              end
+            end
+
+            context 'left body is missing' do
+              let(:input) { 'if (a < 1) {} }' }
+
+              it 'should not raise Error' do # I know it should not be here, but...
+                is_expected.to be_empty
+              end
+            end
+          end
+
+          context 'else' do
+            context 'lbrace is missing' do
+              let(:input) { 'if (a < 1) { return true; } else return false;} }' }
+
+              it 'raise Parser::ParseError' do
+                is_expected.to eq 'expected next token to be {, got RETURN instead.'
+              end
+            end
+
+            context 'rbrace is missing' do
+              let(:input) { 'if (a < 1) { return true; } else { return false; }' }
+
+              it 'raise Parser::ParseError' do
+                is_expected.to eq 'unexpected EOF has gotten.'
+              end
+            end
           end
         end
 
-        context 'missing rparen' do
-          let(:input) { 'do some_method(;' }
+        context 'while statement' do
+          context 'condition' do
+            context 'condition is missing' do
+              let(:input) { 'while (){return false;} }' }
 
-          it 'raise Parser::ParseError' do
-            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, "no prefix parse function for ; found.\nexpected next token to be ), got EOF instead.\nexpected next token to be ;, got EOF instead."
+              it 'raise Parser::ParseError' do
+                is_expected.not_to be_empty
+              end
+            end
+
+            context 'lparen is missing' do
+              let(:input) { 'while false){return false;} }' }
+
+              it 'raise Parser::ParseError' do
+                is_expected.to eq 'expected next token to be (, got FALSE instead.'
+              end
+            end
+
+            context 'rparen is missing' do
+              let(:input) { 'while (false{return false;} }' }
+
+              it 'raise Parser::ParseError' do
+                is_expected.to eq 'expected next token to be ), got RETURN instead.'
+              end
+            end
+          end
+
+          context 'body' do
+            context 'lbrace is missing' do
+              let(:input) { 'while (true) return false;} }' }
+
+              it 'raise Parser::ParseError' do
+                is_expected.to eq 'expected next token to be {, got RETURN instead.'
+              end
+            end
+
+            context 'semicolon is missing' do
+              let(:input) { 'while (true) {return false} }' }
+
+              it 'raise Parser::ParseError' do
+                is_expected.to eq "expected next token to be ;, got } instead.\nunexpected EOF has gotten."
+              end
+            end
+
+            context 'rbrace is missing' do
+              let(:input) { 'while (true) {return false;}' }
+
+              it 'raise Parser::ParseError' do
+                is_expected.to eq 'unexpected EOF has gotten.'
+              end
+            end
           end
         end
 
-        context 'missing semicolon' do
-          let(:input) { 'do some_method()' }
+        context 'do statement' do
+          context 'only period' do
+            let(:input) { 'do .some_method(); }' }
 
-          it 'raise Parser::ParseError' do
-            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be ;, got EOF instead.'
+            it 'raise Parser::ParseError' do
+              is_expected.to eq 'expected next token to be IDENT or THIS, got . instead.'
+            end
+          end
+
+          context 'missing lparen' do
+            let(:input) { 'do some_method); }' }
+
+            it 'raise Parser::ParseError' do
+              is_expected.to eq 'expected next token to be (, got ) instead.'
+            end
+          end
+
+          context 'missing rparen' do
+            let(:input) { 'do some_method(; }' }
+
+            it 'raise Parser::ParseError' do
+              is_expected.to eq "no prefix parse function for ; found.\nexpected next token to be ), got } instead.\nexpected next token to be ;, got } instead."
+            end
+          end
+
+          context 'missing semicolon' do
+            let(:input) { 'do some_method() }' }
+
+            it 'raise Parser::ParseError' do
+              is_expected.to eq 'expected next token to be ;, got } instead.'
+            end
+          end
+
+          context 'only comma' do
+            let(:input) { 'do some_method(,); }' }
+
+            it 'raise Parser::ParseError' do
+              is_expected.to eq 'no prefix parse function for , found.'
+            end
+          end
+
+          context 'last comma' do
+            let(:input) { 'do some_method(some, thing, ); }' }
+
+            it 'raise Parser::ParseError' do
+              is_expected.to eq "no prefix parse function for ) found.\nexpected next token to be ), got ; instead."
+            end
           end
         end
 
-        context 'only comma' do
-          let(:input) { 'do some_method(,);' }
+        context 'group expression' do
+          context 'unmatching left parens' do
+            let(:input) { 'let some = ((1 + 2); }' }
 
-          it 'raise Parser::ParseError' do
-            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'no prefix parse function for , found.'
+            it 'raise Parser::ParseError' do
+              is_expected.to eq 'expected next token to be ), got ; instead.'
+            end
           end
-        end
 
-        context 'last comma' do
-          let(:input) { 'do some_method(some, thing, );' }
+          context 'unmatching right parens' do
+            let(:input) { 'let some = (1 + 2)); }' }
 
-          it 'raise Parser::ParseError' do
-            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, "no prefix parse function for ) found.\nexpected next token to be ), got ; instead."
-          end
-        end
-      end
-
-      context 'group expression' do
-        context 'unmatching left parens' do
-          let(:input) { 'let some = ((1 + 2);' }
-
-          it 'raise Parser::ParseError' do
-            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be ), got ; instead.'
-          end
-        end
-
-        context 'unmatching right parens' do
-          let(:input) { 'let some = (1 + 2));' }
-
-          it 'raise Parser::ParseError' do
-            expect { Parser.new(lexer).parse_program }.to raise_error Parser::ParseError, 'expected next token to be ;, got ) instead.'
+            it 'raise Parser::ParseError' do
+              is_expected.to eq 'expected next token to be ;, got ) instead.'
+            end
           end
         end
       end
 
       context 'parse_var_declarations' do
         subject do
-          parser = Parser.new(lexer)
           parser.parse_var_declarations
           parser.error_message
         end
