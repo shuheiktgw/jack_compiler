@@ -68,6 +68,20 @@ class Parser
       return parameters
     end
 
+    parameters << parse_parameter
+
+    while next_token? Token::COMMA
+      next_token
+
+      parameters << parse_parameter
+    end
+
+    return unless expect_next Token::RPAREN
+
+    parameters
+  end
+
+  def parse_parameter
     return unless expect_next Token::TYPE_TOKENS
 
     type = @current_token
@@ -76,25 +90,7 @@ class Parser
 
     identifier = @current_token
 
-    parameters << Parameter.new(type: type, identifier: identifier)
-
-    while next_token? Token::COMMA
-      next_token
-      
-      return unless expect_next Token::TYPE_TOKENS
-
-      type = @current_token
-
-      return unless expect_next Token::IDENT
-
-      identifier = @current_token
-
-      parameters << Parameter.new(type: type, identifier: identifier)
-    end
-
-    return unless expect_next Token::RPAREN
-
-    parameters
+    Parameter.new(type: type, identifier: identifier)
   end
 
   def parse_method_body
