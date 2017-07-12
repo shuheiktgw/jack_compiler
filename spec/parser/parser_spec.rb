@@ -11,7 +11,54 @@ describe Parser do
   let(:parser) { Parser.new(lexer) }
 
   describe '#parse_parameters' do
-    subject(:params) { parser.parse_parameters }
+    subject(:method) { parser.parse_method }
+    let(:input) do
+      """
+      #{method_type} void someMethod(int i) {
+  return;
+}
+      """
+    end
+
+    context 'constructor' do
+      let(:method_type) { 'constructor' }
+
+      it do
+        expect(method.token).to eq Token.new(type: Token::CONSTRUCTOR, literal: 'constructor')
+        expect(method.type).to eq Token.new(type: Token::VOID_TYPE, literal: 'void')
+        expect(method.parameters).to eq [Parameter.new(type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))]
+        expect(method.body).to eq MethodBody.new(token: Token.new(type: Token::RETURN, literal: 'return'), vars: [], statements: [ReturnStatement.new(token: Token.new(type: Token::RETURN, literal: 'return'), return_value: nil)])
+        expect(parser.error_message).to be_empty
+      end
+    end
+
+    context 'function' do
+      let(:method_type) { 'function' }
+
+      it do
+        expect(method.token).to eq Token.new(type: Token::FUNCTION, literal: 'function')
+        expect(method.type).to eq Token.new(type: Token::VOID_TYPE, literal: 'void')
+        expect(method.parameters).to eq [Parameter.new(type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))]
+        expect(method.body).to eq MethodBody.new(token: Token.new(type: Token::RETURN, literal: 'return'), vars: [], statements: [ReturnStatement.new(token: Token.new(type: Token::RETURN, literal: 'return'), return_value: nil)])
+        expect(parser.error_message).to be_empty
+      end
+    end
+
+    context 'method' do
+      let(:method_type) { 'method' }
+
+      it do
+        expect(method.token).to eq Token.new(type: Token::METHOD, literal: 'method')
+        expect(method.type).to eq Token.new(type: Token::VOID_TYPE, literal: 'void')
+        expect(method.parameters).to eq [Parameter.new(type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))]
+        expect(method.body).to eq MethodBody.new(token: Token.new(type: Token::RETURN, literal: 'return'), vars: [], statements: [ReturnStatement.new(token: Token.new(type: Token::RETURN, literal: 'return'), return_value: nil)])
+        expect(parser.error_message).to be_empty
+      end
+    end
+  end
+
+  describe '#parse_parameters' do
+    subject{ parser.parse_parameters }
 
     context 'blank' do
       let(:input) {'()'}

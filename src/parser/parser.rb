@@ -54,9 +54,9 @@ class Parser
 
     return unless expect_next Token::LBRACE
 
-    body = parse_method_body
+    next_token
 
-    return unless expect_next Token::RBRACE
+    body = parse_method_body
 
     MethodDeclaration.new(token: token, type: type, method_name: identifier, parameters: parameters, body: body)
   end
