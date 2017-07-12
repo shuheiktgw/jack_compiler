@@ -142,6 +142,18 @@ describe Parser do
           expect(parser.error_message).to be_empty
         end
       end
+
+      context 'multiple' do
+        let(:input) { 'var int i1, i2;' }
+
+        it do
+          first = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i1'))
+          second = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i2'))
+          expect(vars[0]).to eq first
+          expect(vars[1]).to eq second
+          expect(parser.error_message).to be_empty
+        end
+      end
     end
 
     context 'multiple var declarations' do

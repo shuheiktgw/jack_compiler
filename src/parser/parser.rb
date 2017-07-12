@@ -37,6 +37,19 @@ class Parser
   # Parsers
   # ====================
 
+  def parse_class_var
+    var_declarations = []
+
+    while @current_token.type == Token::STATIC || @current_token.type == Token::FIELD
+      var = parse_var_declaration
+      var_declarations << var if var
+
+      next_token
+    end
+
+    var_declarations
+  end
+
   def parse_method
     token = @current_token
 
@@ -111,24 +124,37 @@ class Parser
       next_token
     end
 
-    var_declarations
+    var_declarations.flatten
   end
 
   def parse_var_declaration
+    vars = []
+
     token = @current_token
 
     # Checking type
-    expect_next Token::TYPE_TOKENS
+    return unless expect_next Token::TYPE_TOKENS
 
     type = @current_token
 
-    expect_next Token::IDENT
+    return unless expect_next Token::IDENT
 
     identifier = @current_token
 
-    expect_next Token::SEMICOLON
+    vars << VarDeclaration.new(token: token, type: type, identifier: identifier)
 
-    VarDeclaration.new(token: token, type: type, identifier: identifier)
+    while next_token? Token::COMMA
+      next_token
+
+      return unless expect_next Token::IDENT
+      more_identifier = @current_token
+
+      vars << VarDeclaration.new(token: token, type: type, identifier: more_identifier)
+    end
+
+    return unless expect_next Token::SEMICOLON
+
+    vars
   end
 
   def parse_statements
@@ -480,7 +506,7 @@ class Parser
 
   def expect_next(*token_types)
     types = token_types.flatten
-    if types.map{|tt| next_token? tt}.any?
+    if types.map { |tt| next_token? tt }.any?
       next_token
       true
     else
@@ -507,5 +533,6 @@ class Parser
     @errors << 'unexpected EOF has gotten.'
   end
 
-  class ParseError < StandardError; end
+  class ParseError < StandardError;
+  end
 end
