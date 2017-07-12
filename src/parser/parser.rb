@@ -47,7 +47,7 @@ class Parser
       next_token
     end
 
-    var_declarations
+    var_declarations.flatten
   end
 
   def parse_method

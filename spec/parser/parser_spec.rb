@@ -10,6 +10,142 @@ describe Parser do
   let(:lexer) { Lexer.new(input) }
   let(:parser) { Parser.new(lexer) }
 
+  describe '#parse_class_var' do
+    subject(:vars) { parser.parse_class_var }
+
+    context 'static' do
+      context 'single var declaration' do
+        context 'int' do
+          let(:input) { 'static int i;' }
+
+          it do
+            expected = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+            expect(vars.first).to eq expected
+            expect(parser.error_message).to be_empty
+          end
+        end
+
+        context 'char' do
+          let(:input) { 'static char someChar;' }
+
+          it do
+            expected = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'someChar'))
+            expect(vars.first).to eq expected
+            expect(parser.error_message).to be_empty
+          end
+        end
+
+        context 'user defined class' do
+          let(:input) { 'static SomeClass userDefinedInstance;' }
+
+          it do
+            expected = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'userDefinedInstance'))
+            expect(vars.first).to eq expected
+            expect(parser.error_message).to be_empty
+          end
+        end
+
+        context 'multiple' do
+          let(:input) { 'static int i1, i2;' }
+
+          it do
+            first = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i1'))
+            second = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i2'))
+            expect(vars[0]).to eq first
+            expect(vars[1]).to eq second
+            expect(parser.error_message).to be_empty
+          end
+        end
+      end
+
+      context 'multiple var declarations' do
+        let(:input) do
+          '' '
+            static int i;
+static char c;
+static SomeClass someVar;
+' ''
+        end
+
+        it do
+          expected_first = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+          expected_second = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'c'))
+          expected_third = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'someVar'))
+          expect(vars[0]).to eq expected_first
+          expect(vars[1]).to eq expected_second
+          expect(vars[2]).to eq expected_third
+          expect(parser.error_message).to be_empty
+        end
+      end
+    end
+
+    context 'field' do
+      context 'single var declaration' do
+        context 'int' do
+          let(:input) { 'field int i;' }
+
+          it do
+            expected = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+            expect(vars.first).to eq expected
+            expect(parser.error_message).to be_empty
+          end
+        end
+
+        context 'char' do
+          let(:input) { 'field char someChar;' }
+
+          it do
+            expected = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'someChar'))
+            expect(vars.first).to eq expected
+            expect(parser.error_message).to be_empty
+          end
+        end
+
+        context 'user defined class' do
+          let(:input) { 'field SomeClass userDefinedInstance;' }
+
+          it do
+            expected = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'userDefinedInstance'))
+            expect(vars.first).to eq expected
+            expect(parser.error_message).to be_empty
+          end
+        end
+
+        context 'multiple' do
+          let(:input) { 'field int i1, i2;' }
+
+          it do
+            first = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i1'))
+            second = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i2'))
+            expect(vars[0]).to eq first
+            expect(vars[1]).to eq second
+            expect(parser.error_message).to be_empty
+          end
+        end
+      end
+
+      context 'multiple var declarations' do
+        let(:input) do
+          '' '
+            field int i;
+field char c;
+field SomeClass someVar;
+' ''
+        end
+
+        it do
+          expected_first = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+          expected_second = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'c'))
+          expected_third = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'someVar'))
+          expect(vars[0]).to eq expected_first
+          expect(vars[1]).to eq expected_second
+          expect(vars[2]).to eq expected_third
+          expect(parser.error_message).to be_empty
+        end
+      end
+    end
+  end
+
   describe '#parse_parameters' do
     subject(:method) { parser.parse_method }
     let(:input) do
@@ -1719,6 +1855,22 @@ return test2;
 
         context 'semicolon is missing' do
           let(:input) { 'var int someVar' }
+
+          it 'raise Parser::ParseError' do
+            is_expected.to eq 'expected next token to be ;, got EOF instead.'
+          end
+        end
+
+        context 'comma is missing' do
+          let(:input) { 'var int i1 i2;' }
+
+          it 'raise Parser::ParseError' do
+            is_expected.to eq 'expected next token to be ;, got IDENT instead.'
+          end
+        end
+
+        context 'semicolon is missing' do
+          let(:input) { 'var int i1, i2, i3' }
 
           it 'raise Parser::ParseError' do
             is_expected.to eq 'expected next token to be ;, got EOF instead.'
