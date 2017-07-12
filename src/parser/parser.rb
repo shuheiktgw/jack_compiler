@@ -38,16 +38,7 @@ class Parser
   # ====================
 
   def parse_class_var
-    var_declarations = []
-
-    while @current_token.type == Token::STATIC || @current_token.type == Token::FIELD
-      var = parse_var_declaration
-      var_declarations << var if var
-
-      next_token
-    end
-
-    var_declarations.flatten
+    parse_vars Token::STATIC, Token::FIELD
   end
 
   def parse_method
@@ -115,9 +106,13 @@ class Parser
   end
 
   def parse_var_declarations
+    parse_vars Token::VAR
+  end
+
+  def parse_vars(*prefix)
     var_declarations = []
 
-    while @current_token.type == Token::VAR
+    while prefix.include? @current_token.type
       var = parse_var_declaration
       var_declarations << var if var
 
