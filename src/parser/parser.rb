@@ -1,9 +1,4 @@
 require 'pry-byebug'
-require_relative '../token/token'
-require_relative '../ast/expression/term/identifier'
-require_relative '../ast/expression/term/integer_literal'
-require_relative '../ast/expression/term/string_literal'
-require_relative '../ast/expression/infix_expression'
 
 class Parser
 
