@@ -90,6 +90,107 @@ function void test() {
       end
     end
 
+    context 'with function' do
+      let(:input) do
+        '''
+        class SomeClass {
+function void test() {
+        var int i, j;
+        var String s;
+        var Array a;
+        if (false) {
+            let s = "string constant";
+            let s = null;
+            let a[1] = a[2];
+        }
+        else {
+            let i = i * (-j);
+            let j = j / (-2);
+            let i = i | j;
+        }
+        return;
+    }
+}
+        '''
+      end
+
+      it do
+        expected = ClassDeclaration.new(token: Token.new(type: Token::CLASS, literal: 'class'), class_name: Token.new(type: Token::IDENT, literal: 'SomeClass'), variables: [], methods: [])
+        expect(klass.token).to eq expected.token
+        expect(klass.class_name).to eq expected.class_name
+        expect(klass.variables).to be_empty
+        expect(klass.methods).not_to be_empty
+        expect(parser.error_message).to be_empty
+      end
+    end
+
+    context 'with method' do
+      let(:input) do
+        '''
+        class SomeClass {
+method void moveRight() {
+      if ((x + size) < 510) {
+         do Screen.setColor(false);
+         do Screen.drawRectangle(x, y, x + 1, y + size);
+         let x = x + 2;
+         do Screen.setColor(true);
+         do Screen.drawRectangle((x + size) - 1, y, x + size, y + size);
+      }
+      return;
+   }
+}
+        '''
+      end
+
+      it do
+        expected = ClassDeclaration.new(token: Token.new(type: Token::CLASS, literal: 'class'), class_name: Token.new(type: Token::IDENT, literal: 'SomeClass'), variables: [], methods: [])
+        expect(klass.token).to eq expected.token
+        expect(klass.class_name).to eq expected.class_name
+        expect(klass.variables).to be_empty
+        expect(klass.methods).not_to be_empty
+        expect(parser.error_message).to be_empty
+      end
+    end
+
+    context 'with field' do
+      let(:input) do
+        '''
+        class SomeClass {
+field int x, y;
+field int size;
+}
+        '''
+      end
+
+      it do
+        expected = ClassDeclaration.new(token: Token.new(type: Token::CLASS, literal: 'class'), class_name: Token.new(type: Token::IDENT, literal: 'SomeClass'), variables: [], methods: [])
+        expect(klass.token).to eq expected.token
+        expect(klass.class_name).to eq expected.class_name
+        expect(klass.variables).not_to be_empty
+        expect(klass.methods).to be_empty
+        expect(parser.error_message).to be_empty
+      end
+    end
+
+    context 'with static' do
+      let(:input) do
+        '''
+        class SomeClass {
+static int x, y;
+static int size;
+}
+        '''
+      end
+
+      it do
+        expected = ClassDeclaration.new(token: Token.new(type: Token::CLASS, literal: 'class'), class_name: Token.new(type: Token::IDENT, literal: 'SomeClass'), variables: [], methods: [])
+        expect(klass.token).to eq expected.token
+        expect(klass.class_name).to eq expected.class_name
+        expect(klass.variables).not_to be_empty
+        expect(klass.methods).to be_empty
+        expect(parser.error_message).to be_empty
+      end
+    end
   end
 
   describe '#parse_class_var' do

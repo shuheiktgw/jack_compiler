@@ -52,6 +52,8 @@ class Parser
     methods = []
 
     while @current_token.type != Token::RBRACE
+      return unless @errors.empty?
+
       if @current_token.type == Token::EOF
         unexpected_eof_error
         return
@@ -87,8 +89,6 @@ class Parser
     identifier = @current_token
 
     return unless expect_next Token::LPAREN
-
-    binding.pry
 
     parameters = parse_parameters
 
