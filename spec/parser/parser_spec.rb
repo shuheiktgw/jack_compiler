@@ -10,6 +10,88 @@ describe Parser do
   let(:lexer) { Lexer.new(input) }
   let(:parser) { Parser.new(lexer) }
 
+  describe '#parse_class' do
+    subject(:klass) { parser.parse_class }
+
+    context 'empty' do
+      let(:input) do
+        '''
+        class SomeClass {
+}
+        '''
+      end
+
+      it do
+        expected = ClassDeclaration.new(token: Token.new(type: Token::CLASS, literal: 'class'), class_name: Token.new(type: Token::IDENT, literal: 'SomeClass'), variables: [], methods: [])
+        expect(klass.token).to eq expected.token
+        expect(klass.class_name).to eq expected.class_name
+        expect(klass.variables).to eq expected.variables
+        expect(klass.methods).to eq expected.methods
+        expect(parser.error_message).to be_empty
+      end
+    end
+
+    context 'with constructor' do
+      let(:input) do
+        '''
+        class SomeClass {
+constructor Square new(int Ax, int Ay, int Asize) {
+      let x = Ax;
+      let y = Ay;
+      let size = Asize;
+      do draw();
+      return this;
+   }
+}
+        '''
+      end
+
+      it do
+        expected = ClassDeclaration.new(token: Token.new(type: Token::CLASS, literal: 'class'), class_name: Token.new(type: Token::IDENT, literal: 'SomeClass'), variables: [], methods: [])
+        expect(klass.token).to eq expected.token
+        expect(klass.class_name).to eq expected.class_name
+        expect(klass.variables).to be_empty
+        expect(klass.methods).not_to be_empty
+        expect(parser.error_message).to be_empty
+      end
+    end
+
+    context 'with function' do
+      let(:input) do
+        '''
+        class SomeClass {
+function void test() {
+        var int i, j;
+        var String s;
+        var Array a;
+        if (false) {
+            let s = "string constant";
+            let s = null;
+            let a[1] = a[2];
+        }
+        else {
+            let i = i * (-j);
+            let j = j / (-2);
+            let i = i | j;
+        }
+        return;
+    }
+}
+        '''
+      end
+
+      it do
+        expected = ClassDeclaration.new(token: Token.new(type: Token::CLASS, literal: 'class'), class_name: Token.new(type: Token::IDENT, literal: 'SomeClass'), variables: [], methods: [])
+        expect(klass.token).to eq expected.token
+        expect(klass.class_name).to eq expected.class_name
+        expect(klass.variables).to be_empty
+        expect(klass.methods).not_to be_empty
+        expect(parser.error_message).to be_empty
+      end
+    end
+
+  end
+
   describe '#parse_class_var' do
     subject(:vars) { parser.parse_class_var }
 
@@ -433,11 +515,23 @@ var SomeClass someVar;
             end
           end
 
+          context 'expression is this constant' do
+            let(:expressions) { 'this;' }
+
+            it 'should return ThisLiteral' do
+              expression = ThisLiteral.new
+              expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
+
+              expect(first_result).to eq expected
+              expect(parser.error_message).to be_empty
+            end
+          end
+
           context 'expression is null constant' do
             let(:expressions) { 'null;' }
 
             it 'should return BooleanLiteral with true' do
-              expression = BooleanLiteral.new(token: Token.new(type: Token::NULL, literal: 'null'), value: nil)
+              expression = NullLiteral.new
               expected = LetStatement.new(token: token, identifier: identifier, expression: expression)
 
               expect(first_result).to eq expected

@@ -37,6 +37,40 @@ class Parser
   # Parsers
   # ====================
 
+  def parse_class
+    token = @current_token
+
+    expect_next Token::IDENT
+
+    class_name = @current_token
+
+    expect_next Token::LBRACE
+
+    next_token
+
+    vars = []
+    methods = []
+
+    while @current_token.type != Token::RBRACE
+      if @current_token.type == Token::EOF
+        unexpected_eof_error
+        return
+      end
+
+      case @current_token.type
+      when Token::STATIC, Token::FIELD
+        vars << parse_class_var
+      when Token::CONSTRUCTOR, Token::FUNCTION, Token:: METHOD
+        methods << parse_method
+      else
+        message = "Unexpected class level token #{@current_token.type} has been detected."
+        @errors << message
+      end
+    end
+
+    ClassDeclaration.new(token: token, class_name: class_name, variables: vars, methods: methods)
+  end
+
   def parse_class_var
     parse_vars Token::STATIC, Token::FIELD
   end
@@ -54,6 +88,8 @@ class Parser
 
     return unless expect_next Token::LPAREN
 
+    binding.pry
+
     parameters = parse_parameters
 
     return unless expect_next Token::LBRACE
@@ -69,6 +105,7 @@ class Parser
     parameters = []
 
     if next_token? Token::RPAREN
+      next_token
       return parameters
     end
 
@@ -483,6 +520,8 @@ class Parser
       parse_prefix
     when Token::LPAREN
       parse_group
+    when Token::THIS
+      ThisLiteral.new
     when Token::NULL
       NullLiteral.new
     else
