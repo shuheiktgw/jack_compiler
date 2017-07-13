@@ -1,10 +1,8 @@
 require 'spec_helper'
 
 # Remaining Tasks
-
-# TODO: add tests for parse_parameters
-# TODO: add tests for parse_method
-# TODO: add parser for class
+# TODO: add abnormal test cases for parse_class
+# TODO: add top level parser
 
 describe Parser do
   let(:lexer) { Lexer.new(input) }
@@ -2109,6 +2107,49 @@ return test2;
           it do
             is_expected.to eq 'expected next token to be ), got EOF instead.'
           end
+        end
+      end
+
+      context 'parse_class' do
+        subject do
+          parser.parse_class
+          parser.error_message
+        end
+
+        context 'rbrace is missing' do
+          let(:input) do
+            '''
+        class SomeClass
+constructor Square new(int Ax, int Ay, int Asize) {
+      let x = Ax;
+      let y = Ay;
+      let size = Asize;
+      do draw();
+      return this;
+   }
+}
+        '''
+          end
+
+          it {is_expected.to eq 'expected next token to be {, got CONSTRUCTOR instead.'}
+        end
+
+        context 'lbrace is missing' do
+          let(:input) do
+            '''
+        class SomeClass {
+constructor Square new(int Ax, int Ay, int Asize) {
+      let x = Ax;
+      let y = Ay;
+      let size = Asize;
+      do draw();
+      return this;
+   }
+
+        '''
+          end
+
+          it {is_expected.to eq 'unexpected EOF has gotten.'}
         end
       end
     end

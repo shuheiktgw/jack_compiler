@@ -62,6 +62,7 @@ class Parser
       else
         message = "Unexpected class level token #{@current_token.type} has been detected."
         @errors << message
+        return
       end
     end
 
@@ -92,6 +93,8 @@ class Parser
     next_token
 
     body = parse_method_body
+
+    next_token
 
     MethodDeclaration.new(token: token, type: type, method_name: identifier, parameters: parameters, body: body)
   end
