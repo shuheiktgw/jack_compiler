@@ -12,20 +12,31 @@ class Parser
   end
 
   def parse_program
-    method_declarations = []
+    classes = []
 
-    while @current_token.type != Token::RBRACE
-      method = parse_method
-      method_declarations << method if method
+    token = @current_token
 
-      next_token
+    while @current_token.type != Token::EOF
+      return unless @errors.empty?
+
+      case @current_token.type
+      when Token::CLASS
+        klass = parse_class
+        classes << klass if klass
+      else
+        message = "Unexpected class top level token #{@current_token.type} has been detected."
+        @errors << message
+        return
+      end
     end
+
+    next_token
 
     if @errors.size > 0
       raise ParseError, error_message
     end
 
-    method_declarations
+    Program.new(token: token, classes: classes)
   end
 
   # ====================
@@ -65,6 +76,8 @@ class Parser
         return
       end
     end
+
+    next_token
 
     ClassDeclaration.new(token: token, class_name: class_name, variables: vars, methods: methods)
   end
