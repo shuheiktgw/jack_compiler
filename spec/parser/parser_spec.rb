@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 # Remaining Tasks
-# TODO: add top level parser
+# TODO: enable to skip comments
+# TODO: implement to_h for xml
 
 describe Parser do
   let(:lexer) { Lexer.new(input) }

@@ -193,6 +193,25 @@ describe Lexer do
         end
       end
     end
+
+    context 'when comment is given' do
+      context '// comments' do
+        subject { Lexer.new(input).next_token }
+
+        context 'single comment' do
+          let(:input) do
+            '''
+            // This comment should ignored
+let
+            '''
+          end
+
+          it 'ignore comment' do
+            is_expected.to eq Token.new(type: Token::LET, literal: 'let')
+          end
+        end
+      end
+    end
   end
 end
 
