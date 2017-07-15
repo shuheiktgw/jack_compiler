@@ -16,65 +16,69 @@ describe InfixExpression do
         let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '222'), value: 222) }
 
         it do
-          expected = {
-            expression: [
-              {
-                term: {
-                  integerConstant: 111
-                }
-              },
-              {symbol: '+'},
-              {
-                term: {
-                  integerConstant: 222
-                }
-              }
-            ]
-          }
+          expected = [
+              { term: { integerConstant: 111 } },
+              { symbol: '+'},
+              { term: { integerConstant: 222 } }
+          ]
 
           expect(hash).to eq expected
         end
 
         it do
-          expected = '<expression><term><integerConstant>111</integerConstant></term><symbol>+</symbol><term><integerConstant>222</integerConstant></term></expression>'
+          expected = '<term><integerConstant>111</integerConstant></term><symbol>+</symbol><term><integerConstant>222</integerConstant></term>'
           expect(xml).to eq expected
         end
       end
 
-      context 'simple two term' do
+      context 'three term' do
         let(:left) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '111'), value: 111) }
-        let(:right){ InfixExpression.new(token: Token.new(type: '+', literal: '+'), left: middle_term, operator: '+', right: right_term) }
+        let(:right) { InfixExpression.new(token: Token.new(type: '+', literal: '+'), left: middle_term, operator: '+', right: right_term) }
         let(:middle_term) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '222'), value: 222) }
         let(:right_term) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '333'), value: 333) }
 
         it do
-          expected = {
-            expression: [
-              {
-                term: {
-                  integerConstant: 111
-                }
-              },
-              {symbol: '+'},
-              {
-                term: {
-                  integerConstant: 222
-                }
-              },
-              {symbol: '+'},
-              {
-                term: {
-                  integerConstant: 333
-                }
-              }
-            ]
-          }
+          expected = [
+            { term: { integerConstant: 111 } },
+            {symbol: '+'},
+            { term: { integerConstant: 222 } },
+            {symbol: '+'},
+            { term: { integerConstant: 333 } }
+          ]
 
           expect(hash).to eq expected
         end
 
         it do
-          expected = '<expression><term><integerConstant>111</integerConstant></term><symbol>+</symbol><term><integerConstant>222</integerConstant></term><symbol>+</symbol><term><integerConstant>333</integerConstant></term></expression>'
+          expected = '<term><integerConstant>111</integerConstant></term><symbol>+</symbol><term><integerConstant>222</integerConstant></term><symbol>+</symbol><term><integerConstant>333</integerConstant></term>'
+          expect(xml).to eq expected
+        end
+      end
+
+      context 'four term' do
+        let(:left) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '111'), value: 111) }
+        let(:right) { InfixExpression.new(token: Token.new(type: '+', literal: '+'), left: second, operator: '+', right: right_most) }
+        let(:second) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '222'), value: 222) }
+        let(:right_most) { InfixExpression.new(token: Token.new(type: '+', literal: '+'), left: third, operator: '+', right: fourth) }
+        let(:third) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '333'), value: 333) }
+        let(:fourth) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '444'), value: 444) }
+
+        it do
+          expected = [
+            { term: { integerConstant: 111 } },
+            {symbol: '+'},
+            { term: { integerConstant: 222 } },
+            {symbol: '+'},
+            { term: { integerConstant: 333 } },
+            {symbol: '+'},
+            { term: { integerConstant: 444 } }
+          ]
+
+          expect(hash).to eq expected
+        end
+
+        it do
+          expected = '<term><integerConstant>111</integerConstant></term><symbol>+</symbol><term><integerConstant>222</integerConstant></term><symbol>+</symbol><term><integerConstant>333</integerConstant></term><symbol>+</symbol><term><integerConstant>444</integerConstant></term>'
           expect(xml).to eq expected
         end
       end
