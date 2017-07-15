@@ -9,6 +9,19 @@ class PrefixExpression < AstBase
   end
 
   def to_h
-    raise 'This should be implemented'
+    {
+      expression: [
+        {symbol: operator},
+        modified_right
+      ]
+    }
+  end
+
+  def modified_right
+    if right.token.type == Token::IDENT
+      {term: right.to_h}
+    else
+      right.to_h
+    end
   end
 end

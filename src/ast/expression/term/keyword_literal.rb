@@ -1,2 +1,0 @@
-class KeywordLiteral < AstBase
-end

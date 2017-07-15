@@ -9,10 +9,14 @@ class Identifier < AstBase
   end
 
   def to_h
-    {
-      term: {
+    base = [
+      {
         identifier: value
       }
-    }
+    ]
+
+    base << [ { symbol: '[' }, index.to_h, { symbol: ']' } ] if index
+
+    base
   end
 end

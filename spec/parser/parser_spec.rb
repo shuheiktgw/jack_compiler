@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 # Remaining Tasks
-# TODO: enable to skip comments
 # TODO: implement to_h for xml
 
 describe Parser do
