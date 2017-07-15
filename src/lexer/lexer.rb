@@ -28,6 +28,8 @@ class Lexer
     when '*'
       Token.new(type: Token::ASTERISK, literal: @char)
     when '/'
+      return eat_comments if peer_char == '/' || peer_char == '*'
+
       Token.new(type: Token::SLASH, literal: @char)
     when '<'
       Token.new(type: Token::LT, literal: @char)
@@ -96,6 +98,30 @@ class Lexer
     while white_spaces.include? @char
       read_char
     end
+  end
+
+  def eat_comments
+    case peer_char
+    when '/'
+      until @char == "\n"
+        read_char
+      end
+
+      # Skip last \n
+      read_char
+    when '*'
+      until @char == '*' && peer_char == '/'
+        read_char
+      end
+
+      # Skip last */
+      read_char
+      read_char
+    else
+      raise "Unexpected character #{peer_char} is given."
+    end
+
+    next_token
   end
 
   def read_string
