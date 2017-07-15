@@ -13,9 +13,17 @@ class InfixExpression < AstBase
     a = [
       left.to_h,
       { symbol: operator },
-    ] << right.to_h
+    ] << modified_right
 
     a.flatten
+  end
+
+  def modified_right
+    if right.token.type == Token::IDENT
+      {term: right.to_h}
+    else
+      right.to_h
+    end
   end
 
   # Gyoku cannot parse plain array

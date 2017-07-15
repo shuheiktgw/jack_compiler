@@ -9,12 +9,10 @@ class PrefixExpression < AstBase
   end
 
   def to_h
-    {
-      expression: [
-        {symbol: operator},
-        modified_right
-      ]
-    }
+    [
+      {symbol: operator},
+      modified_right
+    ]
   end
 
   def modified_right
@@ -23,5 +21,10 @@ class PrefixExpression < AstBase
     else
       right.to_h
     end
+  end
+
+  # Gyoku cannot parse plain array
+  def to_xml
+    self.to_h.map{|h| Gyoku.xml(h, unwrap: true)}.join('')
   end
 end

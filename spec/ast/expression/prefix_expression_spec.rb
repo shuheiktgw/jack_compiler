@@ -15,22 +15,20 @@ describe PrefixExpression do
         let(:right) { IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '432718'), value: 432718) }
 
         it do
-          expected = {
-            expression: [
-              {symbol: '~'},
-              {
-                term: {
-                  integerConstant: 432718
-                }
+          expected = [
+            {symbol: '~'},
+            {
+              term: {
+                integerConstant: 432718
               }
-            ]
-          }
+            }
+          ]
 
           expect(hash).to eq expected
         end
 
         it do
-          expected = '<expression><symbol>~</symbol><term><integerConstant>432718</integerConstant></term></expression>'
+          expected = '<symbol>~</symbol><term><integerConstant>432718</integerConstant></term>'
           expect(xml).to eq expected
         end
       end
@@ -39,18 +37,16 @@ describe PrefixExpression do
         let(:right) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'variable'), value: 'variable') }
 
         it do
-          expected = {
-            expression: [
-              {symbol: '~'},
-              { term: [ { identifier: 'variable' } ] }
-            ]
-          }
+          expected = [
+            {symbol: '~'},
+            { term: [ { identifier: 'variable' } ] }
+          ]
 
           expect(hash).to eq expected
         end
 
         it do
-          expected = '<expression><symbol>~</symbol><term><identifier>variable</identifier></term></expression>'
+          expected = '<symbol>~</symbol><term><identifier>variable</identifier></term>'
           expect(xml).to eq expected
         end
       end
