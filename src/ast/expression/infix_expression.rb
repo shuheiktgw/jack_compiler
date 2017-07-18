@@ -11,18 +11,19 @@ class InfixExpression < AstBase
 
   def to_h
     a = [
-      left.to_h,
+      modify_indent(left),
       { symbol: operator },
-    ] << modified_right
+      modify_indent(right)
+    ]
 
     a.flatten
   end
 
-  def modified_right
-    if right.token.type == Token::IDENT
-      {term: right.to_h}
+  def modify_indent(value)
+    if value.token.type == Token::IDENT
+      {term: value.to_h}
     else
-      right.to_h
+      value.to_h
     end
   end
 
