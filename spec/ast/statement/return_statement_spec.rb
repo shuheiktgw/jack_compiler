@@ -26,5 +26,30 @@ describe ReturnStatement do
         expect(xml).to eq expected
       end
     end
+
+    context 'return value is this' do
+      let(:return_value) { ThisLiteral.new }
+
+      it do
+        expected = {
+          returnStatement: {
+            keyword: 'return',
+            expression: {
+              term: {
+                keyword: 'this'
+              }
+            },
+            symbol: ';'
+          }
+        }
+
+        expect(hash).to eq expected
+      end
+
+      it do
+        expected = '<returnStatement><keyword>return</keyword><expression><term><keyword>this</keyword></term></expression><symbol>;</symbol></returnStatement>'
+        expect(xml).to eq expected
+      end
+    end
   end
 end
