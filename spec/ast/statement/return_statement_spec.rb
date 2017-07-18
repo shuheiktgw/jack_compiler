@@ -51,5 +51,30 @@ describe ReturnStatement do
         expect(xml).to eq expected
       end
     end
+
+    context 'return value is identifier' do
+      let(:return_value) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'variable'), value: 'variable') }
+
+      it do
+        expected = {
+          returnStatement: {
+            keyword: 'return',
+            expression: {
+              term: [
+                { identifier: 'variable' }
+              ]
+            },
+            symbol: ';'
+          }
+        }
+
+        expect(hash).to eq expected
+      end
+
+      it do
+        expected = '<returnStatement><keyword>return</keyword><expression><term><identifier>variable</identifier></term></expression><symbol>;</symbol></returnStatement>'
+        expect(xml).to eq expected
+      end
+    end
   end
 end

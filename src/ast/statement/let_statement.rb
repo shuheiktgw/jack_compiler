@@ -14,9 +14,9 @@ class LetStatement < AstBase
         {keyword: 'let'},
         @identifier.to_h,
         {symbol: '='},
-        @expression.to_h,
+        {expression: @expression.to_h},
         symbol: ';'
-      ]
+      ].flatten
     }
   end
 end
