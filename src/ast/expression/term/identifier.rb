@@ -8,6 +8,10 @@ class Identifier < AstBase
     @index = index
   end
 
+  def term?
+    true
+  end
+
   def to_h
     base = [
       {

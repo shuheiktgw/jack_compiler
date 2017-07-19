@@ -6,6 +6,10 @@ class AstBase
 
   class UnimplementedError < StandardError; end
 
+  def term?
+    false
+  end
+
   def to_h
     raise UnimplementedError, "You have to override #to_h in its child class, #{self.class.name}"
   end

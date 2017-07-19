@@ -7,11 +7,13 @@ class StringLiteral < AstBase
     @value = value
   end
 
+  def term?
+    true
+  end
+
   def to_h
     {
-      term: {
-        stringConstant: @value
-      }
+      stringConstant: @value
     }
   end
 end

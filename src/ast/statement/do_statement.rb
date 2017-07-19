@@ -8,4 +8,38 @@ class DoStatement < AstBase
     @function = function
     @arguments = arguments
   end
+
+  def to_h
+    dos = [
+      { keyword: 'do' }
+    ]
+
+    dos << prefix.to_h if prefix
+    dos << { symbol: '.' } if prefix
+    dos << function.to_h
+    dos << { symbol: '(' }
+    dos << { expressionList: form_arguments }
+    dos << { symbol: ')' }
+    dos << { symbol: ';' }
+
+    { doStatement: dos.flatten }
+  end
+
+  def form_arguments
+    return '' if arguments.empty?
+
+    arguments.map do |a|
+      handle_expression(a)
+    end
+  end
+
+  def handle_expression(exo)
+    term = if exo.term?
+      { term: exo.to_h }
+    else
+      exo.to_h
+    end
+
+    { expression:  term}
+  end
 end

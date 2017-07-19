@@ -12,11 +12,21 @@ class LetStatement < AstBase
     {
       letStatement: [
         {keyword: 'let'},
-        @identifier.to_h,
+        identifier.to_h,
         {symbol: '='},
-        {expression: @expression.to_h},
+        handle_expression(expression),
         symbol: ';'
       ].flatten
     }
+  end
+
+  def handle_expression(exo)
+    term = if exo.term?
+      { term: exo.to_h }
+    else
+      exo.to_h
+    end
+
+    { expression:  term}
   end
 end

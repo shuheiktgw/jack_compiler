@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 # Remaining Tasks
-# TODO: implement to_h for xml
+# TODO: add more test infix expression test cases for do_statement
+# TODO: add more test prefix expression test cases for do_statement
 
 describe Parser do
   let(:lexer) { Lexer.new(input) }

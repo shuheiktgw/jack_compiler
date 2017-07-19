@@ -7,11 +7,13 @@ class ThisLiteral < AstBase
     @value = nil
   end
 
+  def term?
+    true
+  end
+
   def to_h
     {
-      term: {
-        keyword: 'this'
-      }
+      keyword: 'this'
     }
   end
 end

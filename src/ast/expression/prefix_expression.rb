@@ -11,15 +11,15 @@ class PrefixExpression < AstBase
   def to_h
     [
       {symbol: operator},
-      modified_right
+      handle_term(right)
     ]
   end
 
-  def modified_right
-    if right.token.type == Token::IDENT
-      {term: right.to_h}
+  def handle_term(value)
+    if value.term?
+      { term: value.to_h }
     else
-      right.to_h
+      value.to_h
     end
   end
 

@@ -7,11 +7,13 @@ class IntegerLiteral < AstBase
     @value = value
   end
 
+  def term?
+    true
+  end
+
   def to_h
     {
-      term: {
-        integerConstant: @value
-      }
+      integerConstant: @value
     }
   end
 end

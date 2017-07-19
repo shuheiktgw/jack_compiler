@@ -7,11 +7,13 @@ class NullLiteral < AstBase
     @value = nil
   end
 
+  def term?
+    true
+  end
+
   def to_h
     {
-      term: {
-        keyword: 'null'
-      }
+      integerConstant: @value
     }
   end
 end

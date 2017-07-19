@@ -7,11 +7,11 @@ class BooleanLiteral < AstBase
     @value = value
   end
 
+  def term?
+    true
+  end
+
   def to_h
-    {
-      term: {
-        keyword: @value.to_s
-      }
-    }
+    { keyword: @value.to_s }
   end
 end

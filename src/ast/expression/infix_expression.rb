@@ -11,17 +11,17 @@ class InfixExpression < AstBase
 
   def to_h
     a = [
-      modify_indent(left),
+      handle_term(left),
       { symbol: operator },
-      modify_indent(right)
+      handle_term(right)
     ]
 
     a.flatten
   end
 
-  def modify_indent(value)
-    if value.token.type == Token::IDENT
-      {term: value.to_h}
+  def handle_term(value)
+    if value.term?
+      { term: value.to_h }
     else
       value.to_h
     end
