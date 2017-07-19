@@ -64,6 +64,65 @@ describe DoStatement do
         end
       end
 
+      context 'argument is infix expression' do
+        let(:arguments) { [ infix ] }
+        let(:left){ IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1234'), value: 1234) }
+        let(:right){ IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '1273'), value: 1273) }
+        let(:infix){ InfixExpression.new(token: Token.new(type: Token::PLUS, literal: Token::PLUS), left: left, operator: Token::PLUS, right: right) }
+
+        it do
+          expected = {
+            doStatement: [
+              { keyword: 'do' },
+              { keyword: 'this' },
+              { symbol: '.' },
+              { identifier: 'some_function' },
+              { symbol: '(' },
+              { expressionList: [ { expression: [ { term: { integerConstant: 1234 } }, { symbol: '+'}, { term: { integerConstant: 1273 } } ] } ] },
+              { symbol: ')' },
+              { symbol: ';' },
+            ]
+          }
+
+          expect(hash).to eq expected
+        end
+
+        it do
+          expected = '<doStatement><keyword>do</keyword><keyword>this</keyword><symbol>.</symbol><identifier>some_function</identifier><symbol>(</symbol><expressionList><expression><term><integerConstant>1234</integerConstant></term><symbol>+</symbol><term><integerConstant>1273</integerConstant></term></expression></expressionList><symbol>)</symbol><symbol>;</symbol></doStatement>'
+
+          expect(xml).to eq expected
+        end
+      end
+
+      context 'argument is prefix expression' do
+        let(:arguments) { [ prefix_exp ] }
+        let(:right){ Identifier.new(token: Token.new(type: Token::IDENT, literal: 'something'), value: 'something') }
+        let(:prefix_exp){ PrefixExpression.new(token: Token.new(type: Token::MINUS, literal: '-'), operator: '-', right: right) }
+
+        it do
+          expected = {
+            doStatement: [
+              { keyword: 'do' },
+              { keyword: 'this' },
+              { symbol: '.' },
+              { identifier: 'some_function' },
+              { symbol: '(' },
+              { expressionList: [ { expression: [ {symbol: '-'}, { term: [ { identifier: 'something' } ] } ] } ] },
+              { symbol: ')' },
+              { symbol: ';' },
+            ]
+          }
+
+          expect(hash).to eq expected
+        end
+
+        it do
+          expected = '<doStatement><keyword>do</keyword><keyword>this</keyword><symbol>.</symbol><identifier>some_function</identifier><symbol>(</symbol><expressionList><expression><symbol>-</symbol><term><identifier>something</identifier></term></expression></expressionList><symbol>)</symbol><symbol>;</symbol></doStatement>'
+
+          expect(xml).to eq expected
+        end
+      end
+
       context 'arguments are multiple integers' do
         let(:arguments) { [IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '432718'), value: 432718), IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '324'), value: 324)] }
 
