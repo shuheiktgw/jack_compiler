@@ -50,32 +50,76 @@ describe IfStatement do
       # Return statement in the consequence
       let(:consequence_return){ReturnStatement.new(token: Token.new(type: Token::RETURN, literal: 'return'), return_value: consequence_ident)}
       let(:consequence){BlockStatement.new(token: Token.new(type: Token::LBRACE, literal: '{'), statements: [consequence_let, consequence_return])}
-      let(:alternative) { nil }
 
-      it do
-        expected = {:ifStatement=>
-          [{:keyword=>"if"},
-            {:symbol=>"("},
-            {:symbol=>"("},
-            {:expression=>[{:term=>[{:identifier=>"a"}]}, {:symbol=>"<"}, {:term=>{:integerConstant=>2}}]},
-            {:symbol=>")"},
-            {:symbol=>"{"},
-            {:statements=>
-              [{:letStatement=>
-                [{:keyword=>"let"},
-                  {:identifier=>"test1"},
-                  {:symbol=>"="},
-                  {:expression=>[{:term=>{:integerConstant=>1}}, {:symbol=>"+"}, {:term=>{:integerConstant=>2}}]},
-                  {:symbol=>";"}]},
-                {:returnStatement=>{:keyword=>"return", :expression=>{:term=>[{:identifier=>"test1"}]}, :symbol=>";"}}]},
-            {:symbol=>"}"}]}
+      context 'wuthout altenative' do
+        let(:alternative) { nil }
 
-        expect(hash).to eq expected
+        it do
+          expected = {:ifStatement=>
+            [{:keyword=>"if"},
+              {:symbol=>"("},
+              {:symbol=>"("},
+              {:expression=>[{:term=>[{:identifier=>"a"}]}, {:symbol=>"<"}, {:term=>{:integerConstant=>2}}]},
+              {:symbol=>")"},
+              {:symbol=>"{"},
+              {:statements=>
+                [{:letStatement=>
+                  [{:keyword=>"let"},
+                    {:identifier=>"test1"},
+                    {:symbol=>"="},
+                    {:expression=>[{:term=>{:integerConstant=>1}}, {:symbol=>"+"}, {:term=>{:integerConstant=>2}}]},
+                    {:symbol=>";"}]},
+                  {:returnStatement=>{:keyword=>"return", :expression=>{:term=>[{:identifier=>"test1"}]}, :symbol=>";"}}]},
+              {:symbol=>"}"}]}
+
+          expect(hash).to eq expected
+        end
+
+        it do
+          expected ='<ifStatement><keyword>if</keyword><symbol>(</symbol><symbol>(</symbol><expression><term><identifier>a</identifier></term><symbol>&lt;</symbol><term><integerConstant>2</integerConstant></term></expression><symbol>)</symbol><symbol>{</symbol><statements><letStatement><keyword>let</keyword><identifier>test1</identifier><symbol>=</symbol><expression><term><integerConstant>1</integerConstant></term><symbol>+</symbol><term><integerConstant>2</integerConstant></term></expression><symbol>;</symbol></letStatement><returnStatement><keyword>return</keyword><expression><term><identifier>test1</identifier></term></expression><symbol>;</symbol></returnStatement></statements><symbol>}</symbol></ifStatement>'
+          expect(xml).to eq expected
+        end
       end
 
-      it do
-        expected ='<ifStatement><keyword>if</keyword><symbol>(</symbol><symbol>(</symbol><expression><term><identifier>a</identifier></term><symbol>&lt;</symbol><term><integerConstant>2</integerConstant></term></expression><symbol>)</symbol><symbol>{</symbol><statements><letStatement><keyword>let</keyword><identifier>test1</identifier><symbol>=</symbol><expression><term><integerConstant>1</integerConstant></term><symbol>+</symbol><term><integerConstant>2</integerConstant></term></expression><symbol>;</symbol></letStatement><returnStatement><keyword>return</keyword><expression><term><identifier>test1</identifier></term></expression><symbol>;</symbol></returnStatement></statements><symbol>}</symbol></ifStatement>'
-        expect(xml).to eq expected
+      context 'wuthout altenative' do
+        let(:alternative){ BlockStatement.new(token: Token.new(type: Token::LBRACE, literal: '{'), statements: [consequence_let, consequence_return]) }
+
+        it do
+          expected = {:ifStatement=>
+            [{:keyword=>"if"},
+              {:symbol=>"("},
+              {:symbol=>"("},
+              {:expression=>[{:term=>[{:identifier=>"a"}]}, {:symbol=>"<"}, {:term=>{:integerConstant=>2}}]},
+              {:symbol=>")"},
+              {:symbol=>"{"},
+              {:statements=>
+                [{:letStatement=>
+                  [{:keyword=>"let"},
+                    {:identifier=>"test1"},
+                    {:symbol=>"="},
+                    {:expression=>[{:term=>{:integerConstant=>1}}, {:symbol=>"+"}, {:term=>{:integerConstant=>2}}]},
+                    {:symbol=>";"}]},
+                  {:returnStatement=>{:keyword=>"return", :expression=>{:term=>[{:identifier=>"test1"}]}, :symbol=>";"}}]},
+              {:symbol=>"}"},
+              {:keyword=>"else"},
+              {:symbol=>"{"},
+              {:statements=>
+                [{:letStatement=>
+                  [{:keyword=>"let"},
+                    {:identifier=>"test1"},
+                    {:symbol=>"="},
+                    {:expression=>[{:term=>{:integerConstant=>1}}, {:symbol=>"+"}, {:term=>{:integerConstant=>2}}]},
+                    {:symbol=>";"}]},
+                  {:returnStatement=>{:keyword=>"return", :expression=>{:term=>[{:identifier=>"test1"}]}, :symbol=>";"}}]},
+              {:symbol=>"}"}]}
+
+          expect(hash).to eq expected
+        end
+
+        it do
+          expected ='<ifStatement><keyword>if</keyword><symbol>(</symbol><symbol>(</symbol><expression><term><identifier>a</identifier></term><symbol>&lt;</symbol><term><integerConstant>2</integerConstant></term></expression><symbol>)</symbol><symbol>{</symbol><statements><letStatement><keyword>let</keyword><identifier>test1</identifier><symbol>=</symbol><expression><term><integerConstant>1</integerConstant></term><symbol>+</symbol><term><integerConstant>2</integerConstant></term></expression><symbol>;</symbol></letStatement><returnStatement><keyword>return</keyword><expression><term><identifier>test1</identifier></term></expression><symbol>;</symbol></returnStatement></statements><symbol>}</symbol><keyword>else</keyword><symbol>{</symbol><statements><letStatement><keyword>let</keyword><identifier>test1</identifier><symbol>=</symbol><expression><term><integerConstant>1</integerConstant></term><symbol>+</symbol><term><integerConstant>2</integerConstant></term></expression><symbol>;</symbol></letStatement><returnStatement><keyword>return</keyword><expression><term><identifier>test1</identifier></term></expression><symbol>;</symbol></returnStatement></statements><symbol>}</symbol></ifStatement>'
+          expect(xml).to eq expected
+        end
       end
     end
   end
