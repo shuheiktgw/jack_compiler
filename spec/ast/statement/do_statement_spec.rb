@@ -107,7 +107,7 @@ describe DoStatement do
               { symbol: '.' },
               { identifier: 'some_function' },
               { symbol: '(' },
-              { expressionList: [ { expression: [ {symbol: '-'}, { term: [ { identifier: 'something' } ] } ] } ] },
+              { expressionList: [ { expression: { term: [ {symbol: '-'}, { term: [ { identifier: 'something' } ] } ] } } ] },
               { symbol: ')' },
               { symbol: ';' },
             ]
@@ -117,7 +117,7 @@ describe DoStatement do
         end
 
         it do
-          expected = '<doStatement><keyword>do</keyword><keyword>this</keyword><symbol>.</symbol><identifier>some_function</identifier><symbol>(</symbol><expressionList><expression><symbol>-</symbol><term><identifier>something</identifier></term></expression></expressionList><symbol>)</symbol><symbol>;</symbol></doStatement>'
+          expected = '<doStatement><keyword>do</keyword><keyword>this</keyword><symbol>.</symbol><identifier>some_function</identifier><symbol>(</symbol><expressionList><expression><term><symbol>-</symbol><term><identifier>something</identifier></term></term></expression></expressionList><symbol>)</symbol><symbol>;</symbol></doStatement>'
 
           expect(xml).to eq expected
         end

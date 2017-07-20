@@ -8,6 +8,10 @@ class PrefixExpression < AstBase
     @right = right
   end
 
+  def term?
+    true
+  end
+
   def to_h
     [
       {symbol: operator},

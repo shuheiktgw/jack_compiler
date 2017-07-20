@@ -4,7 +4,6 @@ describe PrefixExpression do
   let(:prefix_expression) { PrefixExpression.new(token: 'token', operator: operator, right: right) }
 
   describe '#to_h / #to_xml' do
-    # token is not important here so I just mocked it using string.
     subject(:hash) { prefix_expression.to_h }
     subject(:xml) { prefix_expression.to_xml }
 

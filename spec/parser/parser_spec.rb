@@ -3,8 +3,11 @@ require 'spec_helper'
 # Remaining Tasks
 # Done: add more test infix expression test cases for do_statement
 # Done: add more test prefix expression test cases for do_statement
-# TODO: implement to_h for block_statement
-# TODO: implement to_h for if
+# Done: implement to_h for block_statement
+# Done: implement to_h for if
+# Done: fix test for prefix (added term? => true)
+# TODO: implement to_h group expression
+# TODO: implement to_h for while
 
 describe Parser do
   let(:lexer) { Lexer.new(input) }
@@ -1073,8 +1076,8 @@ var SomeClass someVar;
               it do
                 expect(first_result.token).to eq expected.token
                 expect(first_result.identifier).to eq expected.identifier
-                expect(first_result.expression.token).to eq expected.expression.token
-                expect(first_result.expression.value).to eq expected.expression.value
+                expect(first_result.expression.expression.token).to eq expected.expression.token
+                expect(first_result.expression.expression.value).to eq expected.expression.value
                 expect(parser.error_message).to be_empty
               end
             end
@@ -1085,8 +1088,8 @@ var SomeClass someVar;
               it do
                 expect(first_result.token).to eq expected.token
                 expect(first_result.identifier).to eq expected.identifier
-                expect(first_result.expression.token).to eq expected.expression.token
-                expect(first_result.expression.value).to eq expected.expression.value
+                expect(first_result.expression.expression.expression.token).to eq expected.expression.token
+                expect(first_result.expression.expression.expression.value).to eq expected.expression.value
                 expect(parser.error_message).to be_empty
               end
             end
@@ -1097,8 +1100,8 @@ var SomeClass someVar;
               it do
                 expect(first_result.token).to eq expected.token
                 expect(first_result.identifier).to eq expected.identifier
-                expect(first_result.expression.token).to eq expected.expression.token
-                expect(first_result.expression.value).to eq expected.expression.value
+                expect(first_result.expression.expression.expression.expression.token).to eq expected.expression.token
+                expect(first_result.expression.expression.expression.expression.value).to eq expected.expression.value
                 expect(parser.error_message).to be_empty
               end
             end
@@ -1117,7 +1120,7 @@ var SomeClass someVar;
                   expect(first_result.token).to eq expected.token
                   expect(first_result.identifier).to eq expected.identifier
                   expect(first_result.expression.token).to eq expected.expression.token
-                  expect(first_result.expression.left).to eq expected.expression.left
+                  expect(first_result.expression.left.expression).to eq expected.expression.left
                   expect(first_result.expression.operator).to eq expected.expression.operator
                   expect(first_result.expression.right).to eq expected.expression.right
                   expect(parser.error_message).to be_empty
@@ -1133,7 +1136,7 @@ var SomeClass someVar;
                   expect(first_result.expression.token).to eq expected.expression.token
                   expect(first_result.expression.left).to eq expected.expression.left
                   expect(first_result.expression.operator).to eq expected.expression.operator
-                  expect(first_result.expression.right).to eq expected.expression.right
+                  expect(first_result.expression.right.expression).to eq expected.expression.right
                   expect(parser.error_message).to be_empty
                 end
               end
@@ -1146,10 +1149,10 @@ var SomeClass someVar;
                 it do
                   expect(first_result.token).to eq expected.token
                   expect(first_result.identifier).to eq expected.identifier
-                  expect(first_result.expression.token).to eq expected.expression.token
-                  expect(first_result.expression.left).to eq expected.expression.left
-                  expect(first_result.expression.operator).to eq expected.expression.operator
-                  expect(first_result.expression.right).to eq expected.expression.right
+                  expect(first_result.expression.expression.token).to eq expected.expression.token
+                  expect(first_result.expression.expression.left.expression).to eq expected.expression.left
+                  expect(first_result.expression.expression.operator).to eq expected.expression.operator
+                  expect(first_result.expression.expression.right).to eq expected.expression.right
                   expect(parser.error_message).to be_empty
                 end
               end
@@ -1161,9 +1164,9 @@ var SomeClass someVar;
                   expect(first_result.token).to eq expected.token
                   expect(first_result.identifier).to eq expected.identifier
                   expect(first_result.expression.token).to eq expected.expression.token
-                  expect(first_result.expression.left).to eq expected.expression.left
+                  expect(first_result.expression.left.expression).to eq expected.expression.left
                   expect(first_result.expression.operator).to eq expected.expression.operator
-                  expect(first_result.expression.right).to eq expected.expression.right
+                  expect(first_result.expression.right.expression).to eq expected.expression.right
                   expect(parser.error_message).to be_empty
                 end
               end
@@ -1174,10 +1177,10 @@ var SomeClass someVar;
                 it do
                   expect(first_result.token).to eq expected.token
                   expect(first_result.identifier).to eq expected.identifier
-                  expect(first_result.expression.token).to eq expected.expression.token
-                  expect(first_result.expression.left).to eq expected.expression.left
-                  expect(first_result.expression.operator).to eq expected.expression.operator
-                  expect(first_result.expression.right).to eq expected.expression.right
+                  expect(first_result.expression.expression.token).to eq expected.expression.token
+                  expect(first_result.expression.expression.left).to eq expected.expression.left
+                  expect(first_result.expression.expression.operator).to eq expected.expression.operator
+                  expect(first_result.expression.expression.right.expression).to eq expected.expression.right
                   expect(parser.error_message).to be_empty
                 end
               end
@@ -1199,10 +1202,10 @@ var SomeClass someVar;
                 expect(first_result.identifier).to eq expected.identifier
                 expect(first_result.expression.token).to eq expected.expression.token
 
-                expect(first_result.expression.left.token).to eq expected.expression.left.token
-                expect(first_result.expression.left.left).to eq expected.expression.left.left
-                expect(first_result.expression.left.operator).to eq expected.expression.left.operator
-                expect(first_result.expression.left.right).to eq expected.expression.left.right
+                expect(first_result.expression.left.expression.token).to eq expected.expression.left.token
+                expect(first_result.expression.left.expression.left).to eq expected.expression.left.left
+                expect(first_result.expression.left.expression.operator).to eq expected.expression.left.operator
+                expect(first_result.expression.left.expression.right).to eq expected.expression.left.right
 
                 expect(first_result.expression.operator).to eq expected.expression.operator
                 expect(first_result.expression.right).to eq expected.expression.right
@@ -1224,10 +1227,10 @@ var SomeClass someVar;
                 expect(first_result.expression.left).to eq expected.expression.left
                 expect(first_result.expression.operator).to eq expected.expression.operator
 
-                expect(first_result.expression.right.token).to eq expected.expression.right.token
-                expect(first_result.expression.right.left).to eq expected.expression.right.left
-                expect(first_result.expression.right.operator).to eq expected.expression.right.operator
-                expect(first_result.expression.right.right).to eq expected.expression.right.right
+                expect(first_result.expression.right.expression.token).to eq expected.expression.right.token
+                expect(first_result.expression.right.expression.left).to eq expected.expression.right.left
+                expect(first_result.expression.right.expression.operator).to eq expected.expression.right.operator
+                expect(first_result.expression.right.expression.right).to eq expected.expression.right.right
 
                 expect(parser.error_message).to be_empty
               end

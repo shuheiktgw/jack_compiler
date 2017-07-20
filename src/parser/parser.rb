@@ -437,7 +437,7 @@ class Parser
 
     return unless expect_next Token::RPAREN
 
-    expression
+    GroupExpression.new(expression: expression)
   end
 
   def parse_infix(left_expression)
