@@ -2,7 +2,7 @@ require 'spec_helper'
 
 # Remaining Tasks
 # Done: add more test infix expression test cases for do_statement
-# TODO: add more test prefix expression test cases for do_statement
+# Done: add more test prefix expression test cases for do_statement
 # TODO: implement to_h for block_statement
 # TODO: implement to_h for if
 

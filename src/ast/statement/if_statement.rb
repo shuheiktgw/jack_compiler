@@ -10,15 +10,22 @@ class IfStatement < AstBase
   end
 
   def to_h
-    ifs = [
-      { keyword: 'do' }
-    ]
+    ifs = []
 
+    ifs << { keyword: 'if' }
     ifs << { symbol: '(' }
+    ifs << { symbol: '(' }
+    ifs << handle_expression(@condition)
+    ifs << { symbol: ')' }
+    ifs << { symbol: '{' }
+    ifs << consequence.to_h
+    ifs << { symbol: '}' }
+    ifs << { keyword: 'else' } if alternative
+    ifs << { symbol: '{' } if alternative
+    ifs << alternative.to_h if alternative
+    ifs << { symbol: '}' } if alternative
 
-
-
-
+    { ifStatement:  ifs }
   end
 
   def handle_expression(exo)
