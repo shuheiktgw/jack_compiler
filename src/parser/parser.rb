@@ -83,7 +83,7 @@ class Parser
   end
 
   def parse_class_var
-    parse_vars Token::STATIC, Token::FIELD
+    parse_vars true
   end
 
   def parse_method
@@ -154,14 +154,20 @@ class Parser
   end
 
   def parse_var_declarations
-    parse_vars Token::VAR
+    parse_vars false
   end
 
-  def parse_vars(*prefix)
+  def parse_vars(is_class)
     var_declarations = []
 
-    while prefix.include? @current_token.type
-      var = parse_var_declaration
+    targets = if is_class
+      [Token::STATIC, Token::FIELD]
+    else
+      [Token::VAR]
+    end
+
+    while targets.include? @current_token.type
+      var = parse_var_declaration(is_class)
       var_declarations << var if var
 
       next_token
@@ -170,7 +176,7 @@ class Parser
     var_declarations.flatten
   end
 
-  def parse_var_declaration
+  def parse_var_declaration(is_class)
     vars = []
 
     token = @current_token
@@ -192,7 +198,11 @@ class Parser
       return unless expect_next Token::IDENT
       more_identifier = @current_token
 
-      vars << VarDeclaration.new(token: token, type: type, identifier: more_identifier)
+      if is_class
+        vars << ClassVarDeclaration.new(token: token, type: type, identifier: more_identifier)
+      else
+        vars << VarDeclaration.new(token: token, type: type, identifier: more_identifier)
+      end
     end
 
     return unless expect_next Token::SEMICOLON

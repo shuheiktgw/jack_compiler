@@ -6,4 +6,15 @@ class MethodBody < AstBase
     @vars = vars
     @statements = statements
   end
+
+  def to_h
+    {
+      subroutineBody: [
+        {symbol: '{'},
+        vars,
+        statements,
+        {symbol: '}'}
+      ].flatten
+    }
+  end
 end
