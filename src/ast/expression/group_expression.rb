@@ -7,6 +7,25 @@ class GroupExpression < AstBase
   end
 
   def to_h
-    raise
+    [
+      {symbol: '('},
+      handle_expression(expression),
+      {symbol: ')'}
+    ]
+
+  end
+
+  def term?
+    true
+  end
+
+  def handle_expression(exo)
+    term = if exo.term?
+      { term: exo.to_h }
+    else
+      exo.to_h
+    end
+
+    { expression:  term}
   end
 end

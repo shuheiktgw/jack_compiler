@@ -11,7 +11,7 @@ class WhileStatement < AstBase
   def to_h
     whiles = []
 
-    whiles << { keyword: 'if' }
+    whiles << { keyword: 'while' }
     whiles << { symbol: '(' }
     whiles << { symbol: '(' }
     whiles << handle_expression(condition)
@@ -20,7 +20,7 @@ class WhileStatement < AstBase
     whiles << consequence.to_h
     whiles << { symbol: '}' }
 
-    { whileStatement:  ifs }
+    { whileStatement:  whiles }
   end
 
   def handle_expression(exo)

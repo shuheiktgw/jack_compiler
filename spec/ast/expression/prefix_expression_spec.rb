@@ -49,6 +49,17 @@ describe PrefixExpression do
           expect(xml).to eq expected
         end
       end
+
+      context 'right is group' do
+        let(:right) {GroupExpression.new(expression: infix_expression)}
+        let(:infix_expression) {InfixExpression.new(token: Token.new(type: '=', literal: '='), left: left_infix, operator: '=', right: right_infix)}
+        let(:left_infix) {Identifier.new(token: Token.new(type: Token::IDENT, literal: 'key'), value: 'key')}
+        let(:right_infix) {IntegerLiteral.new(token: Token.new(type: Token::INT, literal: '0'), value: 0)}
+
+        it do
+          expect(xml).to eq '<symbol>~</symbol><term><symbol>(</symbol><expression><term><identifier>key</identifier></term><symbol>=</symbol><term><integerConstant>0</integerConstant></term></expression><symbol>)</symbol></term>'
+        end
+      end
     end
   end
 end
