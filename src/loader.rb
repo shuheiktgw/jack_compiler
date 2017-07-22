@@ -1,7 +1,7 @@
 class Loader
   FILE_TYPE = {file: 'file', directory: 'directory'}
 
-  attr_reader :file_names, :file_idx
+  attr_reader :file_names, :file_idx, :content
 
   def initialize(file_path)
     @file_names = get_files(file_path)
@@ -9,12 +9,15 @@ class Loader
   end
 
   def load_next
-    return if next_file_name.nil?
-    content = File.read(next_file_name)
+    if next_file_name.nil?
+      @content = nil
+      return false
+    end
 
+    @content = File.read(next_file_name)
     @file_idx += 1
 
-    content
+    true
   end
 
   def next_file_name

@@ -9,7 +9,10 @@ describe Loader do
         let(:path) {File.expand_path('../jack_codes/test.jack', __FILE__)}
 
         context 'call load_next once' do
-          subject { loader.load_next }
+          subject do
+            loader.load_next
+            loader.content
+          end
 
           it 'should return file content' do
             is_expected.to eq "test\ntest\ntest"
@@ -20,6 +23,7 @@ describe Loader do
           subject do
             loader.load_next
             loader.load_next
+            loader.content
           end
 
           it 'should return nil' do
@@ -32,7 +36,11 @@ describe Loader do
         let(:path) {File.expand_path('../jack_codes/test', __FILE__)}
 
         context 'call load_next once' do
-          subject { loader.load_next }
+          subject do
+            loader.load_next
+            loader.content
+          end
+
 
           it 'should return first file content' do
             is_expected.to eq "test1\ntest1\ntest1"
@@ -43,6 +51,7 @@ describe Loader do
           subject do
             loader.load_next
             loader.load_next
+            loader.content
           end
 
           it 'should return second file content' do
@@ -55,6 +64,7 @@ describe Loader do
             loader.load_next
             loader.load_next
             loader.load_next
+            loader.content
           end
 
           it 'should return nil' do
@@ -67,7 +77,7 @@ describe Loader do
     context 'when file does not exist' do
 
       it 'should raise error' do
-        expect{ Loader.new(File.expand_path('../jack_codes/unknown.jack', __FILE__)) }
+        expect {Loader.new(File.expand_path('../jack_codes/unknown.jack', __FILE__))}
       end
     end
   end
