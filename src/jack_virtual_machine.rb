@@ -1,6 +1,5 @@
 require_relative './recorder/assembly_recorder'
 require_relative './translator/vm_translator'
-require_relative './dispatcher/vm_dispatcher'
 
 class JackVirtualMachine
 
