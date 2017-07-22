@@ -6,8 +6,8 @@ require 'spec_helper'
 # Done: implement to_h for block_statement
 # Done: implement to_h for if
 # Done: fix test for prefix (added term? => true)
-# TODO: implement to_h group expression
-# TODO: implement to_h for while
+# Done: implement to_h group expression
+# Done: implement to_h for while
 
 describe Parser do
   let(:lexer) { Lexer.new(input) }

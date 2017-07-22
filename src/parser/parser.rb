@@ -30,8 +30,6 @@ class Parser
       end
     end
 
-    next_token
-
     if @errors.size > 0
       raise ParseError, error_message
     end

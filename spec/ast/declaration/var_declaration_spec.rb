@@ -1,24 +1,24 @@
 require 'spec_helper'
 
 describe VarDeclaration do
-  let(:var_declaration) { VarDeclaration.new(token: 'token', type: type, identifier: Token.new(type: Token::IDENT, literal: 'someVar')) }
+  let(:var_declaration) {VarDeclaration.new(token: 'token', type: type, identifier: Token.new(type: Token::IDENT, literal: 'someVar'))}
 
   describe '#to_h / #to_xml' do
-    subject(:hash) { var_declaration.to_h }
-    subject(:xml) { var_declaration.to_xml }
+    subject(:hash) {var_declaration.to_h}
+    subject(:xml) {var_declaration.to_xml}
 
     context 'type is identifier' do
-      let(:type) { Token.new(type: Token::IDENT, literal: 'Square') }
+      let(:type) {Token.new(type: Token::IDENT, literal: 'Square')}
 
       it do
         expected = {
-            varDec: [
-              {keyword: 'var'},
-              {identifier: 'Square'},
-              {identifier: 'someVar'},
-              {symbol: ';'}
-            ]
-          }
+          varDec: [
+            {keyword: 'var'},
+            {identifier: 'Square'},
+            {identifier: 'someVar'},
+            {symbol: ';'}
+          ]
+        }
 
         expect(hash).to eq expected
       end
@@ -30,7 +30,7 @@ describe VarDeclaration do
     end
 
     context 'type is keyword' do
-      let(:type) { Token.new(type: Token::BOOLEAN_TYPE, literal: 'boolean') }
+      let(:type) {Token.new(type: Token::BOOLEAN_TYPE, literal: 'boolean')}
 
       it do
         expected = {
