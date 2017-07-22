@@ -15,7 +15,7 @@ class NullLiteral < AstBase
 
   def to_h
     {
-      integerConstant: @value
+      keyword: 'null'
     }
   end
 end

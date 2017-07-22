@@ -15,7 +15,7 @@ class StringLiteral < AstBase
 
   def to_h
     {
-      stringConstant: @value
+      string_constant: @value
     }
   end
 end

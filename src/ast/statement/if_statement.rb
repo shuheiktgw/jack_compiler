@@ -27,7 +27,7 @@ class IfStatement < AstBase
     ifs << alternative.to_h if alternative
     ifs << { symbol: '}' } if alternative
 
-    { ifStatement:  ifs }
+    { if_statement:  ifs }
   end
 
   def handle_expression(exo)

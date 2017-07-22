@@ -11,7 +11,7 @@ class ReturnStatement < AstBase
 
   def to_h
     {
-      returnStatement: form_value(return_value)
+      return_statement: form_value(return_value)
     }
   end
 

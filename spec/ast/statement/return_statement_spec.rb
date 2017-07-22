@@ -12,7 +12,7 @@ describe ReturnStatement do
 
       it do
         expected = {
-          returnStatement: {
+          return_statement: {
             keyword: 'return',
             symbol: ';'
           }
@@ -32,7 +32,7 @@ describe ReturnStatement do
 
       it do
         expected = {
-          returnStatement: {
+          return_statement: {
             keyword: 'return',
             expression: {
               term: {
@@ -57,7 +57,7 @@ describe ReturnStatement do
 
       it do
         expected = {
-          returnStatement: {
+          return_statement: {
             keyword: 'return',
             expression: {
               term: [

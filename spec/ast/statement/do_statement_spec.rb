@@ -1,21 +1,21 @@
 require 'spec_helper'
 
 describe DoStatement do
-  let(:do_statement) { DoStatement.new(token: 'token', prefix: prefix, function: Identifier.new(token: Token.new(type: Token::IDENT, literal: 'some_function'), value: 'some_function'), arguments: arguments) }
+  let(:do_statement) { DoStatement.new(token: 'token', prefix: prefix, function: Token.new(type: Token::IDENT, literal: 'some_function'), arguments: arguments) }
 
   describe '#to_h / to_xml' do
     subject(:hash) { do_statement.to_h }
     subject(:xml) { do_statement.to_xml }
 
     context 'prefix is this' do
-      let(:prefix) { ThisLiteral.new }
+      let(:prefix) { Token.new(type: Token::THIS, literal: 'this') }
 
       context 'arguments are blank' do
         let(:arguments) { [] }
 
         it do
           expected = {
-            doStatement: [
+            do_statement: [
               { keyword: 'do' },
               { keyword: 'this' },
               { symbol: '.' },
@@ -42,13 +42,13 @@ describe DoStatement do
 
         it do
           expected = {
-            doStatement: [
+            do_statement: [
               { keyword: 'do' },
               { keyword: 'this' },
               { symbol: '.' },
               { identifier: 'some_function' },
               { symbol: '(' },
-              { expressionList: [ { expression: { term: { integerConstant: 432718 } } } ] },
+              { expressionList: [ { expression: { term: { integer_constant: 432718 } } } ] },
               { symbol: ')' },
               { symbol: ';' },
             ]
@@ -72,13 +72,13 @@ describe DoStatement do
 
         it do
           expected = {
-            doStatement: [
+            do_statement: [
               { keyword: 'do' },
               { keyword: 'this' },
               { symbol: '.' },
               { identifier: 'some_function' },
               { symbol: '(' },
-              { expressionList: [ { expression: [ { term: { integerConstant: 1234 } }, { symbol: '+'}, { term: { integerConstant: 1273 } } ] } ] },
+              { expressionList: [ { expression: [ { term: { integer_constant: 1234 } }, { symbol: '+'}, { term: { integer_constant: 1273 } } ] } ] },
               { symbol: ')' },
               { symbol: ';' },
             ]
@@ -101,7 +101,7 @@ describe DoStatement do
 
         it do
           expected = {
-            doStatement: [
+            do_statement: [
               { keyword: 'do' },
               { keyword: 'this' },
               { symbol: '.' },
@@ -128,13 +128,13 @@ describe DoStatement do
 
         it do
           expected = {
-            doStatement: [
+            do_statement: [
               { keyword: 'do' },
               { keyword: 'this' },
               { symbol: '.' },
               { identifier: 'some_function' },
               { symbol: '(' },
-              { expressionList: [ { expression: { term: { integerConstant: 432718 } } }, { expression: { term: { integerConstant: 324 } } } ] },
+              { expressionList: [ { expression: { term: { integer_constant: 432718 } } }, { expression: { term: { integer_constant: 324 } } } ] },
               { symbol: ')' },
               { symbol: ';' },
             ]
@@ -152,7 +152,7 @@ describe DoStatement do
     end
 
     context 'prefix is ident' do
-      let(:prefix) { Identifier.new(token: Token.new(type: Token::IDENT, literal: 'first'), value: 'first') }
+      let(:prefix) { Token.new(type: Token::IDENT, literal: 'first') }
 
       context 'arguments are blank' do
         context 'arguments are blank' do
@@ -160,7 +160,7 @@ describe DoStatement do
 
           it do
             expected = {
-              doStatement: [
+              do_statement: [
                 { keyword: 'do' },
                 { identifier: 'first' },
                 { symbol: '.' },

@@ -11,7 +11,7 @@ class MethodBody < AstBase
 
   def to_h
     {
-      subroutineBody: [
+      subroutine_body: [
         {symbol: '{'},
         vars.map(&:to_h).flatten,
         {statements: statements.map(&:to_h).flatten},

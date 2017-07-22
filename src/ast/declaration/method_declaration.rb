@@ -13,12 +13,12 @@ class MethodDeclaration < AstBase
 
   def to_h
     {
-      subroutineDec: [
+      subroutine_dec: [
         {keywrod: token.literal},
         parse_type(type),
         {identifier: method_name.literal},
         {symbol: '('},
-        {parameterList: parameters.flatten},
+        {parameter_list: parameters.flatten},
         {symbol: ')'},
         body.to_h
       ]

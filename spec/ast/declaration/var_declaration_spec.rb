@@ -12,7 +12,7 @@ describe VarDeclaration do
 
       it do
         expected = {
-          varDec: [
+          var_dec: [
             {keyword: 'var'},
             {identifier: 'Square'},
             {identifier: 'someVar'},
@@ -34,7 +34,7 @@ describe VarDeclaration do
 
       it do
         expected = {
-          varDec: [
+          var_dec: [
             {keyword: 'var'},
             {keyword: 'boolean'},
             {identifier: 'someVar'},

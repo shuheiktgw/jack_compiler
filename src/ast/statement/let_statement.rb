@@ -12,7 +12,7 @@ class LetStatement < AstBase
 
   def to_h
     {
-      letStatement: [
+      let_statement: [
         {keyword: 'let'},
         identifier.to_h,
         {symbol: '='},

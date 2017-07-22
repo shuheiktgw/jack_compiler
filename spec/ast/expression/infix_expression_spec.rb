@@ -17,9 +17,9 @@ describe InfixExpression do
 
         it do
           expected = [
-              { term: { integerConstant: 111 } },
+              { term: { integer_constant: 111 } },
               { symbol: '+'},
-              { term: { integerConstant: 222 } }
+              { term: { integer_constant: 222 } }
           ]
 
           expect(hash).to eq expected
@@ -39,11 +39,11 @@ describe InfixExpression do
 
         it do
           expected = [
-            { term: { integerConstant: 111 } },
+            { term: { integer_constant: 111 } },
             {symbol: '+'},
-            { term: { integerConstant: 222 } },
+            { term: { integer_constant: 222 } },
             {symbol: '+'},
-            { term: { integerConstant: 333 } }
+            { term: { integer_constant: 333 } }
           ]
 
           expect(hash).to eq expected
@@ -65,13 +65,13 @@ describe InfixExpression do
 
         it do
           expected = [
-            { term: { integerConstant: 111 } },
+            { term: { integer_constant: 111 } },
             {symbol: '+'},
-            { term: { integerConstant: 222 } },
+            { term: { integer_constant: 222 } },
             {symbol: '+'},
-            { term: { integerConstant: 333 } },
+            { term: { integer_constant: 333 } },
             {symbol: '+'},
-            { term: { integerConstant: 444 } }
+            { term: { integer_constant: 444 } }
           ]
 
           expect(hash).to eq expected

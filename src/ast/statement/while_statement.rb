@@ -22,7 +22,7 @@ class WhileStatement < AstBase
     whiles << consequence.to_h
     whiles << { symbol: '}' }
 
-    { whileStatement:  whiles }
+    { while_statement:  whiles }
   end
 
   def handle_expression(exo)

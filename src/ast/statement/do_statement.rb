@@ -24,7 +24,7 @@ class DoStatement < AstBase
     dos << { symbol: ')' }
     dos << { symbol: ';' }
 
-    { doStatement: dos.flatten }
+    { do_statement: dos.flatten }
   end
 
   def form_arguments

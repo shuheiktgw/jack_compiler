@@ -18,7 +18,7 @@ describe PrefixExpression do
             {symbol: '~'},
             {
               term: {
-                integerConstant: 432718
+                integer_constant: 432718
               }
             }
           ]

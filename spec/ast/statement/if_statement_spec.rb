@@ -17,11 +17,11 @@ describe IfStatement do
 
       it do
         expected = {
-          ifStatement: [
+          if_statement: [
             {keyword: 'if'},
             {symbol: '('},
             {symbol: '('},
-            {expression: [{term: [{identifier: 'a'}]}, {symbol: '<'}, {term: {integerConstant: 2}}]},
+            {expression: [{term: [{identifier: 'a'}]}, {symbol: '<'}, {term: {integer_constant: 2}}]},
             {symbol: ')'},
             {symbol: '{'},
             {statements: []},
@@ -55,21 +55,21 @@ describe IfStatement do
         let(:alternative) { nil }
 
         it do
-          expected = {:ifStatement=>
+          expected = {:if_statement=>
             [{:keyword=>"if"},
               {:symbol=>"("},
               {:symbol=>"("},
-              {:expression=>[{:term=>[{:identifier=>"a"}]}, {:symbol=>"<"}, {:term=>{:integerConstant=>2}}]},
+              {:expression=>[{:term=>[{:identifier=>"a"}]}, {:symbol=>"<"}, {:term=>{:integer_constant=>2}}]},
               {:symbol=>")"},
               {:symbol=>"{"},
               {:statements=>
-                [{:letStatement=>
+                [{:let_statement=>
                   [{:keyword=>"let"},
                     {:identifier=>"test1"},
                     {:symbol=>"="},
-                    {:expression=>[{:term=>{:integerConstant=>1}}, {:symbol=>"+"}, {:term=>{:integerConstant=>2}}]},
+                    {:expression=>[{:term=>{:integer_constant=>1}}, {:symbol=>"+"}, {:term=>{:integer_constant=>2}}]},
                     {:symbol=>";"}]},
-                  {:returnStatement=>{:keyword=>"return", :expression=>{:term=>[{:identifier=>"test1"}]}, :symbol=>";"}}]},
+                  {:return_statement=>{:keyword=>"return", :expression=>{:term=>[{:identifier=>"test1"}]}, :symbol=>";"}}]},
               {:symbol=>"}"}]}
 
           expect(hash).to eq expected
@@ -85,32 +85,32 @@ describe IfStatement do
         let(:alternative){ BlockStatement.new(token: Token.new(type: Token::LBRACE, literal: '{'), statements: [consequence_let, consequence_return]) }
 
         it do
-          expected = {:ifStatement=>
+          expected = {:if_statement=>
             [{:keyword=>"if"},
               {:symbol=>"("},
               {:symbol=>"("},
-              {:expression=>[{:term=>[{:identifier=>"a"}]}, {:symbol=>"<"}, {:term=>{:integerConstant=>2}}]},
+              {:expression=>[{:term=>[{:identifier=>"a"}]}, {:symbol=>"<"}, {:term=>{:integer_constant=>2}}]},
               {:symbol=>")"},
               {:symbol=>"{"},
               {:statements=>
-                [{:letStatement=>
+                [{:let_statement=>
                   [{:keyword=>"let"},
                     {:identifier=>"test1"},
                     {:symbol=>"="},
-                    {:expression=>[{:term=>{:integerConstant=>1}}, {:symbol=>"+"}, {:term=>{:integerConstant=>2}}]},
+                    {:expression=>[{:term=>{:integer_constant=>1}}, {:symbol=>"+"}, {:term=>{:integer_constant=>2}}]},
                     {:symbol=>";"}]},
-                  {:returnStatement=>{:keyword=>"return", :expression=>{:term=>[{:identifier=>"test1"}]}, :symbol=>";"}}]},
+                  {:return_statement=>{:keyword=>"return", :expression=>{:term=>[{:identifier=>"test1"}]}, :symbol=>";"}}]},
               {:symbol=>"}"},
               {:keyword=>"else"},
               {:symbol=>"{"},
               {:statements=>
-                [{:letStatement=>
+                [{:let_statement=>
                   [{:keyword=>"let"},
                     {:identifier=>"test1"},
                     {:symbol=>"="},
-                    {:expression=>[{:term=>{:integerConstant=>1}}, {:symbol=>"+"}, {:term=>{:integerConstant=>2}}]},
+                    {:expression=>[{:term=>{:integer_constant=>1}}, {:symbol=>"+"}, {:term=>{:integer_constant=>2}}]},
                     {:symbol=>";"}]},
-                  {:returnStatement=>{:keyword=>"return", :expression=>{:term=>[{:identifier=>"test1"}]}, :symbol=>";"}}]},
+                  {:return_statement=>{:keyword=>"return", :expression=>{:term=>[{:identifier=>"test1"}]}, :symbol=>";"}}]},
               {:symbol=>"}"}]}
 
           expect(hash).to eq expected

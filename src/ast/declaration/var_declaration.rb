@@ -11,7 +11,7 @@ class VarDeclaration < AstBase
 
   def to_h
     {
-      varDec: [
+      var_dec: [
         {keyword: 'var'},
         parse_type(type),
         {identifier: identifier.literal},

@@ -12,7 +12,7 @@ describe LetStatement do
 
       it do
         expected = {
-          letStatement: [
+          let_statement: [
             {keyword: 'let'},
             {identifier: 'variable'},
             {symbol: '='},
@@ -20,7 +20,7 @@ describe LetStatement do
               expression: {
               term:
                 {
-                  integerConstant: 1
+                  integer_constant: 1
                 }
               }
             },
@@ -44,7 +44,7 @@ describe LetStatement do
 
       it do
         expected = {
-          letStatement: [
+          let_statement: [
             {keyword: 'let'},
             {identifier: 'variable'},
             {symbol: '='},
@@ -52,7 +52,7 @@ describe LetStatement do
               expression: [
                 { term:  [ { identifier: 'indent' } ] },
                 { symbol: '+'},
-                { term: { integerConstant: 1273 } }
+                { term: { integer_constant: 1273 } }
               ]
             },
             {symbol: ';'}

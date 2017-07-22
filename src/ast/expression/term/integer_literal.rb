@@ -15,7 +15,7 @@ class IntegerLiteral < AstBase
 
   def to_h
     {
-      integerConstant: @value
+      integer_constant: @value
     }
   end
 end
