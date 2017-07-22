@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class InfixExpression < AstBase
 
   attr_reader :token, :left, :operator, :right

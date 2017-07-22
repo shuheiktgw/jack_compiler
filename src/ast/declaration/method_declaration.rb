@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class MethodDeclaration < AstBase
   attr_reader :token, :type, :method_name, :parameters, :body
 
@@ -17,7 +19,8 @@ class MethodDeclaration < AstBase
         {identifier: method_name.literal},
         {symbol: '('},
         {parameterList: parameters.flatten},
-        {symbol: ')'}
+        {symbol: ')'},
+        body.to_h
       ]
     }
   end

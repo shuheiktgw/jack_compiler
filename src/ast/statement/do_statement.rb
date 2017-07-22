@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class DoStatement < AstBase
 
   attr_reader :token, :prefix, :function, :arguments
@@ -14,9 +16,9 @@ class DoStatement < AstBase
       { keyword: 'do' }
     ]
 
-    dos << prefix.to_h if prefix
+    dos << handle_prefix(prefix) if prefix
     dos << { symbol: '.' } if prefix
-    dos << function.to_h
+    dos << {identifier: function.literal}
     dos << { symbol: '(' }
     dos << { expressionList: form_arguments }
     dos << { symbol: ')' }
@@ -42,4 +44,13 @@ class DoStatement < AstBase
 
     { expression:  term}
   end
+
+  def handle_prefix(prefix)
+    if prefix.type == Token::THIS
+      {keyword: prefix.literal}
+    else
+      {identifier: prefix.literal}
+    end
+  end
+
 end

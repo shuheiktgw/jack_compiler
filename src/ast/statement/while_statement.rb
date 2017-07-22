@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class WhileStatement < AstBase
 
   attr_reader :token, :condition, :consequence

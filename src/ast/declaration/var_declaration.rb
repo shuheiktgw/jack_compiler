@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class VarDeclaration < AstBase
   attr_reader :token, :type, :identifier
 

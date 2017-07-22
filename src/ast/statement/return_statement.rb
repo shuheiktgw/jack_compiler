@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class ReturnStatement < AstBase
 
   attr_reader :token, :return_value

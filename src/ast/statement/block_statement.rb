@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class BlockStatement < AstBase
 
   attr_reader :token, :statements

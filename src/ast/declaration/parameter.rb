@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class Parameter < AstBase
   attr_reader :type, :identifier
 

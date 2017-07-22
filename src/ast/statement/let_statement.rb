@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class LetStatement < AstBase
 
   attr_reader :token, :identifier, :expression

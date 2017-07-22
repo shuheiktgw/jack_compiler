@@ -1,3 +1,5 @@
+require_relative '../../ast_base'
+
 class ThisLiteral < AstBase
 
   attr_reader :token, :value

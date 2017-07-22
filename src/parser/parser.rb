@@ -1,3 +1,27 @@
+require_relative '../token/token'
+require_relative '../ast/program'
+require_relative '../ast/declaration/class_declaration'
+require_relative '../ast/declaration/class_var_declaration'
+require_relative '../ast/declaration/method_body'
+require_relative '../ast/declaration/method_declaration'
+require_relative '../ast/declaration/parameter'
+require_relative '../ast/declaration/var_declaration'
+require_relative '../ast/expression/term/boolean_literal'
+require_relative '../ast/expression/term/identifier'
+require_relative '../ast/expression/term/integer_literal'
+require_relative '../ast/expression/term/null_literal'
+require_relative '../ast/expression/term/string_literal'
+require_relative '../ast/expression/term/this_literal'
+require_relative '../ast/expression/term/function_call'
+require_relative '../ast/expression/group_expression'
+require_relative '../ast/expression/infix_expression'
+require_relative '../ast/expression/prefix_expression'
+require_relative '../ast/statement/block_statement'
+require_relative '../ast/statement/do_statement'
+require_relative '../ast/statement/if_statement'
+require_relative '../ast/statement/let_statement'
+require_relative '../ast/statement/return_statement'
+require_relative '../ast/statement/while_statement'
 require 'pry-byebug'
 
 class Parser
@@ -17,7 +41,7 @@ class Parser
     token = @current_token
 
     while @current_token.type != Token::EOF
-      return unless @errors.empty?
+      break unless @errors.empty?
 
       case @current_token.type
       when Token::CLASS
@@ -26,7 +50,6 @@ class Parser
       else
         message = "Unexpected class top level token #{@current_token.type} has been detected."
         @errors << message
-        return
       end
     end
 
@@ -77,7 +100,7 @@ class Parser
 
     next_token
 
-    ClassDeclaration.new(token: token, class_name: class_name, variables: vars, methods: methods)
+    ClassDeclaration.new(token: token, class_name: class_name, variables: vars.flatten, methods: methods.flatten)
   end
 
   def parse_class_var
@@ -188,7 +211,11 @@ class Parser
 
     identifier = @current_token
 
-    vars << VarDeclaration.new(token: token, type: type, identifier: identifier)
+    if is_class
+      vars << ClassVarDeclaration.new(token: token, type: type, identifier: identifier)
+    else
+      vars << VarDeclaration.new(token: token, type: type, identifier: identifier)
+    end
 
     while next_token? Token::COMMA
       next_token
@@ -313,7 +340,7 @@ class Parser
 
     return unless expect_next Token::LPAREN
 
-    arguments = parse_do_arguments
+    arguments = parse_arguments
 
     return unless expect_next Token::SEMICOLON
 
@@ -345,7 +372,7 @@ class Parser
     nil
   end
 
-  def parse_do_arguments
+  def parse_arguments
     arguments = []
 
     next_token
@@ -417,6 +444,7 @@ class Parser
       end
 
       next_token
+
       infix = handle_infix expression
 
       return expression unless infix
@@ -457,6 +485,27 @@ class Parser
 
     right = parse_expression
     InfixExpression.new(token: token, left: left, operator: operator, right: right)
+  end
+
+  def parse_function_call
+    token = @current_token
+
+    # Consider into with prefix and without prefix
+    prefix = if next_token? Token::PERIOD
+      next_token
+      return unless expect_next Token::IDENT
+      token
+    else
+      nil
+    end
+
+    function = @current_token
+
+    return unless expect_next Token::LPAREN
+
+    arguments = parse_arguments
+
+    FunctionCall.new(token: token, prefix: prefix, function: function, arguments: arguments)
   end
 
   def parse_identifier
@@ -526,7 +575,11 @@ class Parser
   def handle_prefix
     case @current_token.type
     when Token::IDENT
-      parse_identifier
+      if (next_token? Token::PERIOD) || (next_token? Token::LPAREN)
+        parse_function_call
+      else
+        parse_identifier
+      end
     when Token::INT
       parse_int
     when Token::STRING

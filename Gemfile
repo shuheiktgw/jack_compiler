@@ -3,5 +3,5 @@ source "https://rubygems.org"
 
 gem 'rspec'
 gem 'pry-byebug'
-gem 'gyoku', '~> 1.0'
+gem 'gyoku', '1.3.1'
 

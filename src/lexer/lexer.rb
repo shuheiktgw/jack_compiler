@@ -1,5 +1,4 @@
 require_relative '../token/token'
-require 'pry-byebug'
 
 class Lexer
 

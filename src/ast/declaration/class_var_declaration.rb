@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class ClassVarDeclaration < AstBase
   attr_reader :token, :type, :identifier
 
@@ -9,8 +11,8 @@ class ClassVarDeclaration < AstBase
 
   def to_h
     {
-      ClassvarDec: [
-        {keyword: 'var'},
+      classVarDec: [
+        {keyword: token.literal},
         parse_type(type),
         {identifier: identifier.literal},
         {symbol: ';'}

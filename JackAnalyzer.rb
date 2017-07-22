@@ -1,5 +1,4 @@
-# Main File to use assemble asm file
-# ex: ruby run.rb ~/vm/file/path.vm
+# ex: ruby JackAnalyzer.rb ~/jack/file/path.jack
 require_relative './src/jack_compiler'
 
 file_path = ARGV[0]

@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class MethodBody < AstBase
   attr_reader :token, :vars, :statements
 
@@ -11,8 +13,8 @@ class MethodBody < AstBase
     {
       subroutineBody: [
         {symbol: '{'},
-        vars,
-        statements,
+        vars.map(&:to_h).flatten,
+        {statements: statements.map(&:to_h).flatten},
         {symbol: '}'}
       ].flatten
     }

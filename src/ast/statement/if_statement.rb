@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class IfStatement < AstBase
 
   attr_reader :token, :condition, :consequence, :alternative

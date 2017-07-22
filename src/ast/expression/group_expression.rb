@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class GroupExpression < AstBase
 
   attr_reader :expression

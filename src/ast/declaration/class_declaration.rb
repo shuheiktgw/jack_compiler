@@ -1,3 +1,5 @@
+require_relative '../ast_base'
+
 class ClassDeclaration < AstBase
   attr_reader :token, :class_name, :variables, :methods
 
@@ -14,8 +16,8 @@ class ClassDeclaration < AstBase
         {keyword: 'class'},
         {identifier: class_name.literal},
         {symbol: '{'},
-        variables,
-        methods,
+        variables.map(&:to_h).flatten,
+        methods.map(&:to_h).flatten,
         {symbol: '}'}
       ].flatten
     }

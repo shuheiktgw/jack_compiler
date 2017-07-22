@@ -1897,6 +1897,40 @@ return test2;
           end
         end
       end
+
+      context 'parse_function_call' do
+        subject{ parser.parse_function_call }
+
+        context 'with prefix' do
+          let(:input) { 'SquareGame.new();' }
+
+          it do
+            token = Token.new(type: Token::IDENT, literal: 'SquareGame')
+            prefix = Token.new(type: Token::IDENT, literal: 'SquareGame')
+            function = Token.new(type: Token::IDENT, literal: 'new')
+            arguments = []
+
+            expected = FunctionCall.new(token: token, prefix: prefix, function: function, arguments: arguments)
+
+            is_expected.to eq expected
+          end
+        end
+
+        context 'without prefix' do
+          let(:input) { 'new();' }
+
+          it do
+            token = Token.new(type: Token::IDENT, literal: 'new')
+            prefix = nil
+            function = Token.new(type: Token::IDENT, literal: 'new')
+            arguments = []
+
+            expected = FunctionCall.new(token: token, prefix: prefix, function: function, arguments: arguments)
+
+            is_expected.to eq expected
+          end
+        end
+      end
     end
 
     context 'abnormal' do
