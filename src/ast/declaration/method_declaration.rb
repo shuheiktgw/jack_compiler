@@ -14,7 +14,7 @@ class MethodDeclaration < AstBase
   def to_h
     {
       subroutine_dec: [
-        {keywrod: token.literal},
+        {keyword: token.literal},
         parse_type(type),
         {identifier: method_name.literal},
         {symbol: '('},
