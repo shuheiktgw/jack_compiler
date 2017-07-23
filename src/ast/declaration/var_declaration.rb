@@ -1,12 +1,12 @@
 require_relative '../ast_base'
 
 class VarDeclaration < AstBase
-  attr_reader :token, :type, :identifier
+  attr_reader :token, :type, :identifiers
 
-  def initialize(token:, type:, identifier:)
+  def initialize(token:, type:, identifiers:)
     @token = token
     @type = type
-    @identifier = identifier
+    @identifiers = identifiers
   end
 
   def to_h
@@ -14,11 +14,22 @@ class VarDeclaration < AstBase
       var_dec: [
         {keyword: 'var'},
         parse_type(type),
-        {identifier: identifier.literal},
+        formatted_identifiers,
         {symbol: ';'}
-      ]
+      ].flatten
     }
 
+  end
+
+  def formatted_identifiers
+    if identifiers.length < 2
+      identifiers.map{|i| {identifier: i.literal} }
+    else
+      ids = identifiers.map{|i| [{identifier: identifier.literal}, {symbol: ','}]  }.flatten
+      # Need to delete last {symbol: ','}
+      ids.delete_at(-1)
+      ids
+    end
   end
 
   def parse_type(token)

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe VarDeclaration do
-  let(:var_declaration) {VarDeclaration.new(token: 'token', type: type, identifier: Token.new(type: Token::IDENT, literal: 'someVar'))}
+  let(:var_declaration) {VarDeclaration.new(token: 'token', type: type, identifiers: [Token.new(type: Token::IDENT, literal: 'someVar')])}
 
   describe '#to_h / #to_xml' do
     subject(:hash) {var_declaration.to_h}

@@ -313,7 +313,7 @@ static int size;
           let(:input) { 'static int i;' }
 
           it do
-            expected = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+            expected = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: [Token.new(type: Token::IDENT, literal: 'i')])
             expect(vars.first).to eq expected
             expect(parser.error_message).to be_empty
           end
@@ -323,7 +323,7 @@ static int size;
           let(:input) { 'static char someChar;' }
 
           it do
-            expected = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'someChar'))
+            expected = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifiers: [Token.new(type: Token::IDENT, literal: 'someChar')])
             expect(vars.first).to eq expected
             expect(parser.error_message).to be_empty
           end
@@ -333,7 +333,7 @@ static int size;
           let(:input) { 'static SomeClass userDefinedInstance;' }
 
           it do
-            expected = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'userDefinedInstance'))
+            expected = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifiers: [Token.new(type: Token::IDENT, literal: 'userDefinedInstance')])
             expect(vars.first).to eq expected
             expect(parser.error_message).to be_empty
           end
@@ -343,10 +343,8 @@ static int size;
           let(:input) { 'static int i1, i2;' }
 
           it do
-            first = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i1'))
-            second = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i2'))
+            first = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: [Token.new(type: Token::IDENT, literal: 'i1'), Token.new(type: Token::IDENT, literal: 'i2')])
             expect(vars[0]).to eq first
-            expect(vars[1]).to eq second
             expect(parser.error_message).to be_empty
           end
         end
@@ -362,9 +360,9 @@ static SomeClass someVar;
         end
 
         it do
-          expected_first = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
-          expected_second = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'c'))
-          expected_third = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'someVar'))
+          expected_first = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: [Token.new(type: Token::IDENT, literal: 'i')])
+          expected_second = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifiers: [Token.new(type: Token::IDENT, literal: 'c')])
+          expected_third = VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifiers: [Token.new(type: Token::IDENT, literal: 'someVar')])
           expect(vars[0]).to eq expected_first
           expect(vars[1]).to eq expected_second
           expect(vars[2]).to eq expected_third
@@ -379,7 +377,7 @@ static SomeClass someVar;
           let(:input) { 'field int i;' }
 
           it do
-            expected = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+            expected = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: [Token.new(type: Token::IDENT, literal: 'i')])
             expect(vars.first).to eq expected
             expect(parser.error_message).to be_empty
           end
@@ -389,7 +387,7 @@ static SomeClass someVar;
           let(:input) { 'field char someChar;' }
 
           it do
-            expected = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'someChar'))
+            expected = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifiers: [Token.new(type: Token::IDENT, literal: 'someChar')])
             expect(vars.first).to eq expected
             expect(parser.error_message).to be_empty
           end
@@ -399,7 +397,7 @@ static SomeClass someVar;
           let(:input) { 'field SomeClass userDefinedInstance;' }
 
           it do
-            expected = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'userDefinedInstance'))
+            expected = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifiers: [Token.new(type: Token::IDENT, literal: 'userDefinedInstance')])
             expect(vars.first).to eq expected
             expect(parser.error_message).to be_empty
           end
@@ -409,10 +407,8 @@ static SomeClass someVar;
           let(:input) { 'field int i1, i2;' }
 
           it do
-            first = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i1'))
-            second = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i2'))
+            first = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: [Token.new(type: Token::IDENT, literal: 'i1'), Token.new(type: Token::IDENT, literal: 'i2')])
             expect(vars[0]).to eq first
-            expect(vars[1]).to eq second
             expect(parser.error_message).to be_empty
           end
         end
@@ -428,9 +424,9 @@ field SomeClass someVar;
         end
 
         it do
-          expected_first = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
-          expected_second = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'c'))
-          expected_third = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'someVar'))
+          expected_first = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: [Token.new(type: Token::IDENT, literal: 'i')])
+          expected_second = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifiers: [Token.new(type: Token::IDENT, literal: 'c')])
+          expected_third = VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifiers: [Token.new(type: Token::IDENT, literal: 'someVar')])
           expect(vars[0]).to eq expected_first
           expect(vars[1]).to eq expected_second
           expect(vars[2]).to eq expected_third
@@ -547,7 +543,7 @@ field SomeClass someVar;
         let(:input) { 'var int i;' }
 
         it do
-          expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+          expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: [Token.new(type: Token::IDENT, literal: 'i')])
           expect(vars.first).to eq expected
           expect(parser.error_message).to be_empty
         end
@@ -557,7 +553,7 @@ field SomeClass someVar;
         let(:input) { 'var char someChar;' }
 
         it do
-          expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'someChar'))
+          expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifiers: [Token.new(type: Token::IDENT, literal: 'someChar')])
           expect(vars.first).to eq expected
           expect(parser.error_message).to be_empty
         end
@@ -567,7 +563,7 @@ field SomeClass someVar;
         let(:input) { 'var SomeClass userDefinedInstance;' }
 
         it do
-          expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'userDefinedInstance'))
+          expected = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifiers: [Token.new(type: Token::IDENT, literal: 'userDefinedInstance')])
           expect(vars.first).to eq expected
           expect(parser.error_message).to be_empty
         end
@@ -577,10 +573,8 @@ field SomeClass someVar;
         let(:input) { 'var int i1, i2;' }
 
         it do
-          first = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i1'))
-          second = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i2'))
+          first = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: [Token.new(type: Token::IDENT, literal: 'i1'), Token.new(type: Token::IDENT, literal: 'i2')])
           expect(vars[0]).to eq first
-          expect(vars[1]).to eq second
           expect(parser.error_message).to be_empty
         end
       end
@@ -596,9 +590,9 @@ var SomeClass someVar;
       end
 
       it do
-        expected_first = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
-        expected_second = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifier: Token.new(type: Token::IDENT, literal: 'c'))
-        expected_third = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifier: Token.new(type: Token::IDENT, literal: 'someVar'))
+        expected_first = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: [Token.new(type: Token::IDENT, literal: 'i')])
+        expected_second = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::CHAR_TYPE, literal: 'char'), identifiers: [Token.new(type: Token::IDENT, literal: 'c')])
+        expected_third = VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::IDENT, literal: 'SomeClass'), identifiers: [Token.new(type: Token::IDENT, literal: 'someVar')])
         expect(vars[0]).to eq expected_first
         expect(vars[1]).to eq expected_second
         expect(vars[2]).to eq expected_third

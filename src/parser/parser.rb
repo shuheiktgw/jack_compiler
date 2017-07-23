@@ -198,8 +198,6 @@ class Parser
   end
 
   def parse_var_declaration(is_class)
-    vars = []
-
     token = @current_token
 
     # Checking type
@@ -209,30 +207,22 @@ class Parser
 
     return unless expect_next Token::IDENT
 
-    identifier = @current_token
-
-    if is_class
-      vars << ClassVarDeclaration.new(token: token, type: type, identifier: identifier)
-    else
-      vars << VarDeclaration.new(token: token, type: type, identifier: identifier)
-    end
+    identifiers = [ @current_token ]
 
     while next_token? Token::COMMA
       next_token
 
       return unless expect_next Token::IDENT
-      more_identifier = @current_token
-
-      if is_class
-        vars << ClassVarDeclaration.new(token: token, type: type, identifier: more_identifier)
-      else
-        vars << VarDeclaration.new(token: token, type: type, identifier: more_identifier)
-      end
+      identifiers << @current_token
     end
 
     return unless expect_next Token::SEMICOLON
 
-    vars
+    if is_class
+      ClassVarDeclaration.new(token: token, type: type, identifiers: identifiers)
+    else
+      VarDeclaration.new(token: token, type: type, identifiers: identifiers)
+    end
   end
 
   def parse_statements
