@@ -25,7 +25,7 @@ class VarDeclaration < AstBase
     if identifiers.length < 2
       identifiers.map{|i| {identifier: i.literal} }
     else
-      ids = identifiers.map{|i| [{identifier: identifier.literal}, {symbol: ','}]  }.flatten
+      ids = identifiers.map{|i| [{identifier: i.literal}, {symbol: ','}]  }.flatten
       # Need to delete last {symbol: ','}
       ids.delete_at(-1)
       ids

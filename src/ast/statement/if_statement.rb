@@ -16,7 +16,6 @@ class IfStatement < AstBase
 
     ifs << { keyword: 'if' }
     ifs << { symbol: '(' }
-    ifs << { symbol: '(' }
     ifs << handle_expression(@condition)
     ifs << { symbol: ')' }
     ifs << { symbol: '{' }

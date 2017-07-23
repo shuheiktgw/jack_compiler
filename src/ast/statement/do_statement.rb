@@ -20,18 +20,21 @@ class DoStatement < AstBase
     dos << { symbol: '.' } if prefix
     dos << {identifier: function.literal}
     dos << { symbol: '(' }
-    dos << { expressionList: form_arguments }
+    dos << { expression_list: formatted_arguments }
     dos << { symbol: ')' }
     dos << { symbol: ';' }
 
     { do_statement: dos.flatten }
   end
 
-  def form_arguments
-    return '' if arguments.empty?
-
-    arguments.map do |a|
-      handle_expression(a)
+  def formatted_arguments
+    if arguments.length < 2
+      arguments.map{|a| handle_expression(a) }.flatten
+    else
+      as = arguments.map{|a| [handle_expression(a), {symbol: ','}]  }.flatten
+      # Need to delete last {symbol: ','}
+      as.delete_at(-1)
+      as
     end
   end
 

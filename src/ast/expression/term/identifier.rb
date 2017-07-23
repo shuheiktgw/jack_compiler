@@ -21,8 +21,18 @@ class Identifier < AstBase
       }
     ]
 
-    base << [ { symbol: '[' }, index.to_h, { symbol: ']' } ] if index
+    base << [ { symbol: '[' }, handle_expression(index), { symbol: ']' } ] if index
 
-    base
+    base.flatten
+  end
+
+  def handle_expression(exo)
+    term = if exo.term?
+      { term: exo.to_h }
+    else
+      exo.to_h
+    end
+
+    { expression:  term}
   end
 end

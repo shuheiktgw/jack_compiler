@@ -18,11 +18,22 @@ class MethodDeclaration < AstBase
         parse_type(type),
         {identifier: method_name.literal},
         {symbol: '('},
-        {parameter_list: parameters.flatten},
+        {parameter_list: formatted_parameters },
         {symbol: ')'},
         body.to_h
-      ]
+      ].flatten
     }
+  end
+
+  def formatted_parameters
+    if parameters.length < 2
+      parameters.map(&:to_h).flatten
+    else
+      ps = parameters.map{|p| [p.to_h, {symbol: ','}] }.flatten
+      # Need to delete last {symbol: ','}
+      ps.delete_at(-1)
+      ps
+    end
   end
 
   def parse_type(token)
