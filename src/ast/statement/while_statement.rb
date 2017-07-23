@@ -15,7 +15,6 @@ class WhileStatement < AstBase
 
     whiles << { keyword: 'while' }
     whiles << { symbol: '(' }
-    whiles << { symbol: '(' }
     whiles << handle_expression(condition)
     whiles << { symbol: ')' }
     whiles << { symbol: '{' }
