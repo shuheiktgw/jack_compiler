@@ -7,8 +7,4 @@ class Program < AstBase
     @token = token
     @classes = classes
   end
-
-  def to_h
-    classes.map(&:to_h)
-  end
 end

@@ -8,33 +8,4 @@ class ReturnStatement < AstBase
     @token = token
     @return_value = return_value
   end
-
-  def to_h
-    {
-      return_statement: form_value(return_value)
-    }
-  end
-
-  def form_value(value)
-    if value
-      v = if value.term?
-        { term: value.to_h }
-      else
-        value.to_h
-      end
-
-
-
-      {
-        keyword: 'return',
-        expression: v,
-        symbol: ';'
-      }
-    else
-      {
-        keyword: 'return',
-        symbol: ';'
-      }
-    end
-  end
 end

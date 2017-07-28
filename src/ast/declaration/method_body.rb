@@ -8,15 +8,4 @@ class MethodBody < AstBase
     @vars = vars
     @statements = statements
   end
-
-  def to_h
-    {
-      subroutine_body: [
-        {symbol: '{'},
-        vars.map(&:to_h).flatten,
-        {statements: statements.map(&:to_h).flatten},
-        {symbol: '}'}
-      ].flatten
-    }
-  end
 end

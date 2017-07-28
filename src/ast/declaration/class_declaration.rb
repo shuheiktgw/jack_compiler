@@ -9,17 +9,4 @@ class ClassDeclaration < AstBase
     @variables = variables
     @methods = methods
   end
-
-  def to_h
-    {
-      class: [
-        {keyword: 'class'},
-        {identifier: class_name.literal},
-        {symbol: '{'},
-        variables.map(&:to_h).flatten,
-        methods.map(&:to_h).flatten,
-        {symbol: '}'}
-      ].flatten
-    }
-  end
 end

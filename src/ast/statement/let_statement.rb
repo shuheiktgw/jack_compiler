@@ -9,26 +9,4 @@ class LetStatement < AstBase
     @identifier = identifier
     @expression =  expression
   end
-
-  def to_h
-    {
-      let_statement: [
-        {keyword: 'let'},
-        identifier.to_h,
-        {symbol: '='},
-        handle_expression(expression),
-        symbol: ';'
-      ].flatten
-    }
-  end
-
-  def handle_expression(exo)
-    term = if exo.term?
-      { term: exo.to_h }
-    else
-      exo.to_h
-    end
-
-    { expression:  term}
-  end
 end
