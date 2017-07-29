@@ -123,7 +123,7 @@ describe SymbolTable::ClassTable do
       end
       let(:field) do
         [
-          VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'filed'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i')),
+          VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i')),
           VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'j'))
         ]
       end
@@ -156,6 +156,7 @@ describe SymbolTable::ClassTable do
           )
         ]
 
+        is_expected.to eq expected
       end
     end
   end
