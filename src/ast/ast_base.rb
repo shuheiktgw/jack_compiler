@@ -1,4 +1,3 @@
-require 'gyoku'
 require_relative '../helper/equalable'
 
 class AstBase

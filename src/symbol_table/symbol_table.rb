@@ -9,7 +9,7 @@ module SymbolTable
       @local_tables = LocalTables.new(klass)
     end
 
-    def look_up()
+    def find()
 
     end
   end

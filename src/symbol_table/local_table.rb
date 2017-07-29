@@ -1,3 +1,4 @@
+require 'ostruct'
 require_relative '../token/token'
 
 module SymbolTable
@@ -31,16 +32,18 @@ module SymbolTable
     end
 
     def parse_argument(argument, index)
-      OpenStruct(
-        name: argument.identifier.literal,
-        type: argument.type.literal,
-        declaration_type: ARGUMENT_TYPE,
-        index: index
-      )
+      argument.identifiers.map.with_index do |identifier, idx|
+        OpenStruct.new(
+          name: identifier.literal,
+          type: argument.type.literal,
+          declaration_type: ARGUMENT_TYPE,
+          index: index + idx
+        )
+      end
     end
 
     def hidden_argument
-      OpenStruct(
+      OpenStruct.new(
         name: 'this',
         type: class_name,
         declaration_type: ARGUMENT_TYPE,
@@ -49,12 +52,14 @@ module SymbolTable
     end
 
     def parse_var(variable, index)
-      OpenStruct(
-        name: variable.identifier.literal,
-        type: variable.type.literal,
-        declaration_type: LOCAL_TYPE,
-        index: index
-      )
+      variable.identifiers.map.with_index do |identifier, idx|
+        OpenStruct.new(
+          name: identifier.literal,
+          type: variable.type.literal,
+          declaration_type: LOCAL_TYPE,
+          index: index + idx
+        )
+      end
     end
   end
 end

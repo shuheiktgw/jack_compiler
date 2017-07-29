@@ -8,4 +8,12 @@ class ClassVarDeclaration < AstBase
     @type = type
     @identifiers = identifiers
   end
+
+  def static?
+    token.literal == 'static'
+  end
+
+  def field?
+    token.literal == 'field'
+  end
 end
