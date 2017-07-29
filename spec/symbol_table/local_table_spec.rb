@@ -155,5 +155,133 @@ describe SymbolTable::LocalTable do
         end
       end
     end
+
+    context 'variables' do
+      let(:method_type) { 'FUNCTION' }
+      let(:parameters) { [] }
+
+      context 'single local variable' do
+        let(:variables) {[VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: identifiers)]}
+
+        context 'one identifier' do
+          let(:identifiers) {[Token.new(type: Token::IDENT, literal: 'i')]}
+
+          it 'should return static' do
+            expected = [
+              OpenStruct.new(
+                name: 'i',
+                type: 'int',
+                declaration_type: 'local',
+                index: 0
+              )
+            ]
+
+            is_expected.to eq expected
+          end
+        end
+
+        context 'two identifiers' do
+          let(:identifiers) {[Token.new(type: Token::IDENT, literal: 'i'), Token.new(type: Token::IDENT, literal: 'j')]}
+
+          it 'should return statics' do
+            expected = [
+              OpenStruct.new(
+                name: 'i',
+                type: 'int',
+                declaration_type: 'local',
+                index: 0
+              ),
+              OpenStruct.new(
+                name: 'j',
+                type: 'int',
+                declaration_type: 'local',
+                index: 1
+              )
+            ]
+
+            is_expected.to eq expected
+          end
+        end
+      end
+
+      context 'multiple local variables' do
+        let(:variables) do
+          [
+            VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: identifiers1),
+            VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: identifiers2)
+          ]
+        end
+
+        context 'one identifier' do
+          let(:identifiers1) {[Token.new(type: Token::IDENT, literal: 'i')]}
+          let(:identifiers2) {[Token.new(type: Token::IDENT, literal: 'a')]}
+
+          it 'should return static' do
+            expected = [
+              OpenStruct.new(
+                name: 'i',
+                type: 'int',
+                declaration_type: 'local',
+                index: 0
+              ),
+              OpenStruct.new(
+                name: 'a',
+                type: 'int',
+                declaration_type: 'local',
+                index: 1
+              )
+            ]
+
+            is_expected.to eq expected
+          end
+        end
+
+        context 'two identifiers' do
+          let(:identifiers1) do
+            [
+              Token.new(type: Token::IDENT, literal: 'i'),
+              Token.new(type: Token::IDENT, literal: 'j')
+            ]
+          end
+          let(:identifiers2) do
+            [
+              Token.new(type: Token::IDENT, literal: 'a'),
+              Token.new(type: Token::IDENT, literal: 'b')
+            ]
+          end
+
+          it 'should return statics' do
+            expected = [
+              OpenStruct.new(
+                name: 'i',
+                type: 'int',
+                declaration_type: 'local',
+                index: 0
+              ),
+              OpenStruct.new(
+                name: 'j',
+                type: 'int',
+                declaration_type: 'local',
+                index: 1
+              ),
+              OpenStruct.new(
+                name: 'a',
+                type: 'int',
+                declaration_type: 'local',
+                index: 2
+              ),
+              OpenStruct.new(
+                name: 'j',
+                type: 'int',
+                declaration_type: 'local',
+                index: 3
+              )
+            ]
+
+            is_expected.to eq expected
+          end
+        end
+      end
+    end
   end
 end
