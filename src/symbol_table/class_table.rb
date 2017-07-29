@@ -9,6 +9,8 @@ module SymbolTable
       @rows = parse_vars(klass)
     end
 
+    private
+
     def parse_vars(klass)
       statics = klass.variables.select{ |v| v.static? }
       fields = klass.variables.select{ |v| v.field? }

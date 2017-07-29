@@ -15,6 +15,8 @@ module SymbolTable
       @rows = parse_method(method)
     end
 
+    private
+
     def parse_method(method)
       arguments = parse_arguments(method)
       locals = method.body.vars.map.with_index{ |v, i| parse_var(v, i) }
@@ -25,21 +27,19 @@ module SymbolTable
     def parse_arguments(method)
       if method.token.type == Token::METHOD
         args = method.parameters.map.with_index(1) { |a, i| parse_argument(a, i)}
-        [args, hidden_argument]
+        [hidden_argument, args]
       else
         method.parameters.map.with_index { |a, i| parse_argument(a, i)}
       end
     end
 
     def parse_argument(argument, index)
-      argument.identifiers.map.with_index do |identifier, idx|
-        OpenStruct.new(
-          name: identifier.literal,
-          type: argument.type.literal,
-          declaration_type: ARGUMENT_TYPE,
-          index: index + idx
-        )
-      end
+      OpenStruct.new(
+        name: argument.identifier.literal,
+        type: argument.type.literal,
+        declaration_type: ARGUMENT_TYPE,
+        index: index
+      )
     end
 
     def hidden_argument

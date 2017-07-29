@@ -99,7 +99,7 @@ describe SymbolTable::ClassTable do
       end
     end
 
-    context 'when static and field' do
+    context 'when statics and fields' do
       let(:variables) { [static, field].flatten }
       let(:static) {[ClassVarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: static_identifiers)]}
       let(:field) {[ClassVarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: field_identifiers)]}
