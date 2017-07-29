@@ -8,12 +8,4 @@ class BooleanLiteral < AstBase
     @token = token
     @value = value
   end
-
-  def term?
-    true
-  end
-
-  def to_h
-    { keyword: @value.to_s }
-  end
 end

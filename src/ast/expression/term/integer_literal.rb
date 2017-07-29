@@ -8,14 +8,4 @@ class IntegerLiteral < AstBase
     @token = token
     @value = value
   end
-
-  def term?
-    true
-  end
-
-  def to_h
-    {
-      integer_constant: @value
-    }
-  end
 end
