@@ -12,10 +12,12 @@ describe SymbolTable::ClassTable do
     end
 
     context 'when only static variables' do
-      let(:variables) {[ClassVarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: identifiers)]}
-
       context 'one identifier' do
-        let(:identifiers) {[Token.new(type: Token::IDENT, literal: 'i')]}
+        let(:variables) do
+          [
+            VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+          ]
+        end
 
         it 'should return static' do
           expected = [
@@ -32,7 +34,12 @@ describe SymbolTable::ClassTable do
       end
 
       context 'two identifiers' do
-        let(:identifiers) {[Token.new(type: Token::IDENT, literal: 'i'), Token.new(type: Token::IDENT, literal: 'j')]}
+        let(:variables) do
+          [
+            VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i')),
+            VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'j'))
+          ]
+        end
 
         it 'should return statics' do
           expected = [
@@ -56,10 +63,12 @@ describe SymbolTable::ClassTable do
     end
 
     context 'when only filed variables' do
-      let(:variables) {[ClassVarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: identifiers)]}
-
       context 'one identifier' do
-        let(:identifiers) {[Token.new(type: Token::IDENT, literal: 'i')]}
+        let(:variables) do
+          [
+            VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i'))
+          ]
+        end
 
         it 'should return field' do
           expected = [
@@ -76,7 +85,12 @@ describe SymbolTable::ClassTable do
       end
 
       context 'two identifiers' do
-        let(:identifiers) {[Token.new(type: Token::IDENT, literal: 'i'), Token.new(type: Token::IDENT, literal: 'j')]}
+        let(:variables) do
+          [
+            VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i')),
+            VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'j'))
+          ]
+        end
 
         it 'should return statics' do
           expected = [
@@ -101,10 +115,18 @@ describe SymbolTable::ClassTable do
 
     context 'when statics and fields' do
       let(:variables) { [static, field].flatten }
-      let(:static) {[ClassVarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: static_identifiers)]}
-      let(:field) {[ClassVarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifiers: field_identifiers)]}
-      let(:static_identifiers) {[Token.new(type: Token::IDENT, literal: 'a'), Token.new(type: Token::IDENT, literal: 'b')]}
-      let(:field_identifiers) {[Token.new(type: Token::IDENT, literal: 'i'), Token.new(type: Token::IDENT, literal: 'j')]}
+      let(:static) do
+        [
+          VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'a')),
+          VarDeclaration.new(token: Token.new(type: Token::STATIC, literal: 'static'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'b'))
+        ]
+      end
+      let(:field) do
+        [
+          VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'filed'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i')),
+          VarDeclaration.new(token: Token.new(type: Token::FIELD, literal: 'field'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'j'))
+        ]
+      end
 
       it 'should return statics and fields' do
         expected = [
@@ -134,7 +156,6 @@ describe SymbolTable::ClassTable do
           )
         ]
 
-        is_expected.to eq expected
       end
     end
   end

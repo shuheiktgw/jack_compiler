@@ -1,7 +1,6 @@
 require_relative '../token/token'
 require_relative '../ast/program'
 require_relative '../ast/declaration/class_declaration'
-require_relative '../ast/declaration/class_var_declaration'
 require_relative '../ast/declaration/method_body'
 require_relative '../ast/declaration/method_declaration'
 require_relative '../ast/declaration/parameter'
@@ -188,7 +187,7 @@ class Parser
     end
 
     while targets.include? @current_token.type
-      var = parse_var_declaration(is_class)
+      var = parse_var_declaration
       var_declarations << var if var
 
       next_token
@@ -197,7 +196,7 @@ class Parser
     var_declarations.flatten
   end
 
-  def parse_var_declaration(is_class)
+  def parse_var_declaration
     token = @current_token
 
     # Checking type
@@ -207,22 +206,21 @@ class Parser
 
     return unless expect_next Token::IDENT
 
-    identifiers = [ @current_token ]
+    vars = []
+
+    vars << VarDeclaration.new(token: token, type: type, identifier: @current_token)
 
     while next_token? Token::COMMA
       next_token
 
       return unless expect_next Token::IDENT
-      identifiers << @current_token
+
+      vars << VarDeclaration.new(token: token, type: type, identifier: @current_token)
     end
 
     return unless expect_next Token::SEMICOLON
 
-    if is_class
-      ClassVarDeclaration.new(token: token, type: type, identifiers: identifiers)
-    else
-      VarDeclaration.new(token: token, type: type, identifiers: identifiers)
-    end
+    vars
   end
 
   def parse_statements

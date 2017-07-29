@@ -19,27 +19,18 @@ module SymbolTable
 
     def parse_method(method)
       arguments = parse_arguments(method)
-      locals = method.body.vars.map.with_index{ |v, i| parse_var(v, i) }
+      locals = method.body.vars.map.with_index{ |v, i| create_row(v,LOCAL_TYPE,  i) }
 
       [arguments, locals].flatten
     end
 
     def parse_arguments(method)
       if method.token.type == Token::METHOD
-        args = method.parameters.map.with_index(1) { |a, i| parse_argument(a, i)}
+        args = method.parameters.map.with_index(1) { |a, i| create_row(a, ARGUMENT_TYPE, i)}
         [hidden_argument, args]
       else
-        method.parameters.map.with_index { |a, i| parse_argument(a, i)}
+        method.parameters.map.with_index { |a, i| create_row(a, ARGUMENT_TYPE, i)}
       end
-    end
-
-    def parse_argument(argument, index)
-      OpenStruct.new(
-        name: argument.identifier.literal,
-        type: argument.type.literal,
-        declaration_type: ARGUMENT_TYPE,
-        index: index
-      )
     end
 
     def hidden_argument
@@ -51,15 +42,13 @@ module SymbolTable
       )
     end
 
-    def parse_var(variable, index)
-      variable.identifiers.map.with_index do |identifier, idx|
-        OpenStruct.new(
-          name: identifier.literal,
-          type: variable.type.literal,
-          declaration_type: LOCAL_TYPE,
-          index: index + idx
-        )
-      end
+    def create_row(var, declaration_type, index)
+      OpenStruct.new(
+        name: var.identifier.literal,
+        type: var.type.literal,
+        declaration_type: declaration_type,
+        index: index
+      )
     end
   end
 end
