@@ -8,9 +8,5 @@ module SymbolTable
       @class_table = ClassTable.new(klass)
       @local_tables = LocalTables.new(klass)
     end
-
-    def find()
-
-    end
   end
 end

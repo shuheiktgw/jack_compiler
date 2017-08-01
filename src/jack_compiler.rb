@@ -1,5 +1,6 @@
 require_relative './lexer/lexer'
 require_relative './parser/parser'
+require_relative './symbol_table/symbol_table'
 require_relative './loader'
 require_relative './writer'
 
@@ -13,11 +14,13 @@ class JackCompiler
 
   def execute
     while loader.load_next
-      lexer = Lexer.new(loader.content)
-      parser = Parser.new(lexer)
+      klass = parse_class(loader.content)
+      symbol_table = symbol_table(klass)
 
-      program = parser.parse_program
-      write(loader.current_file_name, program)
+
+
+
+      write(loader.current_file_name, klass)
     end
   end
 
@@ -27,17 +30,29 @@ class JackCompiler
     @loader ||= Loader.new(file_path)
   end
 
-  def write(path, program)
-    klass = program.classes.first
-    Writer.new(hash_path(path), klass.to_h).execute
-    Writer.new(xml_path(path), klass.to_xml).execute
+  def parse_class(content)
+    lexer = lexer(content)
+    program = parser(lexer).parse_program
+    program.classes.first
   end
 
-  def hash_path(original)
-    original.gsub(/\.jack$/, '_hash.rb')
+  def write(path, content)
+    Writer.new(path, content).execute
   end
 
-  def xml_path(original)
-    original.gsub(/\.jack$/, '.xml')
+  def lexer(content)
+    Lexer.new(content)
+  end
+
+  def parser(lexer)
+    Parser.new(lexer)
+  end
+
+  def symbol_table(klass)
+    SymbolTable::SymbolTable.new(klass)
+  end
+
+  def vm_path(original)
+    original.gsub(/\.jack$/, '.vm')
   end
 end
