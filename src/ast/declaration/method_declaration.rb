@@ -13,6 +13,6 @@ class MethodDeclaration < AstBase
 
   def to_vm(generator)
     generator.write_function(self)
-    methods.each{ |m| m.to_vm(klass_name: klass_name, table: table, writer: writer) }
+    body.to_vm(generator)
   end
 end

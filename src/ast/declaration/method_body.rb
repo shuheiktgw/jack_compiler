@@ -8,4 +8,8 @@ class MethodBody < AstBase
     @vars = vars
     @statements = statements
   end
+
+  def to_vm(generator)
+    statements.each{ |s| s.to_vm(generator) }
+  end
 end

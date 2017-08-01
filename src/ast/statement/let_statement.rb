@@ -9,4 +9,8 @@ class LetStatement < AstBase
     @identifier = identifier
     @expression =  expression
   end
+
+  def to_vm(generator)
+    generator.write_let(self)
+  end
 end

@@ -15,6 +15,14 @@ class Generator
 
   def write_function(declaration)
     writer.write_function(name: "#{klass_name}.#{declaration.method_name}", number: declaration.parameters.count)
-    table.notify_method_change(name)
+    table.notify_method_change(declaration.method_name)
+  end
+
+  def write_let(statement)
+
+  end
+
+  def translate_identifier
+
   end
 end
