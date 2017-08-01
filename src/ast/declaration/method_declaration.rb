@@ -10,4 +10,9 @@ class MethodDeclaration < AstBase
     @parameters = parameters
     @body = body
   end
+
+  def to_vm(generator)
+    generator.write_function(self)
+    methods.each{ |m| m.to_vm(klass_name: klass_name, table: table, writer: writer) }
+  end
 end

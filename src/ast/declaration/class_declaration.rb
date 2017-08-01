@@ -9,4 +9,8 @@ class ClassDeclaration < AstBase
     @variables = variables
     @methods = methods
   end
+
+  def to_vm(generator)
+    methods.each{ |m| m.to_vm(generator) }
+  end
 end
