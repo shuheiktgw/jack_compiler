@@ -1,4 +1,13 @@
 class Writer
+  CONST = 'const'
+  ARG = 'arg'
+  LOCAL = 'local'
+  STATIC = 'static'
+  THIS = 'this'
+  THAT = 'that'
+  POINTER = 'pointer'
+  TEMP = 'temp'
+
   SEGMENTS = [
     CONST,
     ARG,
@@ -10,14 +19,15 @@ class Writer
     TEMP
   ]
 
-  CONST = 'const'
-  ARG = 'arg'
-  LOCAL = 'local'
-  STATIC = 'static'
-  THIS = 'this'
-  THAT = 'that'
-  POINTER = 'pointer'
-  TEMP = 'temp'
+  ADD = 'add'
+  SUB = 'sub'
+  NEG = 'neg'
+  EQ = 'eq'
+  GT = 'gt'
+  LT = 'lt'
+  AND = 'and'
+  OR = 'or'
+  NOT = 'not'
 
   COMMANDS = [
     ADD,
@@ -30,16 +40,6 @@ class Writer
     OR,
     NOT,
   ]
-
-  ADD = 'add'
-  SUB = 'sub'
-  NEG = 'neg'
-  EQ = 'eq'
-  GT = 'gt'
-  LT = 'lt'
-  AND = 'and'
-  OR = 'or'
-  NOT = 'not'
 
   attr_reader :file_path
 
