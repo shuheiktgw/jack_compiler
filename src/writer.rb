@@ -51,30 +51,46 @@ class Writer
   def write_push(segment:, index:)
     raise "invalid segment is selected: #{segment}" unless(SEGMENTS.include? segment)
 
-    File.write(file_path, "push #{segment} #{index}\n")
+    write "push #{segment} #{index}"
   end
 
   def write_pop(segment:, index:)
     raise "invalid segment is selected: #{segment}" unless(SEGMENTS.include? segment)
 
-    File.write(file_path, "pop #{segment} #{index}\n")
+    write "pop #{segment} #{index}"
   end
 
   def write_arithmetic(command)
     raise "invalid command is given: #{command}" unless(COMMANDS.include? command)
 
-    File.write(file_path, "#{command}\n")
+    write command
   end
 
   def write_label(label)
-
+    write"label #{label}"
   end
 
-  def execute
-    File.write(file_path, content)
+  def write_goto(label)
+    write"goto #{label}"
+  end
+
+  def write_if(label)
+    write"if-goto #{label}"
+  end
+
+  def write_call(name:, number:)
+    write "call #{name} #{number}"
+  end
+
+  def write_function(name:, number:)
+    write "function #{name} #{number}"
   end
 
   private
+
+  def write(content)
+    File.write(file_path, "#{content}\n")
+  end
 
   def delete_if_exists(path)
     File.delete path if File.exist?(path)
