@@ -17,8 +17,8 @@ describe Writer do
     context 'if invalid segment is given' do
       let(:segment) { 'invalid' }
 
-      it 'should return valid vm code' do
-        expect{ writer.write_push(segment: segment, index: 0) }.to raise_error
+      it 'should raise error' do
+        expect{ writer.write_push(segment: segment, index: 0) }.to raise_error('invalid segment is selected: invalid')
       end
     end
   end
@@ -36,8 +36,8 @@ describe Writer do
     context 'if invalid segment is given' do
       let(:segment) { 'invalid' }
 
-      it 'should return valid vm code' do
-        expect{ writer.write_pop(segment: segment, index: 0) }.to raise_error
+      it 'should raise error' do
+        expect{ writer.write_pop(segment: segment, index: 0) }.to raise_error('invalid segment is selected: invalid')
       end
     end
   end
@@ -55,8 +55,8 @@ describe Writer do
     context 'if invalid command is given' do
       let(:command) { 'somethingGreat' }
 
-      it 'should return valid vm code' do
-        expect{ writer.write_arithmetic(segment: segment, index: 0) }.to raise_error
+      it 'should raise error' do
+        expect{ writer.write_arithmetic(command) }.to raise_error('invalid command is given: somethingGreat')
       end
     end
   end
