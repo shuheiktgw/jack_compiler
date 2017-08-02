@@ -20,15 +20,28 @@ class Generator
 
   def write_let(statement)
     statement.expression.to_vm(self)
-
-
-    writer.write_function(name: "#{klass_name}.#{declaration.method_name}", number: declaration.parameters.count)
+    
+    segment, index = translate_identifier(statement.identifier.value)
+    writer.write_pop(segment: segment, index: index)
   end
 
-  def translate_identifier(identifier)
-    table.find(identifier)
+  def translate_identifier(variable_name)
+    row = table.find(variable_name)
+    segment = translate_declaration(row.declaration_type)
+    index = row.index
 
+    [segment, index]
+  end
 
+  def translate_declaration(declaration_type)
+    case declaration_type
+    when 'argument'
+      'arg'
+    when 'field'
+      'this'
+    else
+      declaration_type
+    end
   end
 
   def write_expression(expression)
