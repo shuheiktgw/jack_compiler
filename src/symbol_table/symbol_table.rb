@@ -4,14 +4,23 @@ require_relative './local_tables'
 module SymbolTable
   class SymbolTable
 
+    attr_reader :class_table, :local_tables
+
     def initialize(klass)
       @class_table = ClassTable.new(klass)
       @local_tables = LocalTables.new(klass)
-      @current_method = nil
+    end
+
+    def find(variable_name)
+      local_table.find(variable_name) || class_table.find(variable_name)
     end
 
     def notify_method_change(name)
-      @current_method = name
+      local_tables.set_table(name)
+    end
+
+    def local_table
+      local_tables.current_table
     end
   end
 end

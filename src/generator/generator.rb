@@ -19,10 +19,20 @@ class Generator
   end
 
   def write_let(statement)
+    statement.expression.to_vm(self)
+
+
+    writer.write_function(name: "#{klass_name}.#{declaration.method_name}", number: declaration.parameters.count)
+  end
+
+  def translate_identifier(identifier)
+    table.find(identifier)
+
 
   end
 
-  def translate_identifier
+  def write_expression(expression)
+    expression.to_vm(self)
 
   end
 end

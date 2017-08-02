@@ -7,6 +7,13 @@ module SymbolTable
       @rows = parse_vars(klass)
     end
 
+    def find(variable_name)
+      r = rows.find{ |r| r.name == variable_name }
+      raise "Uninitialized variable is given: #{variable_name}" unless r
+
+      r
+    end
+
     def parse_vars(klass)
       statics = klass.variables.select{ |v| v.static? }
       fields = klass.variables.select{ |v| v.field? }

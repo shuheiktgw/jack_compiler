@@ -15,6 +15,10 @@ module SymbolTable
       @rows = parse_method(method)
     end
 
+    def find(variable_name)
+      rows.find{ |r| r.name == variable_name }
+    end
+
     private
 
     def parse_method(method)

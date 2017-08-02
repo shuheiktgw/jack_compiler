@@ -7,4 +7,8 @@ class GroupExpression < AstBase
   def initialize(expression:)
     @expression = expression
   end
+
+  def to_vm(generator)
+    expression.to_vm(generator)
+  end
 end
