@@ -10,4 +10,10 @@ class InfixExpression < AstBase
     @operator = operator
     @right = right
   end
+
+  def to_vm(generator)
+    left.to_vm(generator)
+    right.to_vm(generator)
+    generator.write_command(operator)
+  end
 end

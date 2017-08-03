@@ -8,4 +8,8 @@ class IntegerLiteral < AstBase
     @token = token
     @value = value
   end
+
+  def to_vm(generator)
+    generator.write_push(segment: 'constant', index: value)
+  end
 end

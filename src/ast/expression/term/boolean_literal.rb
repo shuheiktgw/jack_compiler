@@ -8,4 +8,9 @@ class BooleanLiteral < AstBase
     @token = token
     @value = value
   end
+
+  def to_vm(generator)
+    v = value ? 1 : 0
+    generator.write_push(segment: 'constant', index: v)
+  end
 end

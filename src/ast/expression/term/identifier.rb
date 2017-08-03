@@ -9,4 +9,8 @@ class Identifier < AstBase
     @value = value
     @index = index
   end
+
+  def to_vm
+
+  end
 end

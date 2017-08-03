@@ -92,4 +92,11 @@ describe Writer do
       expect(File.read(path)).to eq "function test 12\n"
     end
   end
+
+  describe '#write_return' do
+    it 'should return valid vm code' do
+      writer.write_return
+      expect(File.read(path)).to eq "return\n"
+    end
+  end
 end

@@ -10,4 +10,8 @@ class DoStatement < AstBase
     @function = function
     @arguments = arguments
   end
+
+  def to_vm(generator)
+    generator.write_do(self)
+  end
 end

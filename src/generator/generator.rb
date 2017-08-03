@@ -1,3 +1,6 @@
+require_relative '../token/token'
+require_relative '../writer'
+
 class Generator
 
   attr_reader :klass, :klass_name, :table, :writer
@@ -15,6 +18,8 @@ class Generator
 
   def write_function(declaration)
     writer.write_function(name: "#{klass_name}.#{declaration.method_name}", number: declaration.parameters.count)
+    write.write_push(segment: 'argument', index: 0)
+    write.write_pop(segment: 'pointer', index: 0)
     table.notify_method_change(declaration.method_name)
   end
 
@@ -33,6 +38,26 @@ class Generator
     [segment, index]
   end
 
+  def write_push(segment:, index:)
+    writer.write_push(segment: segment, index: index)
+  end
+
+  def write_return
+    writer.write_return
+  end
+
+  def write_do(do_stmt)
+    do_stmt.arguments.each{ |a| a.to_vm(generator) }
+
+    function_name = if do_stmt.prefix
+      "#{do_stmt.prefix}.#{do_stmt.function.literal}"
+    else
+      "#{klass_name}.#{do_stmt.function.literal}"
+    end
+
+    writer.write_function(name: function_name, number: do_stmt.arguments.count)
+  end
+
   def translate_declaration(declaration_type)
     case declaration_type
     when 'argument'
@@ -44,8 +69,30 @@ class Generator
     end
   end
 
-  def write_expression(expression)
-    expression.to_vm(self)
-
+  def write_command(command)
+    case command
+    when Token::EQ
+      writer.write_command(Writer::EQ)
+    when Token::NOT
+      writer.write_command(Writer::NOT)
+    when Token::PLUS
+      writer.write_command(Writer::ADD)
+    when Token::MINUS
+      writer.write_command(Writer::NEG)
+    when Token::ASTERISK
+      writer.write_function(name: 'Math.multiply', number: 2)
+    when Token::SLASH
+      writer.write_function(name: 'Math.divide', number: 2)
+    when Token::LT
+      writer.write_command(Writer::LT)
+    when Token::GT
+      writer.write_command(Writer::GT)
+    when Token::AND
+      writer.write_command(Writer::AND)
+    when Token::OR
+      writer.write_command(Writer::OR)
+    else
+      raise "Unknown command is specified: #{command}"
+    end
   end
 end

@@ -10,4 +10,8 @@ class FunctionCall < AstBase
     @function = function
     @arguments = arguments
   end
+
+  def to_vm(generator)
+    raise 'Unimplemented yet!!!!!!!!!!!'
+  end
 end

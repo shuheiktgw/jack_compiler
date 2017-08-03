@@ -86,6 +86,10 @@ class Writer
     write "function #{name} #{number}"
   end
 
+  def write_return
+    write 'return'
+  end
+
   private
 
   def write(content)
