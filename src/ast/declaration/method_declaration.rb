@@ -12,7 +12,7 @@ class MethodDeclaration < AstBase
   end
 
   def to_vm(generator)
-    generator.write_function(self)
+    generator.write_function(method_name: method_name, number: parameters.count)
     body.to_vm(generator)
   end
 end

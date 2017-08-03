@@ -16,17 +16,15 @@ class Generator
     klass.to_vm(self)
   end
 
-  def write_function(declaration)
-    writer.write_function(name: "#{klass_name}.#{declaration.method_name}", number: declaration.parameters.count)
+  def write_function(method_name:, number:)
+    writer.write_function(name: "#{klass_name}.#{method_name}", number: number)
     write.write_push(segment: 'argument', index: 0)
     write.write_pop(segment: 'pointer', index: 0)
     table.notify_method_change(declaration.method_name)
   end
 
-  def write_let(statement)
-    statement.expression.to_vm(self)
-    
-    segment, index = translate_identifier(statement.identifier.value)
+  def write_substitution(name)
+    segment, index = translate_identifier(name)
     writer.write_pop(segment: segment, index: index)
   end
 

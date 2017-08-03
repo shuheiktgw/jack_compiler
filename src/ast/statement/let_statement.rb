@@ -11,6 +11,7 @@ class LetStatement < AstBase
   end
 
   def to_vm(generator)
-    generator.write_let(self)
+    expression.to_vm(generator)
+    generator.write_substitution(identifier.value)
   end
 end
