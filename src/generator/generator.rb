@@ -18,22 +18,14 @@ class Generator
 
   def write_function(method_name:, number:)
     writer.write_function(name: "#{klass_name}.#{method_name}", number: number)
-    write.write_push(segment: 'argument', index: 0)
-    write.write_pop(segment: 'pointer', index: 0)
+    writer.write_push(segment: 'argument', index: 0)
+    writer.write_pop(segment: 'pointer', index: 0)
     table.notify_method_change(declaration.method_name)
   end
 
   def write_substitution(name)
     segment, index = translate_identifier(name)
     writer.write_pop(segment: segment, index: index)
-  end
-
-  def translate_identifier(variable_name)
-    row = table.find(variable_name)
-    segment = translate_declaration(row.declaration_type)
-    index = row.index
-
-    [segment, index]
   end
 
   def write_push(segment:, index:)
@@ -46,17 +38,6 @@ class Generator
 
   def write_call(name:, number:)
     writer.write_call(name: name, number: number)
-  end
-
-  def translate_declaration(declaration_type)
-    case declaration_type
-    when 'argument'
-      'arg'
-    when 'field'
-      'this'
-    else
-      declaration_type
-    end
   end
 
   def write_command(command)
@@ -83,6 +64,25 @@ class Generator
       writer.write_command(Writer::OR)
     else
       raise "Unknown command is specified: #{command}"
+    end
+  end
+
+  def translate_identifier(variable_name)
+    row = table.find(variable_name)
+    segment = translate_declaration(row.declaration_type)
+    index = row.index
+
+    [segment, index]
+  end
+
+  def translate_declaration(declaration_type)
+    case declaration_type
+    when 'argument'
+      'arg'
+    when 'field'
+      'this'
+    else
+      declaration_type
     end
   end
 end

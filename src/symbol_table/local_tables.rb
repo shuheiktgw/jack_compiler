@@ -1,4 +1,5 @@
 require_relative './local_table'
+require 'pry-byebug'
 
 module SymbolTable
   class LocalTables
@@ -14,9 +15,6 @@ module SymbolTable
     end
 
     def create_table(class_name, method)
-      t = find_table method
-      raise "Duplicate method name is given: #{method}" if t
-
       LocalTable.new(class_name, method)
     end
 

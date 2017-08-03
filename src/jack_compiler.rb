@@ -1,6 +1,7 @@
 require_relative './lexer/lexer'
 require_relative './parser/parser'
 require_relative './symbol_table/symbol_table'
+require_relative './generator/generator'
 require_relative './loader'
 require_relative './writer'
 
@@ -15,12 +16,10 @@ class JackCompiler
   def execute
     while loader.load_next
       klass = parse_class(loader.content)
-      symbol_table = symbol_table(klass)
+      table = symbol_table(klass)
+      writer = writer(vm_path loader.current_file_name)
 
-
-
-
-      write(loader.current_file_name, klass)
+      generator(klass: klass, table: table, writer: writer).execute
     end
   end
 
@@ -36,8 +35,8 @@ class JackCompiler
     program.classes.first
   end
 
-  def write(path, content)
-    Writer.new(path, content).execute
+  def writer(path)
+    Writer.new(path)
   end
 
   def lexer(content)
@@ -50,6 +49,10 @@ class JackCompiler
 
   def symbol_table(klass)
     SymbolTable::SymbolTable.new(klass)
+  end
+
+  def generator(klass:, table:, writer:)
+    Generator.new(klass: klass, table: table, writer: writer)
   end
 
   def vm_path(original)

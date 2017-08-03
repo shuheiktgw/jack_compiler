@@ -1,3 +1,5 @@
+require 'pry-byebug'
+
 class Writer
   CONST = 'const'
   ARG = 'arg'
@@ -97,6 +99,8 @@ class Writer
   end
 
   def delete_if_exists(path)
+    binding.pry
+
     File.delete path if File.exist?(path)
   end
 end
