@@ -12,6 +12,14 @@ class DoStatement < AstBase
   end
 
   def to_vm(generator)
-    generator.write_do(self)
+    arguments.each{ |a| a.to_vm(generator) }
+
+    function_name = if prefix
+      "#{prefix}.#{function.literal}"
+    else
+      "#{generator.klass_name}.#{function.literal}"
+    end
+
+    generator.write_call(name: function_name, number: arguments.count)
   end
 end

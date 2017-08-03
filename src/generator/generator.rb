@@ -46,16 +46,8 @@ class Generator
     writer.write_return
   end
 
-  def write_do(do_stmt)
-    do_stmt.arguments.each{ |a| a.to_vm(generator) }
-
-    function_name = if do_stmt.prefix
-      "#{do_stmt.prefix}.#{do_stmt.function.literal}"
-    else
-      "#{klass_name}.#{do_stmt.function.literal}"
-    end
-
-    writer.write_function(name: function_name, number: do_stmt.arguments.count)
+  def write_call(name:, number:)
+    writer.write_call(name: name, number: number)
   end
 
   def translate_declaration(declaration_type)
