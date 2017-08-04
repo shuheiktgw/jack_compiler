@@ -3,6 +3,7 @@ require_relative '../writer'
 
 class Generator
 
+  # TODO 配列の実装
   attr_reader :klass, :klass_name, :table, :writer, :label_count
   def initialize(klass:,table:, writer:)
     @klass = klass

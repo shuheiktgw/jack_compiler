@@ -13,6 +13,17 @@ class MethodDeclaration < AstBase
 
   def to_vm(generator)
     generator.write_function(method_name: method_name.literal, number: parameters.count)
-    body.to_vm(generator)
+
+    if type.literal == 'void'
+      s = body.statements.pop
+      raise "last statement of #{method_name.literal} should be return, but got: #{s.token.literal}" if s.token.literal != 'return'
+
+      body.to_vm(generator)
+      generator.write_push(segment: 'constant', index: 0)
+      generator.write_return
+      generator.write_push(segment: 'constant', index: 0)
+    else
+      body.to_vm(generator)
+    end
   end
 end
