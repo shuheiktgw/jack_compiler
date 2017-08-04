@@ -18,8 +18,10 @@ class Generator
 
   def write_function(method_name:, number:)
     writer.write_function(name: "#{klass_name}.#{method_name}", number: number)
-    writer.write_push(segment: 'argument', index: 0)
-    writer.write_pop(segment: 'pointer', index: 0)
+    unless klass_name == 'Main' && method_name == 'main'
+      writer.write_push(segment: 'argument', index: 0)
+      writer.write_pop(segment: 'pointer', index: 0)
+    end
     table.notify_method_change(method_name)
   end
 
@@ -51,9 +53,9 @@ class Generator
     when Token::MINUS
       writer.write_command(Writer::NEG)
     when Token::ASTERISK
-      writer.write_function(name: 'Math.multiply', number: 2)
+      writer.write_call(name: 'Math.multiply', number: 2)
     when Token::SLASH
-      writer.write_function(name: 'Math.divide', number: 2)
+      writer.write_call(name: 'Math.divide', number: 2)
     when Token::LT
       writer.write_command(Writer::LT)
     when Token::GT
