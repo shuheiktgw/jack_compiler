@@ -3,13 +3,13 @@ require_relative '../writer'
 
 class Generator
 
-  attr_reader :klass, :klass_name, :table, :writer
-
+  attr_reader :klass, :klass_name, :table, :writer, :label_count
   def initialize(klass:,table:, writer:)
     @klass = klass
     @klass_name = klass.class_name.literal
     @table = table
     @writer = writer
+    @label_count = -1
   end
 
   def execute
@@ -18,10 +18,12 @@ class Generator
 
   def write_function(method_name:, number:)
     writer.write_function(name: "#{klass_name}.#{method_name}", number: number)
+
     unless klass_name == 'Main' && method_name == 'main'
       writer.write_push(segment: 'argument', index: 0)
       writer.write_pop(segment: 'pointer', index: 0)
     end
+
     table.notify_method_change(method_name)
   end
 
@@ -40,6 +42,23 @@ class Generator
 
   def write_call(name:, number:)
     writer.write_call(name: name, number: number)
+  end
+
+  def write_label(label)
+    write.write_label(label)
+  end
+
+  def write_if_goto(label)
+    write.write_if_goto(label)
+  end
+
+  def write_goto(label)
+    write.write_goto(label)
+  end
+
+  def generate_label
+    @label_count += 1
+    "#{klass_name}#{label_count}"
   end
 
   def write_command(command)

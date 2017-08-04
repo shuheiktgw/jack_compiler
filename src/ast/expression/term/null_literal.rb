@@ -8,6 +8,4 @@ class NullLiteral < AstBase
     @token = Token.new(type: Token::NULL, literal: 'null')
     @value = nil
   end
-
-
 end

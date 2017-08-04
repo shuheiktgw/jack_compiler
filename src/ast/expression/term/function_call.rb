@@ -12,6 +12,14 @@ class FunctionCall < AstBase
   end
 
   def to_vm(generator)
-    raise 'Unimplemented yet!!!!!!!!!!!'
+    arguments.each{ |a| a.to_vm(generator) }
+
+    function_name = if prefix
+      "#{prefix.literal}.#{function.literal}"
+    else
+      "#{generator.klass_name.literal}.#{function.literal}"
+    end
+
+    generator.write_call(name: function_name, number: arguments.count)
   end
 end
