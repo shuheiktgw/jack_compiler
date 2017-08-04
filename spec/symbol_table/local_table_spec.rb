@@ -5,9 +5,11 @@ describe SymbolTable::LocalTable do
   let(:method) {double('method')}
   let(:method_token) {double('method_token')}
   let(:method_body) {double('method_body')}
+  let(:method_name) {double('method_name')}
 
   before do
-    allow(method).to receive(:method_name) { 'someMethod' }
+    allow(method).to receive(:method_name) { method_name }
+    allow(method_name).to receive(:literal) { 'someMethod' }
     allow(method).to receive(:token) { method_token }
     allow(method_token).to receive(:type) { method_type }
     allow(method).to receive(:parameters) { parameters }

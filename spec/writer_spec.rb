@@ -6,11 +6,12 @@ describe Writer do
 
   describe '#write_push' do
     context 'if valid segment is given' do
-      let(:segment) { 'const' }
+      let(:segment) { 'constant' }
 
       it 'should return valid vm code' do
         writer.write_push(segment: segment, index: 0)
-        expect(File.read(path)).to eq "push const 0\n"
+        writer.write_push(segment: segment, index: 1)
+        expect(File.read(path)).to eq "push constant 0\npush constant 1\n"
       end
     end
 
@@ -42,12 +43,12 @@ describe Writer do
     end
   end
 
-  describe '#write_arithmetic' do
+  describe '#write_command' do
     context 'if valid segment is given' do
       let(:command) { 'add' }
 
       it 'should return valid vm code' do
-        writer.write_arithmetic(command)
+        writer.write_command(command)
         expect(File.read(path)).to eq "add\n"
       end
     end
@@ -56,7 +57,7 @@ describe Writer do
       let(:command) { 'somethingGreat' }
 
       it 'should raise error' do
-        expect{ writer.write_arithmetic(command) }.to raise_error('invalid command is given: somethingGreat')
+        expect{ writer.write_command(command) }.to raise_error('invalid command is given: somethingGreat')
       end
     end
   end

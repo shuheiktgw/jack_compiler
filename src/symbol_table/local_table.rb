@@ -11,7 +11,7 @@ module SymbolTable
 
     def initialize(class_name, method)
       @class_name = class_name
-      @method_name = method.method_name
+      @method_name = method.method_name.literal
       @rows = parse_method(method)
     end
 

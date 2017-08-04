@@ -1,8 +1,8 @@
 require 'pry-byebug'
 
 class Writer
-  CONST = 'const'
-  ARG = 'arg'
+  CONST = 'constant'
+  ARG = 'argument'
   LOCAL = 'local'
   STATIC = 'static'
   THIS = 'this'
@@ -62,7 +62,7 @@ class Writer
     write "pop #{segment} #{index}"
   end
 
-  def write_arithmetic(command)
+  def write_command(command)
     raise "invalid command is given: #{command}" unless(COMMANDS.include? command)
 
     write command
@@ -95,12 +95,10 @@ class Writer
   private
 
   def write(content)
-    File.write(file_path, "#{content}\n")
+    File.write(file_path, "#{content}\n", mode: 'a')
   end
 
   def delete_if_exists(path)
-    binding.pry
-
     File.delete path if File.exist?(path)
   end
 end

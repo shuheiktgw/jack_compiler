@@ -7,7 +7,7 @@ class Generator
 
   def initialize(klass:,table:, writer:)
     @klass = klass
-    @klass_name = klass.class_name
+    @klass_name = klass.class_name.literal
     @table = table
     @writer = writer
   end
@@ -20,7 +20,7 @@ class Generator
     writer.write_function(name: "#{klass_name}.#{method_name}", number: number)
     writer.write_push(segment: 'argument', index: 0)
     writer.write_pop(segment: 'pointer', index: 0)
-    table.notify_method_change(declaration.method_name)
+    table.notify_method_change(method_name)
   end
 
   def write_substitution(name)

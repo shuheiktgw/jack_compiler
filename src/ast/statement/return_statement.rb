@@ -10,7 +10,7 @@ class ReturnStatement < AstBase
   end
 
   def to_vm(generator)
-    return_value.to_vm(generator)
+    return_value.to_vm(generator) if return_value
     generator.write_return
   end
 end

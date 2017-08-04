@@ -11,7 +11,7 @@ module SymbolTable
     end
 
     def parse_methods(klass)
-      klass.methods.map{ |m| create_table(klass.class_name, m) }
+      klass.methods.map{ |m| create_table(klass.class_name.literal, m) }
     end
 
     def create_table(class_name, method)

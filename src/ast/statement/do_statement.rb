@@ -1,4 +1,5 @@
 require_relative '../ast_base'
+require 'pry-byebug'
 
 class DoStatement < AstBase
 
@@ -15,9 +16,9 @@ class DoStatement < AstBase
     arguments.each{ |a| a.to_vm(generator) }
 
     function_name = if prefix
-      "#{prefix}.#{function.literal}"
+      "#{prefix.literal}.#{function.literal}"
     else
-      "#{generator.klass_name}.#{function.literal}"
+      "#{generator.klass_name.literal}.#{function.literal}"
     end
 
     generator.write_call(name: function_name, number: arguments.count)
