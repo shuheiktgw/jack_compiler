@@ -9,6 +9,10 @@ class BlockStatement < AstBase
     @statements = statements
   end
 
+  def to_vm(generator)
+    statements.each{ |s| s.to_vm(generator) }
+  end
+
   def ==(other)
     self.token == other.token && self.statements.map.with_index { |s, idx|  s == other.statements[idx]}.all?
   end
