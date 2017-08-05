@@ -1,6 +1,7 @@
 require_relative './lexer/lexer'
 require_relative './parser/parser'
 require_relative './symbol_table/symbol_table'
+require_relative './function_table/function_table'
 require_relative './generator/generator'
 require_relative './loader'
 require_relative './writer'
@@ -14,19 +15,19 @@ class JackCompiler
   end
 
   def execute
-    class_sets = []
+    klass_sets = []
 
     while loader.load_next
       klass = parse_class(loader.content)
-      table = symbol_table(klass)
+      symbol_table = symbol_table(klass)
       writer = writer(vm_path loader.current_file_name)
 
-      class_sets << {klass: klass, table: table, writer: writer}
+      klass_sets << {klass: klass, symbol_table: symbol_table, writer: writer}
     end
 
+    function_table = function_table(klass_sets.map{ |ks| ks[:klass] })
 
-
-    generator(klass: klass, table: table, writer: writer).execute
+    klass_sets.each { |ks| generator(klass: ks[:klass], symbol_table: ks[:symbol_table], function_table: function_table ,writer: ks[:writer]).execute }
   end
 
   private
@@ -57,8 +58,12 @@ class JackCompiler
     SymbolTable::SymbolTable.new(klass)
   end
 
-  def generator(klass:, table:, writer:)
-    Generator.new(klass: klass, table: table, writer: writer)
+  def function_table(klasses)
+    FunctionTable::FunctionTable.new(klasses)
+  end
+
+  def generator(klass:, symbol_table:, function_table:, writer:)
+    Generator.new(klass: klass, sybmbol_table: symbol_table, function_table: function_table, writer: writer)
   end
 
   def vm_path(original)

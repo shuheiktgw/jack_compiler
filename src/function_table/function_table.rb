@@ -5,7 +5,7 @@ module FunctionTable
 
     attr_reader :rows
 
-    def initialize(*klasses)
+    def initialize(klasses)
       @rows = klasses.map{ |k| parse_klass(k) }.flatten
     end
 

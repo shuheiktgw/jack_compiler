@@ -18,5 +18,6 @@ class DoStatement < AstBase
     arguments_count = generator.count_arguments(self)
 
     generator.write_call(name: function_name, number: arguments_count)
+    generator.write_pop(segment: 'temp', index: 0) if generator.void?(self)
   end
 end

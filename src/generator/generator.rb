@@ -1,14 +1,18 @@
+require 'forwardable'
 require_relative '../token/token'
 require_relative '../writer'
 
 class Generator
+  extend Forwardable
 
-  # TODO 配列の実装
-  attr_reader :klass, :klass_name, :table, :writer, :label_count
-  def initialize(klass:,table:, writer:)
+  def_delegators :writer, :write_return, :write_call, :write_label, :write_push, :write_if_goto, :write_goto
+  attr_reader :klass, :klass_name, :symbol_table, :function_table, :writer, :label_count
+
+  def initialize(klass:, symbol_table:, function_table:, writer:)
     @klass = klass
     @klass_name = klass.class_name.literal
-    @table = table
+    @symbol_table = symbol_table
+    @function_table = function_table
     @writer = writer
     @label_count = -1
   end
@@ -25,14 +29,14 @@ class Generator
       writer.write_pop(segment: 'pointer', index: 0)
     end
 
-    table.notify_method_change(method_name)
+    symbol_table.notify_method_change(method_name)
   end
 
   def write_arguments(fcall)
     prefix = fcall.prefix.literal
 
     if prefix
-      r = table.find(prefix, false)
+      r = symbol_table.find(prefix, false)
 
       if r
         write_push(segment: r.segment, index: r.index)
@@ -50,30 +54,6 @@ class Generator
     writer.write_pop(segment: segment, index: index)
   end
 
-  def write_push(segment:, index:)
-    writer.write_push(segment: segment, index: index)
-  end
-
-  def write_return
-    writer.write_return
-  end
-
-  def write_call(name:, number:)
-    writer.write_call(name: name, number: number)
-  end
-
-  def write_label(label)
-    write.write_label(label)
-  end
-
-  def write_if_goto(label)
-    write.write_if_goto(label)
-  end
-
-  def write_goto(label)
-    write.write_goto(label)
-  end
-
   def generate_label
     @label_count += 1
     "#{klass_name}#{label_count}"
@@ -83,7 +63,7 @@ class Generator
     prefix = fcall.prefix.literal
 
     p = if prefix
-      r = table.find(prefix, false)
+      r = symbol_table.find(prefix, false)
 
       if r
         r.type
@@ -102,7 +82,7 @@ class Generator
     count = fcall.arguments.count
 
     if prefix
-      r = table.find(prefix, false)
+      r = symbol_table.find(prefix, false)
 
       if r
         count + 1
@@ -142,10 +122,29 @@ class Generator
   end
 
   def translate_identifier(variable_name)
-    row = table.find(variable_name)
+    row = symbol_table.find(variable_name)
     segment = row.segment
     index = row.index
 
     [segment, index]
+  end
+
+  def void?(fcall)
+    prefix = fcall.prefix.literal
+    fname = fcall.function.literal
+
+    kname = if prefix
+      r = symbol_table.find(prefix, false)
+
+      if r
+        r.type
+      else
+        prefix
+      end
+    else
+      klass_name
+    end
+
+    function_table.void?(klass_name: kname, method_name: fname)
   end
 end

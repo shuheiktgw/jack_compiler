@@ -5,7 +5,7 @@ describe FunctionTable::FunctionTable do
   let(:klass) {double('klass')}
   let(:method1) {double('method_token')}
   let(:method2) {double('method_body')}
-  let(:function_table) { FunctionTable::FunctionTable.new(klass) }
+  let(:function_table) { FunctionTable::FunctionTable.new([klass]) }
 
   before do
     allow(klass).to receive_message_chain(:class_name, :literal) { 'SomeClass' }
