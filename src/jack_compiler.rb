@@ -14,13 +14,19 @@ class JackCompiler
   end
 
   def execute
+    class_sets = []
+
     while loader.load_next
       klass = parse_class(loader.content)
       table = symbol_table(klass)
       writer = writer(vm_path loader.current_file_name)
 
-      generator(klass: klass, table: table, writer: writer).execute
+      class_sets << {klass: klass, table: table, writer: writer}
     end
+
+
+
+    generator(klass: klass, table: table, writer: writer).execute
   end
 
   private

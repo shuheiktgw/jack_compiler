@@ -17,10 +17,10 @@ class Generator
     klass.to_vm(self)
   end
 
-  def write_function(method_name:, number:)
+  def write_function(method_type:, method_name:, number:)
     writer.write_function(name: "#{klass_name}.#{method_name}", number: number)
 
-    unless klass_name == 'Main' && method_name == 'main'
+    if klass_name != 'Main' && method_name != 'main' && method_type == 'method'
       writer.write_push(segment: 'argument', index: 0)
       writer.write_pop(segment: 'pointer', index: 0)
     end
