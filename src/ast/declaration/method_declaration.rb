@@ -21,7 +21,7 @@ class MethodDeclaration < AstBase
       body.to_vm(generator)
       generator.write_push(segment: 'constant', index: 0)
       generator.write_return
-      generator.write_push(segment: 'constant', index: 0)
+      generator.write_pop(segment: 'temp', index: 0)
     else
       body.to_vm(generator)
     end

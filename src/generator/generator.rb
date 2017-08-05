@@ -28,6 +28,23 @@ class Generator
     table.notify_method_change(method_name)
   end
 
+  def write_arguments(fcall)
+    prefix = fcall.prefix.literal
+
+    if prefix
+      r = table.find(prefix, false)
+
+      if r
+        write_push(segment: 'argument', index: 0)
+      end
+    else
+      # not sure if this is right...
+      write_push(segment: 'argument', index: 0)
+    end
+
+    fcall.arguments.each{ |a| a.to_vm(generator) }
+  end
+
   def write_substitution(name)
     segment, index = translate_identifier(name)
     writer.write_pop(segment: segment, index: index)
@@ -62,6 +79,24 @@ class Generator
     "#{klass_name}#{label_count}"
   end
 
+  def generate_function_name(fcall)
+    prefix = fcall.prefix.literal
+
+    p = if prefix
+      r = table.find(prefix, false)
+
+      if r
+        r.type
+      else
+        prefix
+      end
+    else
+      klass_name
+    end
+
+    "#{p}.#{fcall.function.literal}"
+  end
+
   def write_command(command)
     case command
     when Token::EQ
@@ -91,20 +126,9 @@ class Generator
 
   def translate_identifier(variable_name)
     row = table.find(variable_name)
-    segment = translate_declaration(row.declaration_type)
+    segment = row.segment
     index = row.index
 
     [segment, index]
-  end
-
-  def translate_declaration(declaration_type)
-    case declaration_type
-    when 'argument'
-      'arg'
-    when 'field'
-      'this'
-    else
-      declaration_type
-    end
   end
 end

@@ -11,8 +11,8 @@ module SymbolTable
       @local_tables = LocalTables.new(klass)
     end
 
-    def find(variable_name)
-      local_table.find(variable_name) || class_table.find(variable_name)
+    def find(variable_name, raise_error = true)
+      local_table.find(variable_name) || class_table.find(variable_name, raise_error)
     end
 
     def notify_method_change(name)

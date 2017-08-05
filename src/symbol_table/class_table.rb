@@ -7,9 +7,13 @@ module SymbolTable
       @rows = parse_vars(klass)
     end
 
-    def find(variable_name)
+    def find(variable_name, raise_error = true)
       r = rows.find{ |r| r.name == variable_name }
-      raise "Uninitialized variable is given: #{variable_name}" unless r
+
+      unless r
+        raise "Uninitialized variable is given: #{variable_name}" if raise_error
+        return false
+      end
 
       r
     end
@@ -28,9 +32,18 @@ module SymbolTable
       OpenStruct.new(
         name: var.identifier.literal,
         type: var.type.literal,
-        declaration_type: var.token.literal,
+        segment: translate_declaration(var.token.literal),
         index: index
       )
+    end
+
+    def translate_declaration(declaration_type)
+      case declaration_type
+      when 'field'
+        'this'
+      else
+        declaration_type
+      end
     end
   end
 end

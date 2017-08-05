@@ -44,7 +44,7 @@ describe SymbolTable::LocalTable do
               OpenStruct.new(
                 name: 'i',
                 type: 'int',
-                declaration_type: 'argument',
+                segment: 'argument',
                 index: 0
               )
             ]
@@ -64,13 +64,13 @@ describe SymbolTable::LocalTable do
               OpenStruct.new(
                 name: 'i',
                 type: 'int',
-                declaration_type: 'argument',
+                segment: 'argument',
                 index: 0
               ),
               OpenStruct.new(
                 name: 'j',
                 type: 'int',
-                declaration_type: 'argument',
+                segment: 'argument',
                 index: 1
               ),
             ]
@@ -91,7 +91,7 @@ describe SymbolTable::LocalTable do
               OpenStruct.new(
                 name: 'this',
                 type: 'TestClass',
-                declaration_type: 'argument',
+                segment: 'argument',
                 index: 0
               )
             ]
@@ -108,13 +108,13 @@ describe SymbolTable::LocalTable do
               OpenStruct.new(
                 name: 'this',
                 type: 'TestClass',
-                declaration_type: 'argument',
+                segment: 'argument',
                 index: 0
               ),
               OpenStruct.new(
                 name: 'i',
                 type: 'int',
-                declaration_type: 'argument',
+                segment: 'argument',
                 index: 1
               )
             ]
@@ -134,19 +134,19 @@ describe SymbolTable::LocalTable do
               OpenStruct.new(
                 name: 'this',
                 type: 'TestClass',
-                declaration_type: 'argument',
+                segment: 'argument',
                 index: 0
               ),
               OpenStruct.new(
                 name: 'i',
                 type: 'int',
-                declaration_type: 'argument',
+                segment: 'argument',
                 index: 1
               ),
               OpenStruct.new(
                 name: 'j',
                 type: 'int',
-                declaration_type: 'argument',
+                segment: 'argument',
                 index: 2
               ),
             ]
@@ -174,7 +174,7 @@ describe SymbolTable::LocalTable do
               OpenStruct.new(
                 name: 'i',
                 type: 'int',
-                declaration_type: 'local',
+                segment: 'local',
                 index: 0
               )
             ]
@@ -196,13 +196,13 @@ describe SymbolTable::LocalTable do
               OpenStruct.new(
                 name: 'i',
                 type: 'int',
-                declaration_type: 'local',
+                segment: 'local',
                 index: 0
               ),
               OpenStruct.new(
                 name: 'j',
                 type: 'int',
-                declaration_type: 'local',
+                segment: 'local',
                 index: 1
               )
             ]
@@ -227,13 +227,13 @@ describe SymbolTable::LocalTable do
               OpenStruct.new(
                 name: 'i',
                 type: 'int',
-                declaration_type: 'local',
+                segment: 'local',
                 index: 0
               ),
               OpenStruct.new(
                 name: 'a',
                 type: 'int',
-                declaration_type: 'local',
+                segment: 'local',
                 index: 1
               )
             ]
@@ -257,25 +257,25 @@ describe SymbolTable::LocalTable do
               OpenStruct.new(
                 name: 'i',
                 type: 'int',
-                declaration_type: 'local',
+                segment: 'local',
                 index: 0
               ),
               OpenStruct.new(
                 name: 'j',
                 type: 'int',
-                declaration_type: 'local',
+                segment: 'local',
                 index: 1
               ),
               OpenStruct.new(
                 name: 'a',
                 type: 'int',
-                declaration_type: 'local',
+                segment: 'local',
                 index: 2
               ),
               OpenStruct.new(
                 name: 'b',
                 type: 'int',
-                declaration_type: 'local',
+                segment: 'local',
                 index: 3
               )
             ]

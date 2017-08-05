@@ -25,7 +25,7 @@ describe SymbolTable::ClassTable do
             OpenStruct.new(
               name: 'i',
               type: 'int',
-              declaration_type: 'static',
+              segment: 'static',
               index: 0
             )
           ]
@@ -47,13 +47,13 @@ describe SymbolTable::ClassTable do
             OpenStruct.new(
               name: 'i',
               type: 'int',
-              declaration_type: 'static',
+              segment: 'static',
               index: 0
             ),
             OpenStruct.new(
               name: 'j',
               type: 'int',
-              declaration_type: 'static',
+              segment: 'static',
               index: 1
             )
           ]
@@ -76,7 +76,7 @@ describe SymbolTable::ClassTable do
             OpenStruct.new(
               name: 'i',
               type: 'int',
-              declaration_type: 'field',
+              segment: 'this',
               index: 0
             )
           ]
@@ -98,13 +98,13 @@ describe SymbolTable::ClassTable do
             OpenStruct.new(
               name: 'i',
               type: 'int',
-              declaration_type: 'field',
+              segment: 'this',
               index: 0
             ),
             OpenStruct.new(
               name: 'j',
               type: 'int',
-              declaration_type: 'field',
+              segment: 'this',
               index: 1
             )
           ]
@@ -134,25 +134,25 @@ describe SymbolTable::ClassTable do
           OpenStruct.new(
             name: 'a',
             type: 'int',
-            declaration_type: 'static',
+            segment: 'static',
             index: 0
           ),
           OpenStruct.new(
             name: 'b',
             type: 'int',
-            declaration_type: 'static',
+            segment: 'static',
             index: 1
           ),
           OpenStruct.new(
             name: 'i',
             type: 'int',
-            declaration_type: 'field',
+            segment: 'this',
             index: 0
           ),
           OpenStruct.new(
             name: 'j',
             type: 'int',
-            declaration_type: 'field',
+            segment: 'this',
             index: 1
           )
         ]
