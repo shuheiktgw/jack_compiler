@@ -10,7 +10,12 @@ class BooleanLiteral < AstBase
   end
 
   def to_vm(generator)
-    v = value ? 1 : 0
-    generator.write_push(segment: 'constant', index: v)
+    if value
+      generator.write_push(segment: 'constant', index: 1)
+      generator.write_command('neg')
+      return
+    end
+
+    generator.write_push(segment: 'constant', index: 0)
   end
 end
