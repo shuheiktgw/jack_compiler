@@ -35,14 +35,14 @@ class Generator
       r = table.find(prefix, false)
 
       if r
-        write_push(segment: 'argument', index: 0)
+        write_push(segment: r.segment, index: r.index)
       end
     else
       # not sure if this is right...
       write_push(segment: 'argument', index: 0)
     end
 
-    fcall.arguments.each{ |a| a.to_vm(generator) }
+    fcall.arguments.each{ |a| a.to_vm(self) }
   end
 
   def write_substitution(name)
@@ -95,6 +95,23 @@ class Generator
     end
 
     "#{p}.#{fcall.function.literal}"
+  end
+
+  def count_arguments(fcall)
+    prefix = fcall.prefix.literal
+    count = fcall.arguments.count
+
+    if prefix
+      r = table.find(prefix, false)
+
+      if r
+        count + 1
+      else
+        count
+      end
+    else
+      count + 1
+    end
   end
 
   def write_command(command)
