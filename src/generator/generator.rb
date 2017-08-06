@@ -55,27 +55,6 @@ class Generator
     fcall.arguments.each{ |a| a.to_vm(self) }
   end
 
-  def write_let(let_stmt)
-    index = let_stmt.identifier.index
-
-    if index
-      arr_segment, arr_index = translate_identifier(let_stmt.identifier.value)
-      generator.write_push(segment: arr_segment, index: arr_index)
-      index.to_vm(self)
-      write_command('add')
-
-      let_stmt.expression.to_vm(self)
-      write_pop(segmetn: 'temp', index: 0)
-      write_pop(segment: 'pointer', index: 1)
-      write_push(segment: 'temp', index: 0)
-      write_pop(segmnt: 'that', index: 0)
-    else
-      let_stmt.expression.to_vm(self)
-      segment, index = translate_identifier(let_stmt.identifier.value)
-      writer.write_pop(segment: segment, index: index)
-    end
-  end
-
   def generate_label
     @label_count += 1
     "#{klass_name}#{label_count}"

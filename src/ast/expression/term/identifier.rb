@@ -18,9 +18,7 @@ class Identifier < AstBase
       index.to_vm(generator)
       generator.write_command('add')
       generator.pop(semnet: 'pointer', index: 1)
+      generator.pop(segment: 'that', index: 0)
     end
-  end
-
-  def to
   end
 end
