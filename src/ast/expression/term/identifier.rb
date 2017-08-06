@@ -10,7 +10,17 @@ class Identifier < AstBase
     @index = index
   end
 
-  def to_vm
+  def to_vm(generator)
+    segment, memory_index = generator.translate_identifier(value)
+    generator.write_push(segment: segment, index: memory_index)
 
+    if index
+      index.to_vm(generator)
+      generator.write_command('add')
+      generator.pop(semnet: 'pointer', index: 1)
+    end
+  end
+
+  def to
   end
 end
