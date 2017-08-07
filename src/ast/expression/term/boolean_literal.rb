@@ -12,7 +12,7 @@ class BooleanLiteral < AstBase
   def to_vm(generator)
     if value
       generator.write_push(segment: 'constant', index: 1)
-      generator.write_command('neg')
+      generator.write_command('-')
       return
     end
 

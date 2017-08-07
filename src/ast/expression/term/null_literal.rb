@@ -10,6 +10,6 @@ class NullLiteral < AstBase
   end
 
   def to_vm(generator)
-    generator.write_push(segment: 'constant', inedx: 0)
+    generator.write_push(segment: 'constant', index: 0)
   end
 end
