@@ -10,7 +10,8 @@ module ToVmHelper
       let(:klass) { double('klass') }
       let(:symbol_table) { double('symbol_table') }
       let(:function_table) { double('function_table') }
-      let(:writer) { Writer.new(File.expand_path('./test_output/test.vm', __FILE__)) }
+      let(:writer) { Writer.new(path) }
+      let(:path) { File.expand_path('../test_output/test.vm', __FILE__) }
       let(:generator){ Generator.new(klass: klass, symbol_table: symbol_table, function_table: function_table, writer: writer) }
 
       before do

@@ -14,7 +14,7 @@ class StringLiteral < AstBase
     generator.write_call(name: 'String.new', number: 1)
 
     value.each_char do |c|
-      generator.push(segment: 'const', index: c.ord)
+      generator.write_push(segment: 'constant', index: c.ord)
       generator.write_call(name: 'String.appendChar', number: 2)
     end
   end
