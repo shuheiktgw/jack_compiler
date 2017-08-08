@@ -5,7 +5,8 @@ require_relative '../writer'
 class Generator
   extend Forwardable
 
-  def_delegators :writer, :write_return, :write_call, :write_label, :write_push, :write_pop, :write_if_goto, :write_goto
+  def_delegators :writer, :write_return, :write_call, :write_label, :write_push, :write_pop, :write_if_goto, :write_got
+  def_delegators :function_table, :method?, :void?
   attr_reader :klass, :klass_name, :symbol_table, :function_table, :writer, :label_count
 
   def initialize(klass:, symbol_table:, function_table:, writer:)
@@ -38,61 +39,9 @@ class Generator
     symbol_table.notify_method_change(method_name)
   end
 
-  def write_arguments(fcall)
-    prefix = fcall.prefix.literal
-
-    if prefix
-      r = symbol_table.find(prefix, false)
-
-      if r
-        write_push(segment: r.segment, index: r.index)
-      end
-    else
-      # not sure if this is right...
-      write_push(segment: 'argument', index: 0)
-    end
-
-    fcall.arguments.each{ |a| a.to_vm(self) }
-  end
-
   def generate_label
     @label_count += 1
     "#{klass_name}#{label_count}"
-  end
-
-  def generate_function_name(fcall)
-    prefix = fcall.prefix.literal
-
-    p = if prefix
-      r = symbol_table.find(prefix, false)
-
-      if r
-        r.type
-      else
-        prefix
-      end
-    else
-      klass_name
-    end
-
-    "#{p}.#{fcall.function.literal}"
-  end
-
-  def count_arguments(fcall)
-    prefix = fcall.prefix.literal
-    count = fcall.arguments.count
-
-    if prefix
-      r = symbol_table.find(prefix, false)
-
-      if r
-        count + 1
-      else
-        count
-      end
-    else
-      count + 1
-    end
   end
 
   def write_command(command)
@@ -122,30 +71,16 @@ class Generator
     end
   end
 
+  def find_symbol(variable_name, raise_error = false)
+    symbol_table.find(variable_name, raise_error)
+  end
+
+  # SHOULD BE IN IDENTIFIER!!!!!!!!!!!!!!!!!!!!!!!!!!
   def translate_identifier(variable_name)
     row = symbol_table.find(variable_name)
     segment = row.segment
     index = row.index
 
     [segment, index]
-  end
-
-  def void?(fcall)
-    prefix = fcall.prefix.literal
-    fname = fcall.function.literal
-
-    kname = if prefix
-      r = symbol_table.find(prefix, false)
-
-      if r
-        r.type
-      else
-        prefix
-      end
-    else
-      klass_name
-    end
-
-    function_table.void?(klass_name: kname, method_name: fname)
   end
 end
