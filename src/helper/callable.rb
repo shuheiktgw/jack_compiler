@@ -1,15 +1,9 @@
 module Callable
   private
 
-  def set_generator(generator)
+  def write_arguments(generator)
     @generator = generator
-  end
 
-  def generator
-    @generator
-  end
-
-  def write_arguments
     if method?
       if prefix_literal
         r = generator.find_symbol(prefix_literal)
@@ -64,5 +58,9 @@ module Callable
     end
 
     @prefix_literal
+  end
+
+  def generator
+    @generator
   end
 end

@@ -13,6 +13,7 @@ module ToVmHelper
       let(:symbol_table_row) { double('symbol_table_row') }
       let(:symbol_segment) { nil }
       let(:symbol_index) { nil }
+      let(:symbol_type) { nil }
 
       let(:function_table) { double('function_table') }
 
@@ -26,6 +27,7 @@ module ToVmHelper
         allow(symbol_table).to receive(:find) { symbol_table_row }
         allow(symbol_table_row).to receive(:segment) { symbol_segment }
         allow(symbol_table_row).to receive(:index) { symbol_index }
+        allow(symbol_table_row).to receive(:type) { symbol_type }
 
         allow(function_table).to receive(:void?) { is_void }
       end

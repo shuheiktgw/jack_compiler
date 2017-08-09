@@ -10,7 +10,7 @@ module SymbolTable
     def find(variable_name, raise_error = true)
       r = rows.find{ |r| r.name == variable_name }
 
-      unless r
+      if r
         raise "Uninitialized variable is given: #{variable_name}" if raise_error
         return false
       end

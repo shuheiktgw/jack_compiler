@@ -74,13 +74,4 @@ class Generator
   def find_symbol(variable_name, raise_error = false)
     symbol_table.find(variable_name, raise_error)
   end
-
-  # SHOULD BE IN IDENTIFIER!!!!!!!!!!!!!!!!!!!!!!!!!!
-  def translate_identifier(variable_name)
-    row = symbol_table.find(variable_name)
-    segment = row.segment
-    index = row.index
-
-    [segment, index]
-  end
 end

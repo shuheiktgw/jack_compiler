@@ -14,8 +14,7 @@ class FunctionCall < AstBase
   end
 
   def to_vm(generator)
-    set_generator generator
-    write_arguments
+    write_arguments generator
 
     generator.write_call(name: function_name, number: arguments_count)
     generator.write_pop(segment: 'temp', index: 0) if void?

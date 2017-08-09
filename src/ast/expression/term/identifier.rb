@@ -11,8 +11,8 @@ class Identifier < AstBase
   end
 
   def to_vm(generator)
-    segment, memory_index = generator.translate_identifier(value)
-    generator.write_push(segment: segment, index: memory_index)
+    r = generator.find_symbol(prefix_literal)
+    generator.write_push(segment: r.segment, index: r.index)
 
     if index
       index.to_vm(generator)
