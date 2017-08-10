@@ -1,8 +1,2 @@
-push local 0
-push constant 10
-add
 push constant 1
-pop temp 0
-pop pointer 1
-push temp 0
-pop that 0
+return
