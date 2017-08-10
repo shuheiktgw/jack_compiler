@@ -1,7 +1,8 @@
-require_relative '../ast_base'
-require 'pry-byebug'
+require './src/ast/ast_base'
+require './src/helper/callable'
 
 class DoStatement < AstBase
+  include Callable
 
   attr_reader :token, :prefix, :function, :arguments
 
@@ -13,11 +14,9 @@ class DoStatement < AstBase
   end
 
   def to_vm(generator)
-    generator.write_arguments(self)
-    function_name = generator.generate_function_name(self)
-    arguments_count = generator.count_arguments(self)
+    write_arguments generator
 
     generator.write_call(name: function_name, number: arguments_count)
-    generator.write_pop(segment: 'temp', index: 0) if generator.void?(self)
+    generator.write_pop(segment: 'temp', index: 0) if void?
   end
 end
