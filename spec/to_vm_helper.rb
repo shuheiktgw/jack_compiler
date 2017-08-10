@@ -1,5 +1,6 @@
 module ToVmHelper
 
+  # TODO Refactor this by shared context!!!!!!!!!!
   def self.included(c)
     c.extend ClassMethods
   end
