@@ -5,7 +5,7 @@ require_relative '../writer'
 class Generator
   extend Forwardable
 
-  def_delegators :writer, :write_return, :write_call, :write_label, :write_push, :write_pop, :write_if_goto, :write_got
+  def_delegators :writer, :write_return, :write_call, :write_label, :write_push, :write_pop, :write_if, :write_goto
   def_delegators :function_table, :method?, :void?
   attr_reader :klass, :klass_name, :symbol_table, :function_table, :writer, :label_count
 
