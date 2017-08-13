@@ -16,7 +16,6 @@ describe IfStatement do
       let(:true_term) { BooleanLiteral.new(token: Token.new(type: Token::TRUE, literal: 'true'), value: true) }
       let(:condition) { true_term }
       let(:consequence) { ReturnStatement.new(token: 'token', return_value: true_term) }
-      # let(:alternative) { ReturnStatement.new(token: 'token', return_value: true_term) }
 
       context 'without alternative' do
         let(:alternative) { nil }
@@ -31,6 +30,28 @@ push constant 1
 neg
 return
 goto TestClass1
+label TestClass1
+'''
+          is_expected.to eq expected
+        end
+      end
+
+      context 'with alternative' do
+        let(:alternative) { ReturnStatement.new(token: 'token', return_value: true_term) }
+
+        it do
+          expected = '''push constant 1
+neg
+not
+if-goto TestClass0
+push constant 1
+neg
+return
+goto TestClass1
+label TestClass0
+push constant 1
+neg
+return
 label TestClass1
 '''
           is_expected.to eq expected

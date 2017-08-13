@@ -29,7 +29,6 @@ class IfStatement < AstBase
     if alternative
       generator.write_label(to_else)
       alternative.to_vm(generator)
-      generator.write_label(to_end)
     end
 
     generator.write_label(to_end)
