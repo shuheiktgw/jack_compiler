@@ -1,4 +1,3 @@
-label TestClass0
 push constant 1
 neg
 not
@@ -6,5 +5,5 @@ if-goto TestClass1
 push constant 1
 neg
 return
-goto TestClass0
+goto TestClass1
 label TestClass1
