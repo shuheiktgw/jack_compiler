@@ -23,17 +23,17 @@ class Generator
   end
 
   def write_function(method_type:, method_name:, number:)
-    write_function(name: "#{klass_name}.#{method_name}", number: number)
+    writer.write_function(name: "#{klass_name}.#{method_name}", number: number)
 
     if method_type == 'constructor'
       write_push(segment: 'constant', index: number)
       write_call(name: 'Memory.alloc', number: 1)
-      writer.write_pop(segment: 'pointer', index: 0)
+      write_pop(segment: 'pointer', index: 0)
     end
 
     if method_type == 'method'
-      writer.write_push(segment: 'argument', index: 0)
-      writer.write_pop(segment: 'pointer', index: 0)
+      write_push(segment: 'argument', index: 0)
+      write_pop(segment: 'pointer', index: 0)
     end
 
     symbol_table.notify_method_change(method_name)

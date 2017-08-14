@@ -63,7 +63,7 @@ class JackCompiler
   end
 
   def generator(klass:, symbol_table:, function_table:, writer:)
-    Generator.new(klass: klass, sybmbol_table: symbol_table, function_table: function_table, writer: writer)
+    Generator.new(klass: klass, symbol_table: symbol_table, function_table: function_table, writer: writer)
   end
 
   def vm_path(original)
