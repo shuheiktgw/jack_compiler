@@ -71,7 +71,7 @@ class Generator
     end
   end
 
-  def find_symbol(variable_name, raise_error = false)
+  def find_symbol(variable_name, raise_error = true)
     symbol_table.find(variable_name, raise_error)
   end
 end

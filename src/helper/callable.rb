@@ -40,7 +40,7 @@ module Callable
     return @klass_name if @klass_name
 
     @klass_name = if prefix_literal
-      r = generator.find_symbol(prefix, false)
+      r = generator.find_symbol(prefix_literal, false)
 
       if r
         r.type
@@ -53,11 +53,7 @@ module Callable
   end
 
   def prefix_literal
-    unless instance_variable_defined? :@prefix_literal
-      @prefix_literal = prefix ? prefix.literal : nil
-    end
-
-    @prefix_literal
+    prefix ? prefix.literal : nil
   end
 
   def generator
