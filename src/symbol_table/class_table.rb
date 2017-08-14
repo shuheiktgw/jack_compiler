@@ -18,6 +18,10 @@ module SymbolTable
       r
     end
 
+    def count_field_vars
+      rows.select{ |r| r.segment == 'this' }.count
+    end
+
     def parse_vars(klass)
       statics = klass.variables.select{ |v| v.static? }
       fields = klass.variables.select{ |v| v.field? }

@@ -331,7 +331,7 @@ describe SymbolTable::LocalTable do
     let(:parameters) { [] }
 
     it do
-      count = SymbolTable::LocalTable.new('TestClass', method).count_vars
+      count = SymbolTable::LocalTable.new('TestClass', method).count_local_vars
       expect(count).to eq 4
     end
   end

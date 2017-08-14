@@ -25,10 +25,10 @@ class Generator
   def write_function(method_type:, method_name:)
     symbol_table.notify_method_change(method_name)
 
-    writer.write_function(name: "#{klass_name}.#{method_name}", number: symbol_table.count_vars)
+    writer.write_function(name: "#{klass_name}.#{method_name}", number: symbol_table.count_local_vars)
 
     if method_type == 'constructor'
-      write_push(segment: 'constant', index: symbol_table.count_vars)
+      write_push(segment: 'constant', index: symbol_table.count_field_vars)
       write_call(name: 'Memory.alloc', number: 1)
       write_pop(segment: 'pointer', index: 0)
     end

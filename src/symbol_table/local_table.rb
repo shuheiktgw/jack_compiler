@@ -19,8 +19,8 @@ module SymbolTable
       rows.find{ |r| r.name == variable_name }
     end
 
-    def count_vars
-      rows.count
+    def count_local_vars
+      rows.select{ |r| r.segment ==  LOCAL_TYPE}.count
     end
 
     private
