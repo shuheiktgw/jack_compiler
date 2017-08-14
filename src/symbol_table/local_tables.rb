@@ -1,5 +1,4 @@
 require_relative './local_table'
-require 'pry-byebug'
 
 module SymbolTable
   class LocalTables

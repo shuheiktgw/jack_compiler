@@ -15,6 +15,10 @@ module SymbolTable
       local_table.find(variable_name) || class_table.find(variable_name, raise_error)
     end
 
+    def count_vars
+      local_table.count_vars
+    end
+
     def notify_method_change(name)
       local_tables.set_table(name)
     end

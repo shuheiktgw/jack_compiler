@@ -316,4 +316,23 @@ describe SymbolTable::LocalTable do
       end
     end
   end
+
+  describe '#count' do
+    let(:variables) do
+      [
+        VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'i')),
+        VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'j')),
+        VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'a')),
+        VarDeclaration.new(token: Token.new(type: Token::VAR, literal: 'var'), type: Token.new(type: Token::INT_TYPE, literal: 'int'), identifier: Token.new(type: Token::IDENT, literal: 'b'))
+      ]
+    end
+
+    let(:method_type) { 'FUNCTION' }
+    let(:parameters) { [] }
+
+    it do
+      count = SymbolTable::LocalTable.new('TestClass', method).count_vars
+      expect(count).to eq 4
+    end
+  end
 end

@@ -19,6 +19,10 @@ module SymbolTable
       rows.find{ |r| r.name == variable_name }
     end
 
+    def count_vars
+      rows.count
+    end
+
     private
 
     def parse_method(method)

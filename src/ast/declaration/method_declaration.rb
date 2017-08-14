@@ -12,7 +12,7 @@ class MethodDeclaration < AstBase
   end
 
   def to_vm(generator)
-    generator.write_function(method_type: token.literal, method_name: method_name.literal, number: parameters.count)
+    generator.write_function(method_type: token.literal, method_name: method_name.literal)
 
     if type.literal == 'void'
       s = body.statements.pop
