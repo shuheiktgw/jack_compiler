@@ -39,6 +39,16 @@ describe FunctionTable::FunctionTable do
           is_expected.to be_falsey
         end
       end
+
+      context 'when built-in void method is specified' do
+        let(:klass_name) { 'Output' }
+        let(:method_name) { 'printString' }
+
+        it 'should return true' do
+          is_expected.to be_truthy
+        end
+      end
+
     end
 
     context 'when unknown method is specified' do

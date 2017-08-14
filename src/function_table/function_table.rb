@@ -1,12 +1,23 @@
 require 'ostruct'
+require './src/function_table/built_in_methods'
 
 module FunctionTable
   class FunctionTable
 
     attr_reader :rows
 
+    def create_row(klass_name:, method_type:, return_type:, method_name:)
+      OpenStruct.new(
+        klass_name: klass_name,
+        method_type: method_type,
+        return_type: return_type,
+        method_name: method_name
+      )
+    end
+
     def initialize(klasses)
       @rows = klasses.map{ |k| parse_klass(k) }.flatten
+      register_built_ins
     end
 
     def void?(klass_name:, method_name:)
@@ -35,13 +46,8 @@ module FunctionTable
       end
     end
 
-    def create_row(klass_name:, method_type:, return_type:, method_name:)
-      OpenStruct.new(
-        klass_name: klass_name,
-        method_type: method_type,
-        return_type: return_type,
-        method_name: method_name
-      )
+    def register_built_ins
+      @rows += BuiltInMethods::BUILT_INS
     end
   end
 end
