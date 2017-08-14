@@ -10,8 +10,10 @@ describe FunctionTable::FunctionTable do
   before do
     allow(klass).to receive_message_chain(:class_name, :literal) { 'SomeClass' }
     allow(klass).to receive(:methods) { [method1, method2] }
+    allow(method1).to receive_message_chain(:token, :literal) { 'function' }
     allow(method1).to receive_message_chain(:type, :literal) { 'void' }
     allow(method1).to receive_message_chain(:method_name, :literal) { 'voidMethod' }
+    allow(method2).to receive_message_chain(:token, :literal) { 'function' }
     allow(method2).to receive_message_chain(:type, :literal) { 'String' }
     allow(method2).to receive_message_chain(:method_name, :literal) { 'stringMethod' }
   end
