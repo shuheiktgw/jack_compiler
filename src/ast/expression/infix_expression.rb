@@ -14,6 +14,6 @@ class InfixExpression < AstBase
   def to_vm(generator)
     left.to_vm(generator)
     right.to_vm(generator)
-    generator.write_command(operator)
+    generator.write_infix_command(operator)
   end
 end

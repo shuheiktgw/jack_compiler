@@ -15,19 +15,21 @@ class IfStatement < AstBase
     # condition
     condition.to_vm(generator)
 
-    to_else = generator.generate_label
+    to_true = generator.generate_label
+    to_false = generator.generate_label
     to_end = generator.generate_label
 
-    generator.write_command('~')
-    alternative ? generator.write_if(to_else) : generator.write_if(to_end)
+    generator.write_if(to_true)
+    alternative ? generator.write_goto(to_false) : generator.write_goto(to_end)
 
     # consequence
+    generator.write_label(to_true)
     consequence.to_vm(generator)
-    generator.write_goto(to_end)
 
     # alternative
     if alternative
-      generator.write_label(to_else)
+      generator.write_goto(to_end)
+      generator.write_label(to_false)
       alternative.to_vm(generator)
     end
 

@@ -23,14 +23,14 @@ describe IfStatement do
 
         it do
           expected = '''push constant 1
-neg
 not
-if-goto TestClass1
+if-goto TestClass0
+goto TestClass2
+label TestClass0
 push constant 1
-neg
+not
 return
-goto TestClass1
-label TestClass1
+label TestClass2
 '''
           is_expected.to eq expected
         end
@@ -41,18 +41,19 @@ label TestClass1
 
         it do
           expected = '''push constant 1
-neg
 not
 if-goto TestClass0
-push constant 1
-neg
-return
 goto TestClass1
 label TestClass0
 push constant 1
-neg
+not
 return
+goto TestClass2
 label TestClass1
+push constant 1
+not
+return
+label TestClass2
 '''
           is_expected.to eq expected
         end

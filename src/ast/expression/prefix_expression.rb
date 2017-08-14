@@ -12,6 +12,6 @@ class PrefixExpression < AstBase
 
   def to_vm(generator)
     right.to_vm(generator)
-    generator.write_command(operator)
+    generator.write_prefix_command(operator)
   end
 end

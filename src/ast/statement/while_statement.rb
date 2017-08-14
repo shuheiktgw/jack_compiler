@@ -17,7 +17,7 @@ class WhileStatement < AstBase
     generator.write_label(to_start)
     condition.to_vm(generator)
 
-    generator.write_command('~')
+    generator.write_prefix_command('~')
     generator.write_if(to_end)
 
     consequence.to_vm(generator)

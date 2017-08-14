@@ -18,7 +18,7 @@ describe BooleanLiteral do
 
       it do
         expected ='''push constant 1
-neg
+not
 '''
 
         is_expected.to eq expected

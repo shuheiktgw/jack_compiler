@@ -16,7 +16,7 @@ class LetStatement < AstBase
       generator.write_push(segment: r.segment, index: r.index)
 
       identifier.index.to_vm(generator)
-      generator.write_command('+')
+      generator.write_infix_command('+')
 
       expression.to_vm(generator)
       generator.write_pop(segment: 'temp', index: 0)

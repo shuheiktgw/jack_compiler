@@ -44,16 +44,14 @@ class Generator
     "#{klass_name}#{label_count}"
   end
 
-  def write_command(command)
+  def write_infix_command(command)
     case command
     when Token::EQ
       writer.write_command(Writer::EQ)
-    when Token::NOT
-      writer.write_command(Writer::NOT)
     when Token::PLUS
       writer.write_command(Writer::ADD)
     when Token::MINUS
-      writer.write_command(Writer::NEG)
+      writer.write_command(Writer::SUB)
     when Token::ASTERISK
       writer.write_call(name: 'Math.multiply', number: 2)
     when Token::SLASH
@@ -67,7 +65,18 @@ class Generator
     when Token::OR
       writer.write_command(Writer::OR)
     else
-      raise "Unknown command is specified: #{command}"
+      raise "Unknown infix command is specified: #{command}"
+    end
+  end
+
+  def write_prefix_command(command)
+    case command
+    when Token::NOT
+      writer.write_command(Writer::NOT)
+    when Token::MINUS
+      writer.write_command(Writer::NEG)
+    else
+      raise "Unknown prefix command is specified: #{command}"
     end
   end
 

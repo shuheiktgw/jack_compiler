@@ -20,11 +20,11 @@ describe WhileStatement do
       it do
         expected = '''label TestClass0
 push constant 1
-neg
+not
 not
 if-goto TestClass1
 push constant 1
-neg
+not
 return
 goto TestClass0
 label TestClass1
