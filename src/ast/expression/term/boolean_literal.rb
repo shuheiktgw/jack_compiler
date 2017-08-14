@@ -11,7 +11,8 @@ class BooleanLiteral < AstBase
 
   def to_vm(generator)
     if value
-      generator.write_push(segment: 'constant', index: 1)
+      # This is different from the book, but compiler seems to generate this code so....
+      generator.write_push(segment: 'constant', index: 0)
       generator.write_prefix_command('~')
       return
     end

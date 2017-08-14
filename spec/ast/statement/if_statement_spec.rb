@@ -22,12 +22,12 @@ describe IfStatement do
 
 
         it do
-          expected = '''push constant 1
+          expected = '''push constant 0
 not
 if-goto TestClass0
 goto TestClass2
 label TestClass0
-push constant 1
+push constant 0
 not
 return
 label TestClass2
@@ -40,17 +40,17 @@ label TestClass2
         let(:alternative) { ReturnStatement.new(token: 'token', return_value: true_term) }
 
         it do
-          expected = '''push constant 1
+          expected = '''push constant 0
 not
 if-goto TestClass0
 goto TestClass1
 label TestClass0
-push constant 1
+push constant 0
 not
 return
 goto TestClass2
 label TestClass1
-push constant 1
+push constant 0
 not
 return
 label TestClass2

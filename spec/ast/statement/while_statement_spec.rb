@@ -19,11 +19,11 @@ describe WhileStatement do
 
       it do
         expected = '''label TestClass0
-push constant 1
+push constant 0
 not
 not
 if-goto TestClass1
-push constant 1
+push constant 0
 not
 return
 goto TestClass0

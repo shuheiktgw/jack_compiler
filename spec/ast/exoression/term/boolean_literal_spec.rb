@@ -17,7 +17,7 @@ describe BooleanLiteral do
       let(:value) { true }
 
       it do
-        expected ='''push constant 1
+        expected ='''push constant 0
 not
 '''
 
